@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-16)
 
 **Core value:** The website must load fast and look polished on slow rural connections, making the retreat feel warm and inviting enough that quilters, crafters, and families want to book a stay.
-**Current focus:** Phase 2 - Content Sections and Embeds
+**Current focus:** Phase 3 - Gallery and Media
 
 ## Current Position
 
-Phase: 2 of 5 (Content Sections and Embeds)
-Plan: 3 of 5 in current phase
-Status: In progress
-Last activity: 2026-02-17 -- Plan 02-03 complete (Map section, full Phase 2 site assembly, human-verified)
+Phase: 3 of 5 (Gallery and Media)
+Plan: 0 of 3 in current phase
+Status: Phase complete — advancing to Phase 3
+Last activity: 2026-02-17 -- Phase 2 complete (all content sections migrated, verified)
 
-Progress: [#######.......] 33%
+Progress: [######........] 40%
 
 ## Performance Metrics
 
@@ -79,5 +79,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 02-03-PLAN.md (Map section, full site assembly, human-verified)
-Resume file: .planning/phases/02-content-sections-and-embeds/02-04-PLAN.md (next plan)
+Stopped at: Phase 2 complete — all content sections verified
+Resume file: .planning/phases/03-gallery-and-media/03-01-PLAN.md (next phase)
