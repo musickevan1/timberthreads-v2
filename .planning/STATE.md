@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-16)
 ## Current Position
 
 Phase: 3 of 5 (Gallery and Media)
-Plan: 0 of 3 in current phase
-Status: Phase complete — advancing to Phase 3
-Last activity: 2026-02-17 -- Phase 2 complete (all content sections migrated, verified)
+Plan: 1 of 3 in current phase
+Status: In progress
+Last activity: 2026-02-17 -- Phase 3, Plan 01 complete (gallery static structure, Cloudinary data layer, video placeholder)
 
-Progress: [######........] 40%
+Progress: [#######.......] 47%
 
 ## Performance Metrics
 
@@ -29,6 +29,7 @@ Progress: [######........] 40%
 |-------|-------|-------|----------|
 | 01-foundation-and-static-shell | 3/3 | 15 min | 5 min |
 | 02-content-sections-and-embeds | 3/5 | 9 min | 3 min |
+| 03-gallery-and-media | 1/3 | 2 min | 2 min |
 
 **Recent Trend:**
 - Last 5 plans: 2 min, 5 min, 2 min, 2 min
@@ -65,6 +66,11 @@ Recent decisions affecting current work:
 - [02-03]: Map and directions shown side-by-side (two-column grid) -- rural visitors need directions visible immediately without tabs
 - [02-03]: maps-iframe ID distinct from calendar-iframe to prevent IntersectionObserver conflicts between both embed sections
 - [02-03]: Gallery left as inline placeholder in index.astro (not a stub component) since Phase 3 replaces with full Gallery component
+- [03-01]: Gallery data is hardcoded TypeScript array in src/data/gallery.ts — zero runtime API calls, fully static build
+- [03-01]: CLOUD_NAME = 'timberandthreads' constant is single update point when real Cloudinary account is configured
+- [03-01]: Thumbnail transforms use c_fill,g_auto for AI-gravity square crops — preserves subject framing automatically
+- [03-01]: data-pswp-srcset pre-wired with 800w/1200w/2000w so PhotoSwipe (Plan 02) can select optimal zoom resolution
+- [03-01]: hero-front-view.jpeg reused as video poster — no additional asset needed
 
 ### Pending Todos
 
@@ -79,5 +85,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Phase 3 context gathered
-Resume file: .planning/phases/03-gallery-and-media/03-CONTEXT.md
+Stopped at: Completed 03-gallery-and-media 03-01-PLAN.md
+Resume file: .planning/phases/03-gallery-and-media/03-02-PLAN.md
