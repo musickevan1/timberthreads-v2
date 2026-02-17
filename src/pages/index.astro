@@ -3,10 +3,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import About from '../components/About.astro';
 import Workshops from '../components/Workshops.astro';
-import ImageTest from '../components/ImageTest.astro';
 import Accommodations from '../components/Accommodations.astro';
 import Calendar from '../components/Calendar.astro';
 import Connect from '../components/Connect.astro';
+import Map from '../components/Map.astro';
 ---
 
 <BaseLayout
@@ -31,11 +31,11 @@ import Connect from '../components/Connect.astro';
   <!-- Gallery: #gallery -->
   <section id="gallery" class="py-16 md:py-24 bg-white min-h-[50vh] flex items-center">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-      <div class="mb-8 text-center">
-        <h2 class="font-serif text-3xl md:text-4xl text-stone-900 mb-2">Gallery</h2>
-        <p class="text-stone-500 text-base">Image Pipeline Test (Phase 1)</p>
+      <div class="text-center">
+        <h2 class="font-serif text-3xl md:text-4xl text-stone-900 mb-4">Gallery</h2>
+        <div class="w-24 h-1 bg-brand mx-auto mb-8"></div>
+        <p class="text-stone-500 text-lg max-w-2xl mx-auto">Photo gallery coming soon</p>
       </div>
-      <ImageTest />
     </div>
   </section>
 
@@ -43,12 +43,5 @@ import Connect from '../components/Connect.astro';
   <Connect />
 
   <!-- Location: #location -->
-  <section id="location" class="py-16 md:py-24 bg-teal-50/10 min-h-[50vh] flex items-center">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-      <div class="text-center">
-        <h2 class="font-serif text-3xl md:text-4xl text-stone-900 mb-4">Location</h2>
-        <p class="text-stone-500 text-lg max-w-2xl mx-auto">Content coming in Phase 2</p>
-      </div>
-    </div>
-  </section>
+  <Map />
 </BaseLayout>
