@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
+import ImageTest from '../components/ImageTest.astro';
 ---
 
 <BaseLayout
@@ -53,10 +54,11 @@ import Hero from '../components/Hero.astro';
   <!-- Gallery: #gallery -->
   <section id="gallery" class="py-16 md:py-24 bg-white min-h-[50vh] flex items-center">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-      <div class="text-center">
-        <h2 class="font-serif text-3xl md:text-4xl text-stone-900 mb-4">Gallery</h2>
-        <p class="text-stone-500 text-lg max-w-2xl mx-auto">Content coming in Phase 2</p>
+      <div class="mb-8 text-center">
+        <h2 class="font-serif text-3xl md:text-4xl text-stone-900 mb-2">Gallery</h2>
+        <p class="text-stone-500 text-base">Image Pipeline Test (Phase 1)</p>
       </div>
+      <ImageTest />
     </div>
   </section>
 
