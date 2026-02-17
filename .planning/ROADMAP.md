@@ -63,12 +63,11 @@ Plans:
   3. Gallery images are served from Cloudinary CDN in WebP or AVIF format at responsive sizes matching the visitor's viewport (no oversized images on mobile)
   4. The video section displays a poster image with clear indication that a promo video is coming, without any broken media or empty space
   5. Below-fold images are lazy-loaded and the hero image is eager-loaded with fetchpriority="high" -- verified by checking network waterfall in DevTools
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 03-01: Gallery component with Cloudinary CDN integration and hardcoded image data
-- [ ] 03-02: Lightbox interaction and responsive image optimization
-- [ ] 03-03: Video placeholder section and image loading strategy (lazy/eager)
+- [ ] 03-01-PLAN.md -- Gallery data file, Cloudinary URL helpers, VideoPlaceholder/GalleryCategory/Gallery components, index.astro integration
+- [ ] 03-02-PLAN.md -- PhotoSwipe lightbox installation, caption support, loading strategy verification, human review
 
 ### Phase 4: Contact Form and Server Endpoint
 **Goal**: Visitors can send an inquiry to the retreat owners through a contact form that validates input, delivers email reliably via Resend, and prevents spam -- the only server-side feature on the site
@@ -112,6 +111,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 |-------|---------------|--------|-----------|
 | 1. Foundation and Static Shell | 3/3 | Complete    | 2026-02-17 |
 | 2. Content Sections and Embeds | 3/3 | Complete    | 2026-02-17 |
-| 3. Gallery and Media | 0/3 | Not started | - |
+| 3. Gallery and Media | 0/2 | Not started | - |
 | 4. Contact Form and Server Endpoint | 0/2 | Not started | - |
 | 5. Polish, Accessibility, and Performance | 0/3 | Not started | - |
