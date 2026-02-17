@@ -5,33 +5,34 @@
 See: .planning/PROJECT.md (updated 2026-02-16)
 
 **Core value:** The website must load fast and look polished on slow rural connections, making the retreat feel warm and inviting enough that quilters, crafters, and families want to book a stay.
-**Current focus:** Phase 1 - Foundation and Static Shell
+**Current focus:** Phase 2 - Content Sections and Embeds
 
 ## Current Position
 
-Phase: 1 of 5 (Foundation and Static Shell)
-Plan: 3 of 3 in current phase
-Status: Phase complete
-Last activity: 2026-02-17 -- Plan 01-03 complete (image pipelines verified, Vercel deployment confirmed)
+Phase: 2 of 5 (Content Sections and Embeds)
+Plan: 1 of 5 in current phase
+Status: In progress
+Last activity: 2026-02-17 -- Plan 02-01 complete (About + Workshops sections, 5 images copied)
 
-Progress: [###...........] 20%
+Progress: [#####.........] 24%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
-- Average duration: 5 min
-- Total execution time: 15 min
+- Total plans completed: 4
+- Average duration: 4 min
+- Total execution time: 17 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation-and-static-shell | 3/3 | 15 min | 5 min |
+| 02-content-sections-and-embeds | 1/5 | 2 min | 2 min |
 
 **Recent Trend:**
-- Last 5 plans: 8 min, 2 min, 5 min
-- Trend: Consistent
+- Last 5 plans: 8 min, 2 min, 5 min, 2 min
+- Trend: Fast
 
 *Updated after each plan completion*
 
@@ -55,6 +56,9 @@ Recent decisions affecting current work:
 - [01-02]: IntersectionObserver rootMargin '-5% 0% -90% 0%' for top-of-viewport section detection
 - [01-03]: Cloudinary 'demo' cloud used for Phase 1 CDN path verification -- Phase 3 replaces with retreat cloud name
 - [01-03]: Astro <Image> widths=[400,800,1200] + sizes="(max-width:768px) 100vw, 50vw" -- confirmed WebP/AVIF srcset pattern for responsive images
+- [02-01]: Section IDs use v2 nav names (about, retreats) not original site names -- scroll-spy depends on exact ID/href match
+- [02-01]: Inline Heroicons SVG paths for card icons and bullet checkmarks -- zero new dependencies
+- [02-01]: entrance-driveway.jpeg copied in Plan 01 for use in Plan 03 Map section
 
 ### Pending Todos
 
@@ -69,5 +73,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 01-03-PLAN.md (image pipelines, Vercel deployment) -- Phase 1 complete
-Resume file: .planning/phases/02-content-and-booking/02-01-PLAN.md (next phase)
+Stopped at: Completed 02-01-PLAN.md (About + Workshops sections, 5 images migrated)
+Resume file: .planning/phases/02-content-sections-and-embeds/02-02-PLAN.md (next plan)
