@@ -12,7 +12,7 @@ This roadmap delivers a ground-up Astro rebuild of the Timber & Threads Retreat 
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation and Static Shell** - Astro 5 + Tailwind v4 project with layout, navigation, image pipeline, and Vercel deploy
+- [x] **Phase 1: Foundation and Static Shell** - Astro 5 + Tailwind v4 project with layout, navigation, image pipeline, and Vercel deploy (completed 2026-02-17)
 - [ ] **Phase 2: Content Sections and Embeds** - All static content migrated from current site with lazy-loaded Calendar and Maps embeds
 - [ ] **Phase 3: Gallery and Media** - Photo gallery with Cloudinary CDN, lightbox interaction, video placeholder
 - [ ] **Phase 4: Contact Form and Server Endpoint** - Contact form with validation, Resend email delivery, spam prevention
@@ -110,7 +110,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|---------------|--------|-----------|
-| 1. Foundation and Static Shell | 0/3 | Not started | - |
+| 1. Foundation and Static Shell | 0/3 | Complete    | 2026-02-17 |
 | 2. Content Sections and Embeds | 0/3 | Not started | - |
 | 3. Gallery and Media | 0/3 | Not started | - |
 | 4. Contact Form and Server Endpoint | 0/2 | Not started | - |
