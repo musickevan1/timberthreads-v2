@@ -1,0 +1,160 @@
+---
+import { Image } from 'astro:assets';
+import logoImage from '../assets/images/logo.png';
+
+const navItems = [
+  { label: 'Home', href: '#home' },
+  { label: 'About', href: '#about' },
+  { label: 'Retreats', href: '#retreats' },
+  { label: 'Accommodations', href: '#accommodations' },
+  { label: 'Calendar', href: '#calendar' },
+  { label: 'Gallery', href: '#gallery' },
+  { label: 'Contact', href: '#contact' },
+  { label: 'Location', href: '#location' },
+];
+---
+
+<header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm">
+  <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16" aria-label="Main navigation">
+
+    <!-- Brand -->
+    <a href="#home" class="flex items-center gap-2 shrink-0" aria-label="Timber & Threads Retreat — back to top">
+      <Image
+        src={logoImage}
+        alt=""
+        width={32}
+        height={32}
+        loading="eager"
+        class="h-8 w-8 object-contain"
+      />
+      <span class="font-serif text-lg text-stone-900 hidden sm:block">Timber &amp; Threads</span>
+    </a>
+
+    <!-- Desktop nav links -->
+    <ul class="hidden md:flex gap-1 lg:gap-2 items-center">
+      {navItems.map((item) => (
+        <li>
+          <a
+            href={item.href}
+            aria-current="false"
+            class="text-stone-600 hover:text-brand transition-colors text-sm px-2 py-1 rounded [&[aria-current='true']]:text-brand [&[aria-current='true']]:border-b-2 [&[aria-current='true']]:border-brand"
+          >
+            {item.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <!-- Mobile hamburger button -->
+    <button
+      id="hamburger-btn"
+      type="button"
+      class="md:hidden flex items-center justify-center w-10 h-10 text-stone-700 hover:text-brand transition-colors"
+      aria-label="Open navigation menu"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+    >
+      <!-- Hamburger icon -->
+      <svg id="icon-menu" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="3" y1="6" x2="21" y2="6" />
+        <line x1="3" y1="12" x2="21" y2="12" />
+        <line x1="3" y1="18" x2="21" y2="18" />
+      </svg>
+      <!-- Close (X) icon, hidden by default -->
+      <svg id="icon-close" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="hidden">
+        <line x1="18" y1="6" x2="6" y2="18" />
+        <line x1="6" y1="6" x2="18" y2="18" />
+      </svg>
+    </button>
+
+  </nav>
+</header>
+
+<!-- Mobile full-screen overlay menu -->
+<div
+  id="mobile-menu"
+  class="hidden fixed inset-0 bg-white z-40 overflow-y-auto"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Navigation menu"
+>
+  <!-- Close button at top-right -->
+  <div class="flex justify-end px-4 pt-4">
+    <button
+      id="mobile-close-btn"
+      type="button"
+      class="flex items-center justify-center w-10 h-10 text-stone-700 hover:text-brand transition-colors"
+      aria-label="Close navigation menu"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="18" y1="6" x2="6" y2="18" />
+        <line x1="6" y1="6" x2="18" y2="18" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Centered nav links -->
+  <nav class="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] gap-2 py-8" aria-label="Mobile navigation">
+    {navItems.map((item) => (
+      <a
+        href={item.href}
+        class="mobile-nav-link text-2xl font-serif text-stone-900 hover:text-brand py-3 px-8 transition-colors min-h-[56px] flex items-center"
+        aria-current="false"
+      >
+        {item.label}
+      </a>
+    ))}
+  </nav>
+</div>
+
+<script>
+  import '../scripts/scroll-spy.js';
+
+  const hamburgerBtn = document.getElementById('hamburger-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const mobileCloseBtn = document.getElementById('mobile-close-btn');
+  const iconMenu = document.getElementById('icon-menu');
+  const iconClose = document.getElementById('icon-close');
+  const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+  function openMenu() {
+    mobileMenu?.classList.remove('hidden');
+    hamburgerBtn?.setAttribute('aria-expanded', 'true');
+    iconMenu?.classList.add('hidden');
+    iconClose?.classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
+  }
+
+  function closeMenu() {
+    mobileMenu?.classList.add('hidden');
+    hamburgerBtn?.setAttribute('aria-expanded', 'false');
+    iconMenu?.classList.remove('hidden');
+    iconClose?.classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+  }
+
+  hamburgerBtn?.addEventListener('click', () => {
+    const isExpanded = hamburgerBtn.getAttribute('aria-expanded') === 'true';
+    if (isExpanded) {
+      closeMenu();
+    } else {
+      openMenu();
+    }
+  });
+
+  mobileCloseBtn?.addEventListener('click', closeMenu);
+
+  mobileNavLinks.forEach((link) => {
+    link.addEventListener('click', closeMenu);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      const isOpen = hamburgerBtn?.getAttribute('aria-expanded') === 'true';
+      if (isOpen) {
+        closeMenu();
+        hamburgerBtn?.focus();
+      }
+    }
+  });
+</script>
