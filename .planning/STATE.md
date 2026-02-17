@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-16)
 ## Current Position
 
 Phase: 4 of 5 (Contact Form and Server Endpoint)
-Plan: 1 of 2 in current phase
-Status: In progress
-Last activity: 2026-02-17 -- Phase 4, Plan 01 complete (Contact section UI, form validation, spinner, Facebook card)
+Plan: 2 of 2 in current phase
+Status: Awaiting human verification (checkpoint:human-verify)
+Last activity: 2026-02-17 -- Phase 4, Plan 02 automated tasks complete (Resend SDK, /api/contact endpoint, .env.example); awaiting end-to-end form verification
 
-Progress: [########......] 53%
+Progress: [#########.....] 60%
 
 ## Performance Metrics
 
@@ -30,7 +30,7 @@ Progress: [########......] 53%
 | 01-foundation-and-static-shell | 3/3 | 15 min | 5 min |
 | 02-content-sections-and-embeds | 3/5 | 9 min | 3 min |
 | 03-gallery-and-media | 2/3 | 12 min | 6 min |
-| 04-contact-form-and-server-endpoint | 1/2 | 2 min | 2 min |
+| 04-contact-form-and-server-endpoint | 2/2 | 4 min | 2 min |
 
 **Recent Trend:**
 - Last 5 plans: 5 min, 2 min, 2 min, 2 min, 2 min
@@ -79,6 +79,10 @@ Recent decisions affecting current work:
 - [04-01]: On-blur + on-submit validation (not on-keypress) -- older users who type slowly benefit from no interruption during entry
 - [04-01]: Inline success state replaces form (not toast) -- more reliable on slow rural connections where toast may disappear
 - [04-01]: Connect.astro kept (not deleted) -- retained as reference until Phase 4 fully verified and deployed
+- [04-02]: prerender=false per-route is Astro 5 replacement for deprecated output: 'hybrid' -- astro.config.mjs stays output: 'static'
+- [04-02]: Honeypot returns 200 (fake success) not 400 -- suppresses bot retry loops
+- [04-02]: import.meta.env (not process.env) for Astro server endpoint env var access
+- [04-02]: replyTo set to visitor email so owner can reply directly from inbox without copy-pasting
 
 ### Pending Todos
 
@@ -93,5 +97,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 04-contact-form-and-server-endpoint 04-01-PLAN.md
-Resume file: .planning/phases/04-contact-form-and-server-endpoint/04-02-PLAN.md
+Stopped at: Checkpoint:human-verify in 04-02-PLAN.md (Task 2 -- end-to-end contact form verification)
+Resume: After human verification, type "approved" or describe issues to complete Phase 4
