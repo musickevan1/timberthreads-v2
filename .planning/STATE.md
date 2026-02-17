@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-02-16)
 ## Current Position
 
 Phase: 2 of 5 (Content Sections and Embeds)
-Plan: 1 of 5 in current phase
+Plan: 2 of 5 in current phase
 Status: In progress
-Last activity: 2026-02-17 -- Plan 02-01 complete (About + Workshops sections, 5 images copied)
+Last activity: 2026-02-17 -- Plan 02-02 complete (Accommodations, Calendar, Connect sections)
 
-Progress: [#####.........] 24%
+Progress: [######........] 28%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 4
+- Total plans completed: 5
 - Average duration: 4 min
-- Total execution time: 17 min
+- Total execution time: 19 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation-and-static-shell | 3/3 | 15 min | 5 min |
-| 02-content-sections-and-embeds | 1/5 | 2 min | 2 min |
+| 02-content-sections-and-embeds | 2/5 | 4 min | 2 min |
 
 **Recent Trend:**
-- Last 5 plans: 8 min, 2 min, 5 min, 2 min
+- Last 5 plans: 2 min, 5 min, 2 min, 2 min
 - Trend: Fast
 
 *Updated after each plan completion*
@@ -59,6 +59,9 @@ Recent decisions affecting current work:
 - [02-01]: Section IDs use v2 nav names (about, retreats) not original site names -- scroll-spy depends on exact ID/href match
 - [02-01]: Inline Heroicons SVG paths for card icons and bullet checkmarks -- zero new dependencies
 - [02-01]: entrance-driveway.jpeg copied in Plan 01 for use in Plan 03 Map section
+- [02-02]: Connect.astro uses id=contact so #contact nav href resolves until Phase 4 contact form replaces it
+- [02-02]: Pricing kept in Calendar section (not separate) matching original layout, satisfying CONT-07 no-information-loss
+- [02-02]: Google Calendar iframe data-src + IntersectionObserver 200px rootMargin pattern established for Plan 03 Maps reuse
 
 ### Pending Todos
 
@@ -73,5 +76,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 02-01-PLAN.md (About + Workshops sections, 5 images migrated)
-Resume file: .planning/phases/02-content-sections-and-embeds/02-02-PLAN.md (next plan)
+Stopped at: Completed 02-02-PLAN.md (Accommodations, Calendar, Connect sections)
+Resume file: .planning/phases/02-content-sections-and-embeds/02-03-PLAN.md (next plan)
