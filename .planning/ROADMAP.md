@@ -32,9 +32,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md -- Scaffold Astro 5 project with Tailwind v4 CSS-first config, TypeScript strict, Vercel static adapter, and brand theme
-- [ ] 01-02-PLAN.md -- BaseLayout with meta/OG tags, sticky navigation with scroll-spy, hero section, footer, mobile menu, and section placeholders
-- [ ] 01-03-PLAN.md -- Image pipeline verification (Astro local + Cloudinary CDN) and Vercel production deploy with human review
+- [x] 01-01-PLAN.md -- Scaffold Astro 5 project with Tailwind v4 CSS-first config, TypeScript strict, Vercel static adapter, and brand theme
+- [x] 01-02-PLAN.md -- BaseLayout with meta/OG tags, sticky navigation with scroll-spy, hero section, footer, mobile menu, and section placeholders
+- [x] 01-03-PLAN.md -- Image pipeline verification (Astro local + Cloudinary CDN) and Vercel production deploy with human review
 
 ### Phase 2: Content Sections and Embeds
 **Goal**: Every content section from the current Next.js site is migrated into Astro components with no information loss, and the site looks like a complete (if not yet interactive) retreat website that a visitor can scroll through
@@ -46,12 +46,12 @@ Plans:
   3. The Google Maps embed loads only when scrolled into view, and the Map section includes the entrance photo with written directions
   4. All text content from the current Next.js site is present with no information loss (side-by-side comparison passes)
   5. The Hero section displays a full-screen background image with logo, tagline, and CTA buttons that link to relevant sections
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 02-01: Hero, About, and Workshops sections
-- [ ] 02-02: Accommodations, Connect, and Footer sections
-- [ ] 02-03: Google Calendar embed, Google Maps embed, and Map section with lazy loading
+- [ ] 02-01-PLAN.md -- Copy image assets, create About section (text + staggered image grid), create Workshops/Retreats section (3-card grid)
+- [ ] 02-02-PLAN.md -- Create Accommodations section (2 image cards), Calendar section (lazy-loaded Google Calendar + pricing/meals), Connect section (Facebook social card)
+- [ ] 02-03-PLAN.md -- Create Map/Location section (lazy-loaded Google Maps + driving directions + entrance photo), finalize index.astro assembly, human verification
 
 ### Phase 3: Gallery and Media
 **Goal**: Visitors can browse retreat photos organized by category with a smooth lightbox experience, all images delivered through Cloudinary CDN with automatic format optimization, and a video placeholder is ready for the promo video
@@ -110,7 +110,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|---------------|--------|-----------|
-| 1. Foundation and Static Shell | 0/3 | Complete    | 2026-02-17 |
+| 1. Foundation and Static Shell | 3/3 | Complete    | 2026-02-17 |
 | 2. Content Sections and Embeds | 0/3 | Not started | - |
 | 3. Gallery and Media | 0/3 | Not started | - |
 | 4. Contact Form and Server Endpoint | 0/2 | Not started | - |
