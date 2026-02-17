@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-16)
 
 **Core value:** The website must load fast and look polished on slow rural connections, making the retreat feel warm and inviting enough that quilters, crafters, and families want to book a stay.
-**Current focus:** Phase 3 - Gallery and Media
+**Current focus:** Phase 4 - Contact Form and Server Endpoint
 
 ## Current Position
 
-Phase: 3 of 5 (Gallery and Media)
-Plan: 2 of 3 in current phase
+Phase: 4 of 5 (Contact Form and Server Endpoint)
+Plan: 1 of 2 in current phase
 Status: In progress
-Last activity: 2026-02-17 -- Phase 3, Plan 02 complete (PhotoSwipe lightbox integration, human verification approved)
+Last activity: 2026-02-17 -- Phase 4, Plan 01 complete (Contact section UI, form validation, spinner, Facebook card)
 
-Progress: [#######.......] 47%
+Progress: [########......] 53%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 6
+- Total plans completed: 7
 - Average duration: 4 min
-- Total execution time: 24 min
+- Total execution time: 26 min
 
 **By Phase:**
 
@@ -30,9 +30,10 @@ Progress: [#######.......] 47%
 | 01-foundation-and-static-shell | 3/3 | 15 min | 5 min |
 | 02-content-sections-and-embeds | 3/5 | 9 min | 3 min |
 | 03-gallery-and-media | 2/3 | 12 min | 6 min |
+| 04-contact-form-and-server-endpoint | 1/2 | 2 min | 2 min |
 
 **Recent Trend:**
-- Last 5 plans: 2 min, 5 min, 2 min, 2 min
+- Last 5 plans: 5 min, 2 min, 2 min, 2 min, 2 min
 - Trend: Fast
 
 *Updated after each plan completion*
@@ -75,6 +76,9 @@ Recent decisions affecting current work:
 - [03-02]: One lightbox instance per category gallery — prevents cross-category arrow navigation
 - [03-02]: pswpModule: () => import('photoswipe') arrow function — code-splits PhotoSwipe core, only loaded when lightbox opens
 - [03-02]: Caption content uses textContent (not innerHTML) — prevents HTML injection from future CMS content
+- [04-01]: On-blur + on-submit validation (not on-keypress) -- older users who type slowly benefit from no interruption during entry
+- [04-01]: Inline success state replaces form (not toast) -- more reliable on slow rural connections where toast may disappear
+- [04-01]: Connect.astro kept (not deleted) -- retained as reference until Phase 4 fully verified and deployed
 
 ### Pending Todos
 
@@ -89,5 +93,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 03-gallery-and-media 03-02-PLAN.md
-Resume file: .planning/phases/03-gallery-and-media/03-03-PLAN.md
+Stopped at: Completed 04-contact-form-and-server-endpoint 04-01-PLAN.md
+Resume file: .planning/phases/04-contact-form-and-server-endpoint/04-02-PLAN.md
