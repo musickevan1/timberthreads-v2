@@ -1,17 +1,82 @@
 ---
-
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout
+  title="Timber & Threads Retreat"
+  description="A quilting and crafting retreat on a private island in the Missouri Ozarks. Relax, create, and connect in nature's embrace."
+>
+  <!-- Hero: #home -->
+  <Hero />
+
+  <!-- About: #about -->
+  <section id="about" class="py-16 md:py-24 bg-white min-h-[50vh] flex items-center">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+      <div class="text-center">
+        <h2 class="font-serif text-3xl md:text-4xl text-stone-900 mb-4">About</h2>
+        <p class="text-stone-500 text-lg max-w-2xl mx-auto">Content coming in Phase 2</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Retreats: #retreats -->
+  <section id="retreats" class="py-16 md:py-24 bg-stone-50 min-h-[50vh] flex items-center">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+      <div class="text-center">
+        <h2 class="font-serif text-3xl md:text-4xl text-stone-900 mb-4">Retreats</h2>
+        <p class="text-stone-500 text-lg max-w-2xl mx-auto">Content coming in Phase 2</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Accommodations: #accommodations -->
+  <section id="accommodations" class="py-16 md:py-24 bg-teal-50/10 min-h-[50vh] flex items-center">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+      <div class="text-center">
+        <h2 class="font-serif text-3xl md:text-4xl text-stone-900 mb-4">Accommodations</h2>
+        <p class="text-stone-500 text-lg max-w-2xl mx-auto">Content coming in Phase 2</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Calendar: #calendar -->
+  <section id="calendar" class="py-16 md:py-24 bg-stone-50 min-h-[50vh] flex items-center">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+      <div class="text-center">
+        <h2 class="font-serif text-3xl md:text-4xl text-stone-900 mb-4">Calendar</h2>
+        <p class="text-stone-500 text-lg max-w-2xl mx-auto">Content coming in Phase 2</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery: #gallery -->
+  <section id="gallery" class="py-16 md:py-24 bg-white min-h-[50vh] flex items-center">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+      <div class="text-center">
+        <h2 class="font-serif text-3xl md:text-4xl text-stone-900 mb-4">Gallery</h2>
+        <p class="text-stone-500 text-lg max-w-2xl mx-auto">Content coming in Phase 2</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact: #contact -->
+  <section id="contact" class="py-16 md:py-24 bg-stone-50 min-h-[50vh] flex items-center">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+      <div class="text-center">
+        <h2 class="font-serif text-3xl md:text-4xl text-stone-900 mb-4">Contact</h2>
+        <p class="text-stone-500 text-lg max-w-2xl mx-auto">Content coming in Phase 2</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Location: #location -->
+  <section id="location" class="py-16 md:py-24 bg-teal-50/10 min-h-[50vh] flex items-center">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+      <div class="text-center">
+        <h2 class="font-serif text-3xl md:text-4xl text-stone-900 mb-4">Location</h2>
+        <p class="text-stone-500 text-lg max-w-2xl mx-auto">Content coming in Phase 2</p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

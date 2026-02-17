@@ -1,0 +1,84 @@
+---
+const currentYear = new Date().getFullYear();
+
+const navLinks = [
+  { label: 'Home', href: '#home' },
+  { label: 'About', href: '#about' },
+  { label: 'Retreats', href: '#retreats' },
+  { label: 'Accommodations', href: '#accommodations' },
+  { label: 'Calendar', href: '#calendar' },
+  { label: 'Gallery', href: '#gallery' },
+  { label: 'Contact', href: '#contact' },
+  { label: 'Location', href: '#location' },
+];
+---
+
+<footer class="bg-stone-900 text-stone-300">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+
+      <!-- Column 1: Brand -->
+      <div>
+        <h3 class="font-serif text-white text-lg font-medium mb-3">
+          Timber &amp; Threads Retreat
+        </h3>
+        <p class="text-stone-400 text-sm leading-relaxed">
+          A private island quilting and crafting retreat nestled in the scenic Missouri Ozarks. Where creativity meets tranquility.
+        </p>
+      </div>
+
+      <!-- Column 2: Navigation -->
+      <div>
+        <h4 class="text-white text-sm font-semibold uppercase tracking-wider mb-4">
+          Navigation
+        </h4>
+        <ul class="space-y-2">
+          {navLinks.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class="text-stone-400 hover:text-brand transition-colors text-sm"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Column 3: Contact -->
+      <div>
+        <h4 class="text-white text-sm font-semibold uppercase tracking-wider mb-4">
+          Contact
+        </h4>
+        <ul class="space-y-3 text-sm">
+          <li>
+            <a
+              href="tel:+14173431473"
+              class="text-stone-400 hover:text-brand transition-colors"
+            >
+              (417) 343-1473
+            </a>
+          </li>
+          <li>
+            <a
+              href="mailto:timberandthreads24@gmail.com"
+              class="text-stone-400 hover:text-brand transition-colors break-all"
+            >
+              timberandthreads24@gmail.com
+            </a>
+          </li>
+          <li class="text-stone-400">
+            Missouri Ozarks, MO
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Copyright -->
+    <div class="mt-10 pt-8 border-t border-stone-700 text-center text-stone-500 text-sm">
+      &copy; {currentYear} Timber &amp; Threads Retreat. All rights reserved.
+    </div>
+  </div>
+</footer>
