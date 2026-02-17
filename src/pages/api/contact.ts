@@ -87,7 +87,7 @@ export const POST: APIRoute = async ({ request }) => {
   const textBody = `New inquiry from ${name}\n\nName: ${name}\nEmail: ${email}\n\nMessage:\n${message}\n\n---\nSent via timberandthreadsretreat.com contact form.`;
 
   const { error } = await resend.emails.send({
-    from: 'Timber & Threads Contact <noreply@timberandthreadsretreat.com>',
+    from: 'Timber & Threads Contact <onboarding@resend.dev>',
     to: [import.meta.env.OWNER_EMAIL],
     replyTo: email,
     subject: `New inquiry from ${name}`,
