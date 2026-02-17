@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-02-16)
 ## Current Position
 
 Phase: 3 of 5 (Gallery and Media)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: In progress
-Last activity: 2026-02-17 -- Phase 3, Plan 01 complete (gallery static structure, Cloudinary data layer, video placeholder)
+Last activity: 2026-02-17 -- Phase 3, Plan 02 complete (PhotoSwipe lightbox integration, human verification approved)
 
 Progress: [#######.......] 47%
 
@@ -29,7 +29,7 @@ Progress: [#######.......] 47%
 |-------|-------|-------|----------|
 | 01-foundation-and-static-shell | 3/3 | 15 min | 5 min |
 | 02-content-sections-and-embeds | 3/5 | 9 min | 3 min |
-| 03-gallery-and-media | 1/3 | 2 min | 2 min |
+| 03-gallery-and-media | 2/3 | 12 min | 6 min |
 
 **Recent Trend:**
 - Last 5 plans: 2 min, 5 min, 2 min, 2 min
@@ -71,6 +71,10 @@ Recent decisions affecting current work:
 - [03-01]: Thumbnail transforms use c_fill,g_auto for AI-gravity square crops — preserves subject framing automatically
 - [03-01]: data-pswp-srcset pre-wired with 800w/1200w/2000w so PhotoSwipe (Plan 02) can select optimal zoom resolution
 - [03-01]: hero-front-view.jpeg reused as video poster — no additional asset needed
+- [03-02]: PhotoSwipe CSS imported via global.css @import — Astro <script> tag cannot handle CSS imports
+- [03-02]: One lightbox instance per category gallery — prevents cross-category arrow navigation
+- [03-02]: pswpModule: () => import('photoswipe') arrow function — code-splits PhotoSwipe core, only loaded when lightbox opens
+- [03-02]: Caption content uses textContent (not innerHTML) — prevents HTML injection from future CMS content
 
 ### Pending Todos
 
@@ -85,5 +89,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 03-gallery-and-media 03-01-PLAN.md
-Resume file: .planning/phases/03-gallery-and-media/03-02-PLAN.md
+Stopped at: Completed 03-gallery-and-media 03-02-PLAN.md
+Resume file: .planning/phases/03-gallery-and-media/03-03-PLAN.md
