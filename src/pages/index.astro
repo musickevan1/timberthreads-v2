@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
+import About from '../components/About.astro';
+import Workshops from '../components/Workshops.astro';
 import ImageTest from '../components/ImageTest.astro';
 ---
 
@@ -12,24 +14,10 @@ import ImageTest from '../components/ImageTest.astro';
   <Hero />
 
   <!-- About: #about -->
-  <section id="about" class="py-16 md:py-24 bg-white min-h-[50vh] flex items-center">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-      <div class="text-center">
-        <h2 class="font-serif text-3xl md:text-4xl text-stone-900 mb-4">About</h2>
-        <p class="text-stone-500 text-lg max-w-2xl mx-auto">Content coming in Phase 2</p>
-      </div>
-    </div>
-  </section>
+  <About />
 
   <!-- Retreats: #retreats -->
-  <section id="retreats" class="py-16 md:py-24 bg-stone-50 min-h-[50vh] flex items-center">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-      <div class="text-center">
-        <h2 class="font-serif text-3xl md:text-4xl text-stone-900 mb-4">Retreats</h2>
-        <p class="text-stone-500 text-lg max-w-2xl mx-auto">Content coming in Phase 2</p>
-      </div>
-    </div>
-  </section>
+  <Workshops />
 
   <!-- Accommodations: #accommodations -->
   <section id="accommodations" class="py-16 md:py-24 bg-teal-50/10 min-h-[50vh] flex items-center">
