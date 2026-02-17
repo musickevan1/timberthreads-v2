@@ -1,0 +1,29 @@
+---
+import GalleryCategory from './GalleryCategory.astro';
+import VideoPlaceholder from './VideoPlaceholder.astro';
+import { facilityImages, quiltingImages } from '../data/gallery';
+import posterImage from '../assets/images/hero-front-view.jpeg';
+---
+
+<section id="gallery" class="py-16 md:py-24 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Section heading -->
+    <div class="text-center mb-12">
+      <h2 class="font-serif text-3xl md:text-4xl text-stone-900 mb-4">Gallery</h2>
+      <div class="w-24 h-1 bg-brand mx-auto mb-8"></div>
+    </div>
+
+    <!-- Video placeholder -->
+    <div class="mb-16">
+      <VideoPlaceholder posterSrc={posterImage.src} />
+    </div>
+
+    <!-- Category grids -->
+    <div class="space-y-12">
+      <GalleryCategory title="Facility" images={facilityImages} />
+      <GalleryCategory title="Quilting" images={quiltingImages} />
+    </div>
+
+  </div>
+</section>

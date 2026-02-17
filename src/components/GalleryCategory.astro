@@ -1,0 +1,54 @@
+---
+import type { GalleryImage } from '../data/gallery';
+import { thumbUrl, fullUrl, srcsetUrl } from '../data/gallery';
+
+interface Props {
+  title: string;
+  images: GalleryImage[];
+}
+
+const { title, images } = Astro.props;
+---
+
+<div>
+  <h3 class="font-serif text-2xl text-stone-900 mb-6">{title}</h3>
+
+  <div
+    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+    data-pswp-gallery
+  >
+    {images.map((img) => {
+      const pswpSrcset = [800, 1200, 2000]
+        .map((w) => `${srcsetUrl(img.cloudinaryPublicId, w)} ${w}w`)
+        .join(', ');
+
+      return (
+        <a
+          href={fullUrl(img.cloudinaryPublicId)}
+          data-pswp-width={img.width}
+          data-pswp-height={img.height}
+          data-pswp-caption={img.caption}
+          data-pswp-srcset={pswpSrcset}
+          data-cropped="true"
+          class="group relative overflow-hidden aspect-square block rounded-lg"
+        >
+          <img
+            src={thumbUrl(img.cloudinaryPublicId)}
+            alt={img.alt}
+            loading="lazy"
+            decoding="async"
+            width="400"
+            height="400"
+            class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+          <!-- Hover overlay -->
+          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
+            <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white text-sm font-medium">
+              View
+            </span>
+          </div>
+        </a>
+      );
+    })}
+  </div>
+</div>
