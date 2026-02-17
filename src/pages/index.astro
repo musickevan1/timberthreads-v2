@@ -7,6 +7,7 @@ import Accommodations from '../components/Accommodations.astro';
 import Calendar from '../components/Calendar.astro';
 import Connect from '../components/Connect.astro';
 import Map from '../components/Map.astro';
+import Gallery from '../components/Gallery.astro';
 ---
 
 <BaseLayout
@@ -29,15 +30,7 @@ import Map from '../components/Map.astro';
   <Calendar />
 
   <!-- Gallery: #gallery -->
-  <section id="gallery" class="py-16 md:py-24 bg-white min-h-[50vh] flex items-center">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-      <div class="text-center">
-        <h2 class="font-serif text-3xl md:text-4xl text-stone-900 mb-4">Gallery</h2>
-        <div class="w-24 h-1 bg-brand mx-auto mb-8"></div>
-        <p class="text-stone-500 text-lg max-w-2xl mx-auto">Photo gallery coming soon</p>
-      </div>
-    </div>
-  </section>
+  <Gallery />
 
   <!-- Contact: #contact -->
   <Connect />
