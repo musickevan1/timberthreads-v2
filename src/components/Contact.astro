@@ -199,3 +199,124 @@
 
   </div>
 </section>
+
+<script>
+  // DOM element references
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
+  const btnText = document.getElementById('btn-text') as HTMLSpanElement;
+  const btnSpinner = document.getElementById('btn-spinner') as HTMLSpanElement;
+  const successMsg = document.getElementById('success-message') as HTMLDivElement;
+  const errorMsg = document.getElementById('error-message') as HTMLDivElement;
+
+  // Field elements
+  const nameInput = document.getElementById('name') as HTMLInputElement;
+  const emailInput = document.getElementById('email') as HTMLInputElement;
+  const messageInput = document.getElementById('message') as HTMLTextAreaElement;
+
+  // Error span elements
+  const nameError = document.getElementById('name-error') as HTMLSpanElement;
+  const emailError = document.getElementById('email-error') as HTMLSpanElement;
+  const messageError = document.getElementById('message-error') as HTMLSpanElement;
+
+  // Email validation regex
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  // --- Validation helpers ---
+
+  function validateName(): boolean {
+    if (!nameInput.value.trim()) {
+      nameError.classList.remove('hidden');
+      return false;
+    }
+    nameError.classList.add('hidden');
+    return true;
+  }
+
+  function validateEmail(): boolean {
+    const val = emailInput.value.trim();
+    if (!val || !emailRegex.test(val)) {
+      emailError.classList.remove('hidden');
+      return false;
+    }
+    emailError.classList.add('hidden');
+    return true;
+  }
+
+  function validateMessage(): boolean {
+    if (!messageInput.value.trim()) {
+      messageError.classList.remove('hidden');
+      return false;
+    }
+    messageError.classList.add('hidden');
+    return true;
+  }
+
+  // --- On-blur validation (fires when user leaves a field) ---
+
+  nameInput?.addEventListener('blur', validateName);
+  emailInput?.addEventListener('blur', validateEmail);
+  messageInput?.addEventListener('blur', validateMessage);
+
+  // --- Form submit handler ---
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Re-validate all fields on submit
+    const nameValid = validateName();
+    const emailValid = validateEmail();
+    const messageValid = validateMessage();
+
+    if (!nameValid || !emailValid || !messageValid) {
+      // Focus the first invalid field
+      if (!nameValid) nameInput.focus();
+      else if (!emailValid) emailInput.focus();
+      else messageInput.focus();
+      return;
+    }
+
+    // Collect form data including honeypot
+    const formData = new FormData(form);
+    const body = {
+      name: formData.get('name') as string,
+      email: formData.get('email') as string,
+      message: formData.get('message') as string,
+      website: formData.get('website') as string, // honeypot field
+    };
+
+    // Disable button, show spinner, hide any previous error
+    errorMsg.classList.add('hidden');
+    submitBtn.disabled = true;
+    btnText.textContent = 'Sending...';
+    btnSpinner.classList.remove('hidden');
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+
+      if (res.ok) {
+        // Inline success: hide form, show confirmation
+        form.classList.add('hidden');
+        successMsg.classList.remove('hidden');
+      } else {
+        // Show server error above form — do NOT reset inputs so user can retry
+        const data = await res.json().catch(() => ({}));
+        errorMsg.textContent = data.message || 'Something went wrong. Please try again.';
+        errorMsg.classList.remove('hidden');
+      }
+    } catch {
+      // Network error
+      errorMsg.textContent = 'Network error. Please check your connection and try again.';
+      errorMsg.classList.remove('hidden');
+    } finally {
+      // Always re-enable button and restore text (unless success)
+      submitBtn.disabled = false;
+      btnText.textContent = 'Send Message';
+      btnSpinner.classList.add('hidden');
+    }
+  });
+</script>
