@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation and Static Shell** - Astro 5 + Tailwind v4 project with layout, navigation, image pipeline, and Vercel deploy (completed 2026-02-17)
 - [x] **Phase 2: Content Sections and Embeds** - All static content migrated from current site with lazy-loaded Calendar and Maps embeds (completed 2026-02-17)
-- [ ] **Phase 3: Gallery and Media** - Photo gallery with Cloudinary CDN, lightbox interaction, video placeholder
+- [x] **Phase 3: Gallery and Media** - Photo gallery with Cloudinary CDN, lightbox interaction, video placeholder (completed 2026-02-17)
 - [ ] **Phase 4: Contact Form and Server Endpoint** - Contact form with validation, Resend email delivery, spam prevention
 - [ ] **Phase 5: Polish, Accessibility, and Performance** - Lighthouse 90+, WCAG AA, SEO, production domain deploy
 
@@ -111,6 +111,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 |-------|---------------|--------|-----------|
 | 1. Foundation and Static Shell | 3/3 | Complete    | 2026-02-17 |
 | 2. Content Sections and Embeds | 3/3 | Complete    | 2026-02-17 |
-| 3. Gallery and Media | 0/2 | Not started | - |
+| 3. Gallery and Media | 0/2 | Complete    | 2026-02-17 |
 | 4. Contact Form and Server Endpoint | 0/2 | Not started | - |
 | 5. Polish, Accessibility, and Performance | 0/3 | Not started | - |
