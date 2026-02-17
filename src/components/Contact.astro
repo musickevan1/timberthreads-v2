@@ -1,0 +1,201 @@
+<section id="contact" class="py-16 md:py-24 bg-stone-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Section heading -->
+    <div class="text-center mb-12">
+      <h2 class="font-serif text-3xl md:text-4xl text-stone-800 mb-4">Get in Touch</h2>
+      <div class="w-24 h-1 bg-brand mx-auto mb-8"></div>
+      <p class="text-lg text-stone-600 max-w-2xl mx-auto">
+        Ready to plan your retreat? We'd love to hear from you.
+      </p>
+    </div>
+
+    <!-- Contact info (left) + Form (right) -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+
+      <!-- Left: Contact Info -->
+      <div>
+        <h3 class="font-serif text-xl text-stone-800 mb-6">Contact Information</h3>
+        <div class="space-y-5">
+
+          <!-- Phone -->
+          <a href="tel:+14173431473" class="flex items-center gap-3 text-stone-700 hover:text-brand transition-colors">
+            <!-- Heroicons phone-solid -->
+            <svg class="w-5 h-5 text-brand flex-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path fill-rule="evenodd" d="M1.5 4.5a3 3 0 013-3h1.372c.86 0 1.61.586 1.819 1.42l1.105 4.423a1.875 1.875 0 01-.694 1.955l-1.293.97c-.135.101-.164.249-.126.352a11.285 11.285 0 006.697 6.697c.103.038.25.009.352-.126l.97-1.293a1.875 1.875 0 011.955-.694l4.423 1.105c.834.209 1.42.959 1.42 1.82V19.5a3 3 0 01-3 3h-2.25C8.552 22.5 1.5 15.448 1.5 8.25V4.5z" clip-rule="evenodd" />
+            </svg>
+            <span>(417) 343-1473</span>
+          </a>
+
+          <!-- Email -->
+          <a href="mailto:timberandthreads24@gmail.com" class="flex items-center gap-3 text-stone-700 hover:text-brand transition-colors">
+            <!-- Heroicons envelope-solid -->
+            <svg class="w-5 h-5 text-brand flex-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z" />
+              <path d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z" />
+            </svg>
+            <span>timberandthreads24@gmail.com</span>
+          </a>
+
+          <!-- Address -->
+          <div class="flex items-start gap-3 text-stone-700">
+            <!-- Heroicons map-pin-solid -->
+            <svg class="w-5 h-5 text-brand flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-2.003 3.5-4.697 3.5-8.327a8 8 0 10-16 0c0 3.63 1.556 6.324 3.5 8.327a19.58 19.58 0 002.683 2.282 16.975 16.975 0 001.144.742zM11.5 13.5a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+            </svg>
+            <span>
+              306 NW 300 Rd, Clinton, MO 64735
+              <br />
+              <a href="#location" class="text-brand hover:underline text-sm">Get directions</a>
+            </span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Right: Contact Form -->
+      <div>
+        <!-- Error banner (shown on server/network errors) -->
+        <div id="error-message" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4" role="alert"></div>
+
+        <form id="contact-form" novalidate class="relative">
+
+          <!-- Honeypot field: off-screen, hidden from humans, visible to bots -->
+          <div class="absolute left-[-9999px] top-0 overflow-hidden h-0 w-0" aria-hidden="true">
+            <label for="website">Website (leave blank)</label>
+            <input
+              type="text"
+              id="website"
+              name="website"
+              tabindex="-1"
+              autocomplete="off"
+            />
+          </div>
+
+          <!-- Name field -->
+          <div class="mb-4">
+            <label for="name" class="text-stone-700 font-medium text-sm mb-1 block">Your Name</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              class="w-full px-4 py-3 rounded-lg border border-stone-300 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-colors text-stone-800"
+              placeholder="Jane Smith"
+              autocomplete="name"
+            />
+            <span id="name-error" class="text-red-600 text-sm mt-1 hidden" role="alert">Please enter your name</span>
+          </div>
+
+          <!-- Email field -->
+          <div class="mb-4">
+            <label for="email" class="text-stone-700 font-medium text-sm mb-1 block">Email Address</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              class="w-full px-4 py-3 rounded-lg border border-stone-300 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-colors text-stone-800"
+              placeholder="jane@example.com"
+              autocomplete="email"
+            />
+            <span id="email-error" class="text-red-600 text-sm mt-1 hidden" role="alert">Please enter a valid email address</span>
+          </div>
+
+          <!-- Message field -->
+          <div class="mb-6">
+            <label for="message" class="text-stone-700 font-medium text-sm mb-1 block">Message</label>
+            <textarea
+              id="message"
+              name="message"
+              rows="4"
+              class="w-full px-4 py-3 rounded-lg border border-stone-300 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-colors text-stone-800 resize-none"
+              placeholder="Tell us about your group, preferred dates, or any questions..."
+            ></textarea>
+            <span id="message-error" class="text-red-600 text-sm mt-1 hidden" role="alert">Please enter a message</span>
+          </div>
+
+          <!-- Submit button -->
+          <button
+            id="submit-btn"
+            type="submit"
+            class="w-full px-6 py-3 bg-brand text-white rounded-lg font-medium hover:bg-brand-dark transition-colors flex items-center justify-center gap-2"
+          >
+            <span id="btn-text">Send Message</span>
+            <span id="btn-spinner" class="hidden">
+              <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+              </svg>
+            </span>
+          </button>
+
+        </form>
+
+        <!-- Success state: replaces form area inline on success -->
+        <div id="success-message" class="hidden text-center py-8">
+          <!-- Green checkmark icon -->
+          <div class="flex justify-center mb-4">
+            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+              <svg class="w-8 h-8 text-green-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
+              </svg>
+            </div>
+          </div>
+          <h3 class="font-serif text-2xl text-stone-800 mb-2">Thank you for reaching out!</h3>
+          <p class="text-stone-600">We'll get back to you soon.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Facebook social card (bottom, separated by divider) -->
+    <div class="mt-4 pt-12 border-t border-stone-200">
+      <p class="text-center text-stone-600 mb-8">You can also find us on social media</p>
+
+      <div class="max-w-md mx-auto">
+        <!-- Facebook social preview card -->
+        <div class="rounded-lg overflow-hidden shadow-md border border-stone-200">
+          <a
+            href="https://www.facebook.com/people/Timber-and-Threads-Retreat-Center/61571800331062/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <!-- Blue header bar -->
+            <div class="bg-blue-600 text-white p-4 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+              <span class="font-medium">Timber and Threads Retreat Center</span>
+            </div>
+            <!-- Card body -->
+            <div class="p-4 bg-white">
+              <p class="text-stone-700 mb-3">Join our community of quilters and crafters! Follow our page for:</p>
+              <ul class="text-stone-700 space-y-2 list-disc pl-5">
+                <li>Upcoming retreat dates</li>
+                <li>Special events and workshops</li>
+                <li>Photos of recent quilting projects</li>
+                <li>Retreat center updates</li>
+              </ul>
+              <p class="mt-4 text-sm text-stone-500">Last updated: March 2025</p>
+            </div>
+          </a>
+        </div>
+
+        <!-- CTA button -->
+        <div class="text-center mt-8">
+          <a
+            href="https://www.facebook.com/people/Timber-and-Threads-Retreat-Center/61571800331062/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+            </svg>
+            Visit Our Facebook Page
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
