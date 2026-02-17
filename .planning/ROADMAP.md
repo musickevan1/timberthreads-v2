@@ -29,12 +29,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. The site displays a BaseLayout with navigation links that smooth-scroll to placeholder section anchors, and the layout is responsive across mobile, tablet, and desktop viewports
   3. A test image processed through Astro's `<Image>` component serves in WebP/AVIF format at responsive sizes, confirming the local image pipeline works
   4. A test image URL from Cloudinary CDN loads correctly, confirming the gallery image delivery path works
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: Project scaffolding, Tailwind v4, TypeScript strict, Vercel adapter
-- [ ] 01-02: BaseLayout, global styles, navigation, responsive design
-- [ ] 01-03: Image optimization pipeline (Astro local + Cloudinary CDN) and production deploy verification
+- [ ] 01-01-PLAN.md -- Scaffold Astro 5 project with Tailwind v4 CSS-first config, TypeScript strict, Vercel static adapter, and brand theme
+- [ ] 01-02-PLAN.md -- BaseLayout with meta/OG tags, sticky navigation with scroll-spy, hero section, footer, mobile menu, and section placeholders
+- [ ] 01-03-PLAN.md -- Image pipeline verification (Astro local + Cloudinary CDN) and Vercel production deploy with human review
 
 ### Phase 2: Content Sections and Embeds
 **Goal**: Every content section from the current Next.js site is migrated into Astro components with no information loss, and the site looks like a complete (if not yet interactive) retreat website that a visitor can scroll through
