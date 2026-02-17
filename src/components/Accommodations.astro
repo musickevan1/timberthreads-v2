@@ -1,0 +1,108 @@
+---
+import { Image } from 'astro:assets';
+import heroFrontView from '../assets/images/hero-front-view.jpeg';
+import quiltWorkspace from '../assets/images/quilt-workspace.jpeg';
+---
+
+<section id="accommodations" class="py-16 md:py-24 bg-stone-100">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <div class="text-center mb-12">
+      <h2 class="font-serif text-3xl md:text-4xl text-stone-800 mb-4">Stay With Us</h2>
+      <div class="w-24 h-1 bg-brand mx-auto mb-8"></div>
+      <p class="text-lg text-stone-600 max-w-2xl mx-auto mb-12">
+        Experience comfort and tranquility in our purpose-built quilting retreat facility.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8">
+
+      <!-- Card 1: Comfortable Accommodations -->
+      <div class="bg-white rounded-lg overflow-hidden shadow-sm">
+        <Image
+          src={heroFrontView}
+          alt="Timber & Threads Retreat exterior"
+          widths={[400, 800]}
+          sizes="(max-width: 768px) 100vw, 50vw"
+          class="w-full h-48 object-cover"
+        />
+        <div class="p-6">
+          <h3 class="font-serif text-xl text-stone-800 mb-3">Comfortable Accommodations</h3>
+          <p class="text-stone-600 mb-4">
+            Our retreat center is all on one level with comfortable accommodations for your quilting or crafting group, featuring peaceful lake views.
+          </p>
+          <ul class="text-stone-600 space-y-2">
+            <li class="flex items-start gap-2">
+              <svg class="w-5 h-5 text-brand flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+              <span>4 bedrooms with comfortable beds</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <svg class="w-5 h-5 text-brand flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+              <span>2 bathrooms (one with tub/shower, one with walk-in shower)</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <svg class="w-5 h-5 text-brand flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+              <span>Bedding and towels provided</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <svg class="w-5 h-5 text-brand flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+              <span>Full kitchen with dishwasher</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Card 2: Creative Workspaces -->
+      <div class="bg-white rounded-lg overflow-hidden shadow-sm">
+        <Image
+          src={quiltWorkspace}
+          alt="Quilting workspace"
+          widths={[400, 800]}
+          sizes="(max-width: 768px) 100vw, 50vw"
+          class="w-full h-48 object-cover"
+        />
+        <div class="p-6">
+          <h3 class="font-serif text-xl text-stone-800 mb-3">Creative Workspaces</h3>
+          <p class="text-stone-600 mb-4">
+            Our workroom doubles as a living room for family rentals, but is perfectly equipped for quilting and crafting retreats.
+          </p>
+          <ul class="text-stone-600 space-y-2">
+            <li class="flex items-start gap-2">
+              <svg class="w-5 h-5 text-brand flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+              <span>30 x 60 tables with comfortable leather chairs</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <svg class="w-5 h-5 text-brand flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+              <span>2 cutting tables and 2 ironing stations</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <svg class="w-5 h-5 text-brand flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+              <span>Starlink Internet access</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <svg class="w-5 h-5 text-brand flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+              <span>Outdoor picnic table for meals or quiet time</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
