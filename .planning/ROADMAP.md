@@ -79,11 +79,11 @@ Plans:
   3. Submitting a valid form delivers an email to the retreat owner's inbox (via Resend), and the visitor sees a success confirmation message
   4. Submitting an invalid form or triggering a server error shows a clear error message to the visitor without losing their form input
   5. The honeypot field is invisible to real users and catches basic bot submissions; email credentials are not exposed in client-side JavaScript
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 04-01: Contact section with info display and form with client-side validation
-- [ ] 04-02: Server endpoint with Resend email delivery, honeypot, and error handling
+- [ ] 04-01-PLAN.md -- Contact section UI with info display, 3-field form, client-side validation, honeypot, spinner, and Facebook card
+- [ ] 04-02-PLAN.md -- Resend SDK install, POST /api/contact server endpoint, email delivery, .env.example, human verification
 
 ### Phase 5: Polish, Accessibility, and Performance
 **Goal**: The site meets Lighthouse 90+ on mobile Fast 3G, passes WCAG AA accessibility standards, has proper SEO markup, and is deployed to the production domain -- ready for real visitors on slow rural connections
