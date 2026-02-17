@@ -10,25 +10,25 @@ See: .planning/PROJECT.md (updated 2026-02-16)
 ## Current Position
 
 Phase: 2 of 5 (Content Sections and Embeds)
-Plan: 2 of 5 in current phase
+Plan: 3 of 5 in current phase
 Status: In progress
-Last activity: 2026-02-17 -- Plan 02-02 complete (Accommodations, Calendar, Connect sections)
+Last activity: 2026-02-17 -- Plan 02-03 complete (Map section, full Phase 2 site assembly, human-verified)
 
-Progress: [######........] 28%
+Progress: [#######.......] 33%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
+- Total plans completed: 6
 - Average duration: 4 min
-- Total execution time: 19 min
+- Total execution time: 24 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation-and-static-shell | 3/3 | 15 min | 5 min |
-| 02-content-sections-and-embeds | 2/5 | 4 min | 2 min |
+| 02-content-sections-and-embeds | 3/5 | 9 min | 3 min |
 
 **Recent Trend:**
 - Last 5 plans: 2 min, 5 min, 2 min, 2 min
@@ -62,6 +62,9 @@ Recent decisions affecting current work:
 - [02-02]: Connect.astro uses id=contact so #contact nav href resolves until Phase 4 contact form replaces it
 - [02-02]: Pricing kept in Calendar section (not separate) matching original layout, satisfying CONT-07 no-information-loss
 - [02-02]: Google Calendar iframe data-src + IntersectionObserver 200px rootMargin pattern established for Plan 03 Maps reuse
+- [02-03]: Map and directions shown side-by-side (two-column grid) -- rural visitors need directions visible immediately without tabs
+- [02-03]: maps-iframe ID distinct from calendar-iframe to prevent IntersectionObserver conflicts between both embed sections
+- [02-03]: Gallery left as inline placeholder in index.astro (not a stub component) since Phase 3 replaces with full Gallery component
 
 ### Pending Todos
 
@@ -76,5 +79,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 02-02-PLAN.md (Accommodations, Calendar, Connect sections)
-Resume file: .planning/phases/02-content-sections-and-embeds/02-03-PLAN.md (next plan)
+Stopped at: Completed 02-03-PLAN.md (Map section, full site assembly, human-verified)
+Resume file: .planning/phases/02-content-sections-and-embeds/02-04-PLAN.md (next plan)
