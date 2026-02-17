@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-02-16)
 ## Current Position
 
 Phase: 1 of 5 (Foundation and Static Shell)
-Plan: 2 of 3 in current phase
-Status: In progress
-Last activity: 2026-02-17 -- Plan 01-02 complete (BaseLayout, Nav, Hero, Footer, scroll-spy)
+Plan: 3 of 3 in current phase
+Status: Phase complete
+Last activity: 2026-02-17 -- Plan 01-03 complete (image pipelines verified, Vercel deployment confirmed)
 
-Progress: [##............] 13%
+Progress: [###...........] 20%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
+- Total plans completed: 3
 - Average duration: 5 min
-- Total execution time: 10 min
+- Total execution time: 15 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-foundation-and-static-shell | 2/3 | 10 min | 5 min |
+| 01-foundation-and-static-shell | 3/3 | 15 min | 5 min |
 
 **Recent Trend:**
-- Last 5 plans: 8 min, 2 min
-- Trend: Accelerating
+- Last 5 plans: 8 min, 2 min, 5 min
+- Trend: Consistent
 
 *Updated after each plan completion*
 
@@ -53,6 +53,8 @@ Recent decisions affecting current work:
 - [01-02]: Tailwind arbitrary attr selector [&[aria-current='true']] for scroll-spy active states -- CSS-driven, no class toggling
 - [01-02]: Mobile overlay min-h-[56px] tap targets for older demographic
 - [01-02]: IntersectionObserver rootMargin '-5% 0% -90% 0%' for top-of-viewport section detection
+- [01-03]: Cloudinary 'demo' cloud used for Phase 1 CDN path verification -- Phase 3 replaces with retreat cloud name
+- [01-03]: Astro <Image> widths=[400,800,1200] + sizes="(max-width:768px) 100vw, 50vw" -- confirmed WebP/AVIF srcset pattern for responsive images
 
 ### Pending Todos
 
@@ -67,5 +69,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 01-02-PLAN.md (BaseLayout, Nav, Hero, Footer, scroll-spy)
-Resume file: .planning/phases/01-foundation-and-static-shell/01-03-PLAN.md
+Stopped at: Completed 01-03-PLAN.md (image pipelines, Vercel deployment) -- Phase 1 complete
+Resume file: .planning/phases/02-content-and-booking/02-01-PLAN.md (next phase)
