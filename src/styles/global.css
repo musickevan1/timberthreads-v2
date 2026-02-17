@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand color: #0D9488 is the exact hex from the current site.
+     Tailwind v4 changed teal-600 to oklch(~#009689), so we define
+     the brand color explicitly to preserve visual identity. */
+  --color-brand: #0D9488;
+  --color-brand-dark: #0B7D74;
+  --color-brand-light: #14B8A6;
+
+  /* Typography */
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: Georgia, 'Times New Roman', serif;
+}
+
+/* Base styles */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--color-stone-800);
+  background-color: white;
+}
+
+/* Heading defaults */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+}
+
+h1 {
+  font-weight: 500;
+}
+
+h2, h3, h4, h5, h6 {
+  font-weight: 400;
+}
