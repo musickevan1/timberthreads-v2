@@ -27,3 +27,42 @@ import posterImage from '../assets/images/hero-front-view.jpeg';
 
   </div>
 </section>
+
+<script>
+  import PhotoSwipeLightbox from 'photoswipe/lightbox';
+
+  // Initialize one lightbox per category gallery to keep navigation within categories
+  document.querySelectorAll<HTMLElement>('[data-pswp-gallery]').forEach((gallery) => {
+    const lightbox = new PhotoSwipeLightbox({
+      gallery,
+      children: 'a',
+      pswpModule: () => import('photoswipe'),
+
+      // Zoom behavior for mobile (pinch-to-zoom, double-tap zoom)
+      initialZoomLevel: 'fit',
+      secondaryZoomLevel: 1.5,
+      maxZoomLevel: 3,
+    });
+
+    // Caption support via custom UI element
+    // Reads plain text from data-pswp-caption attribute on slide anchor elements
+    lightbox.on('uiRegister', function () {
+      lightbox.pswp!.ui!.registerElement({
+        name: 'custom-caption',
+        order: 9,
+        isButton: false,
+        appendTo: 'root',
+        onInit: (el: HTMLElement) => {
+          lightbox.pswp!.on('change', () => {
+            const currSlideElement = lightbox.pswp!.currSlide!.data.element as HTMLElement | undefined;
+            const caption = currSlideElement?.getAttribute('data-pswp-caption') || '';
+            el.textContent = caption;
+            el.style.display = caption ? '' : 'none';
+          });
+        },
+      });
+    });
+
+    lightbox.init();
+  });
+</script>

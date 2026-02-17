@@ -1,4 +1,19 @@
 @import "tailwindcss";
+@import "photoswipe/dist/photoswipe.css";
+
+/* PhotoSwipe caption overlay */
+.pswp__custom-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px 24px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.5));
+  color: #fff;
+  font-size: 0.875rem;
+  text-align: center;
+  pointer-events: none;
+}
 
 @theme {
   /* Brand color: #0D9488 is the exact hex from the current site.
