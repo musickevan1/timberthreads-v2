@@ -22,4 +22,37 @@ node_modules/
 *.njsproj
 *.sln
 *.sw?
-.vercel
+
+# MCP/Playwright
+.playwright-mcp/
+
+# Video editing (too large for repo)
+video-edit/
+
+# Generated PDFs
+*.pdf
+
+# Logs
+*.log
+
+# Screenshots/screencaps
+current-site-*.png
+promo/
+
+# MCP/Playwright
+.playwright-mcp/
+
+# Video editing (too large for repo)
+video-edit/
+
+# Generated PDFs
+*.pdf
+
+# Logs
+*.log
+
+# Screenshots/screencaps
+current-site-*.png
+promo/
+*.drx
+Gemini_Generated_*.png

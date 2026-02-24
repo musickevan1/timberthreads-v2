@@ -1,8 +1,7 @@
 ---
 import GalleryCategory from './GalleryCategory.astro';
-import VideoPlaceholder from './VideoPlaceholder.astro';
+import PromoVideo from './PromoVideo.astro';
 import { facilityImages, quiltingImages } from '../data/gallery';
-import posterImage from '../assets/images/hero-front-view.jpeg';
 ---
 
 <section id="gallery" class="py-16 md:py-24 bg-white">
@@ -14,9 +13,9 @@ import posterImage from '../assets/images/hero-front-view.jpeg';
       <div class="w-24 h-1 bg-brand mx-auto mb-8"></div>
     </div>
 
-    <!-- Video placeholder -->
+    <!-- Promo video (YouTube embed) -->
     <div class="mb-16">
-      <VideoPlaceholder posterSrc={posterImage.src} />
+      <PromoVideo videoId="MTgmkjcghWE" />
     </div>
 
     <!-- Category grids -->

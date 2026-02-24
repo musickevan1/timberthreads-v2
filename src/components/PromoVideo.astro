@@ -1,0 +1,101 @@
+---
+/**
+ * PromoVideo Component
+ * 
+ * A YouTube video embed for the 30-second promo video.
+ * Uses YouTube's nocookie domain for privacy.
+ * 
+ * Features:
+ * - Click-to-play (lazy loading)
+ * - Poster image until clicked
+ * - Privacy-enhanced YouTube embed
+ * - Responsive aspect ratio
+ */
+
+interface Props {
+  videoId: string;
+  posterSrc?: string;
+}
+
+const { videoId, posterSrc } = Astro.props;
+
+import heroImage from '../assets/images/hero-image.png';
+
+const poster = posterSrc || heroImage.src;
+---
+
+<div class="promo-video-wrapper relative w-full aspect-video max-h-[60vh] overflow-hidden bg-stone-900 rounded-lg shadow-xl">
+  <!-- Poster overlay with play button -->
+  <div class="poster-overlay relative w-full h-full cursor-pointer group">
+    <!-- Poster image -->
+    <img
+      src={poster}
+      alt="Timber & Threads Retreat — 30 second promo video"
+      loading="lazy"
+      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+    />
+    
+    <!-- Gradient overlay -->
+    <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20"></div>
+
+    <!-- Centered play button -->
+    <div class="absolute inset-0 flex flex-col items-center justify-center gap-4">
+      <!-- Play button circle -->
+      <button
+        class="play-button w-20 h-20 md:w-24 md:h-24 rounded-full bg-white/20 border-2 border-white/60 backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:bg-white/30 hover:border-white hover:scale-110 focus:outline-none focus:ring-4 focus:ring-white/50"
+        aria-label="Play promo video"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="white"
+          class="w-9 h-9 md:w-11 md:h-11 ml-1"
+          aria-hidden="true"
+        >
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+      </button>
+
+      <!-- Badge -->
+      <span class="px-4 py-1.5 bg-brand/90 rounded-full text-sm font-medium tracking-wide text-white shadow-lg">
+        Watch Our Story
+      </span>
+    </div>
+  </div>
+
+  <!-- YouTube iframe (loaded on click) -->
+  <iframe
+    class="youtube-iframe hidden absolute inset-0 w-full h-full"
+    data-src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`}
+    title="Timber & Threads Retreat — 30 Second Promo"
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    allowfullscreen
+  ></iframe>
+</div>
+
+<script>
+  document.querySelectorAll('.promo-video-wrapper').forEach((wrapper) => {
+    const posterOverlay = wrapper.querySelector('.poster-overlay') as HTMLElement;
+    const playButton = wrapper.querySelector('.play-button') as HTMLButtonElement;
+    const iframe = wrapper.querySelector('.youtube-iframe') as HTMLIFrameElement;
+
+    if (!posterOverlay || !playButton || !iframe) return;
+
+    const loadAndPlay = () => {
+      const src = iframe.dataset.src;
+      if (src) {
+        iframe.src = src;
+      }
+      posterOverlay.classList.add('hidden');
+      iframe.classList.remove('hidden');
+    };
+
+    playButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      loadAndPlay();
+    });
+
+    posterOverlay.addEventListener('click', loadAndPlay);
+  });
+</script>
