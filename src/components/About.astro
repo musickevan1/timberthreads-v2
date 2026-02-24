@@ -25,9 +25,9 @@ import quiltDisplay3 from '../assets/images/quilt-display-3.jpeg';
         </p>
       </div>
 
-      <!-- Right column: staggered 2x2 image grid -->
+      <!-- Right column: standard 2x2 image grid -->
       <div class="grid grid-cols-2 gap-4">
-        <!-- Top-left: normal -->
+        <!-- Top-left -->
         <div class="relative aspect-square rounded-lg overflow-hidden">
           <Image
             src={quiltWorkspace}
@@ -37,8 +37,8 @@ import quiltDisplay3 from '../assets/images/quilt-display-3.jpeg';
             class="object-cover w-full h-full"
           />
         </div>
-        <!-- Top-right: shifted down -->
-        <div class="relative aspect-square rounded-lg overflow-hidden mt-8">
+        <!-- Top-right -->
+        <div class="relative aspect-square rounded-lg overflow-hidden">
           <Image
             src={quiltDisplay1}
             alt="Quilt display"
@@ -47,8 +47,8 @@ import quiltDisplay3 from '../assets/images/quilt-display-3.jpeg';
             class="object-cover w-full h-full"
           />
         </div>
-        <!-- Bottom-left: shifted up -->
-        <div class="relative aspect-square rounded-lg overflow-hidden -mt-8">
+        <!-- Bottom-left -->
+        <div class="relative aspect-square rounded-lg overflow-hidden">
           <Image
             src={quiltDisplay2}
             alt="Quilt display"
@@ -57,7 +57,7 @@ import quiltDisplay3 from '../assets/images/quilt-display-3.jpeg';
             class="object-cover w-full h-full"
           />
         </div>
-        <!-- Bottom-right: normal -->
+        <!-- Bottom-right -->
         <div class="relative aspect-square rounded-lg overflow-hidden">
           <Image
             src={quiltDisplay3}

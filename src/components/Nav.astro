@@ -14,11 +14,11 @@ const navItems = [
 ];
 ---
 
-<header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm">
-  <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16" aria-label="Main navigation">
+<header class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md shadow-md transition-all">
+  <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-20" aria-label="Main navigation">
 
     <!-- Brand -->
-    <a href="#home" class="flex items-center gap-2 shrink-0" aria-label="Timber & Threads Retreat — back to top">
+    <a href="#home" class="flex items-center gap-2 shrink-0 group" aria-label="Timber & Threads Retreat — back to top">
       <Image
         src={logoImage}
         alt=""
@@ -27,17 +27,20 @@ const navItems = [
         loading="eager"
         class="h-8 w-8 object-contain"
       />
-      <span class="font-serif text-lg text-stone-900 hidden sm:block">Timber &amp; Threads</span>
+      <div class="flex flex-col">
+        <span class="font-serif text-2xl text-stone-800 group-hover:text-brand transition-colors hidden sm:block">Timber &amp; Threads</span>
+        <div class="w-0 h-1 bg-brand group-hover:w-full transition-all duration-300 hidden sm:block"></div>
+      </div>
     </a>
 
     <!-- Desktop nav links -->
-    <ul class="hidden md:flex gap-1 lg:gap-2 items-center">
+    <ul class="hidden md:flex gap-4 lg:gap-8 items-center ml-10">
       {navItems.map((item) => (
         <li>
           <a
             href={item.href}
             aria-current="false"
-            class="text-stone-600 hover:text-brand transition-colors text-sm px-2 py-1 rounded [&[aria-current='true']]:text-brand [&[aria-current='true']]:border-b-2 [&[aria-current='true']]:border-brand"
+            class="text-stone-800 hover:text-brand font-medium transition-colors duration-300 text-sm [&[aria-current='true']]:text-brand [&[aria-current='true']]:border-b-2 [&[aria-current='true']]:border-brand pb-1"
           >
             {item.label}
           </a>
