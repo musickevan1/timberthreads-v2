@@ -2,41 +2,17 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-02-16)
+See: .planning/PROJECT.md (updated 2026-02-25)
 
 **Core value:** The website must load fast and look polished on slow rural connections, making the retreat feel warm and inviting enough that quilters, crafters, and families want to book a stay.
-**Current focus:** Phase 4 - Contact Form and Server Endpoint
+**Current focus:** Defining requirements for v2.1
 
 ## Current Position
 
-Phase: 4 of 5 (Contact Form and Server Endpoint)
-Plan: 2 of 2 in current phase -- PHASE COMPLETE
-Status: Ready for Phase 5 (Deployment)
-Last activity: 2026-02-17 -- Phase 4, Plan 02 fully complete; human verification approved (contact form end-to-end)
-
-Progress: [###########...] 75%
-
-## Performance Metrics
-
-**Velocity:**
-- Total plans completed: 7
-- Average duration: 4 min
-- Total execution time: 26 min
-
-**By Phase:**
-
-| Phase | Plans | Total | Avg/Plan |
-|-------|-------|-------|----------|
-| 01-foundation-and-static-shell | 3/3 | 15 min | 5 min |
-| 02-content-sections-and-embeds | 3/5 | 9 min | 3 min |
-| 03-gallery-and-media | 2/3 | 12 min | 6 min |
-| 04-contact-form-and-server-endpoint | 2/2 (COMPLETE) | 4 min | 2 min |
-
-**Recent Trend:**
-- Last 5 plans: 5 min, 2 min, 2 min, 2 min, 2 min
-- Trend: Fast
-
-*Updated after each plan completion*
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-02-25 — Milestone v2.1 started
 
 ## Accumulated Context
 
@@ -45,44 +21,12 @@ Progress: [###########...] 75%
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
-- [Roadmap]: Astro 5 + Tailwind v4 + Vercel -- static-first with islands for gallery lightbox and contact form only
-- [Roadmap]: Resend over Nodemailer for email delivery (Vercel serverless compatibility)
-- [Roadmap]: Start with vanilla JS, add React only if interaction complexity justifies ~40KB cost
-- [01-01]: Used @tailwindcss/vite (v4) not @astrojs/tailwind (deprecated for Tailwind v4)
-- [01-01]: Defined --color-brand: #0D9488 explicitly in @theme because Tailwind v4 changed teal-600 to OKLCH (#009689)
-- [01-01]: output: 'static' set in astro.config.mjs to prevent Vercel serverless treatment
-- [01-01]: Self-hosted Inter via @fontsource-variable/inter to eliminate Google Fonts external request
-- [01-02]: Two-layer hero (absolute bg + relative fg) isolates background for Phase 3 video swap without touching layout
-- [01-02]: Tailwind arbitrary attr selector [&[aria-current='true']] for scroll-spy active states -- CSS-driven, no class toggling
-- [01-02]: Mobile overlay min-h-[56px] tap targets for older demographic
-- [01-02]: IntersectionObserver rootMargin '-5% 0% -90% 0%' for top-of-viewport section detection
-- [01-03]: Cloudinary 'demo' cloud used for Phase 1 CDN path verification -- Phase 3 replaces with retreat cloud name
-- [01-03]: Astro <Image> widths=[400,800,1200] + sizes="(max-width:768px) 100vw, 50vw" -- confirmed WebP/AVIF srcset pattern for responsive images
-- [02-01]: Section IDs use v2 nav names (about, retreats) not original site names -- scroll-spy depends on exact ID/href match
-- [02-01]: Inline Heroicons SVG paths for card icons and bullet checkmarks -- zero new dependencies
-- [02-01]: entrance-driveway.jpeg copied in Plan 01 for use in Plan 03 Map section
-- [02-02]: Connect.astro uses id=contact so #contact nav href resolves until Phase 4 contact form replaces it
-- [02-02]: Pricing kept in Calendar section (not separate) matching original layout, satisfying CONT-07 no-information-loss
-- [02-02]: Google Calendar iframe data-src + IntersectionObserver 200px rootMargin pattern established for Plan 03 Maps reuse
-- [02-03]: Map and directions shown side-by-side (two-column grid) -- rural visitors need directions visible immediately without tabs
-- [02-03]: maps-iframe ID distinct from calendar-iframe to prevent IntersectionObserver conflicts between both embed sections
-- [02-03]: Gallery left as inline placeholder in index.astro (not a stub component) since Phase 3 replaces with full Gallery component
-- [03-01]: Gallery data is hardcoded TypeScript array in src/data/gallery.ts — zero runtime API calls, fully static build
-- [03-01]: CLOUD_NAME = 'timberandthreads' constant is single update point when real Cloudinary account is configured
-- [03-01]: Thumbnail transforms use c_fill,g_auto for AI-gravity square crops — preserves subject framing automatically
-- [03-01]: data-pswp-srcset pre-wired with 800w/1200w/2000w so PhotoSwipe (Plan 02) can select optimal zoom resolution
-- [03-01]: hero-front-view.jpeg reused as video poster — no additional asset needed
-- [03-02]: PhotoSwipe CSS imported via global.css @import — Astro <script> tag cannot handle CSS imports
-- [03-02]: One lightbox instance per category gallery — prevents cross-category arrow navigation
-- [03-02]: pswpModule: () => import('photoswipe') arrow function — code-splits PhotoSwipe core, only loaded when lightbox opens
-- [03-02]: Caption content uses textContent (not innerHTML) — prevents HTML injection from future CMS content
-- [04-01]: On-blur + on-submit validation (not on-keypress) -- older users who type slowly benefit from no interruption during entry
-- [04-01]: Inline success state replaces form (not toast) -- more reliable on slow rural connections where toast may disappear
-- [04-01]: Connect.astro kept (not deleted) -- retained as reference until Phase 4 fully verified and deployed
-- [04-02]: prerender=false per-route is Astro 5 replacement for deprecated output: 'hybrid' -- astro.config.mjs stays output: 'static'
-- [04-02]: Honeypot returns 200 (fake success) not 400 -- suppresses bot retry loops
-- [04-02]: import.meta.env (not process.env) for Astro server endpoint env var access
-- [04-02]: replyTo set to visitor email so owner can reply directly from inbox without copy-pasting
+- [v2.0]: Astro 5 + Tailwind v4 + Vercel — static-first with islands for gallery lightbox and contact form only
+- [v2.0]: Resend over Nodemailer for email delivery (Vercel serverless compatibility)
+- [v2.0]: PhotoSwipe for lightbox — code-split, only loaded on interaction
+- [v2.0]: Hardcoded gallery data — zero runtime API calls
+- [v2.0]: On-blur + on-submit validation for older demographic
+- [v2.0]: Honeypot returns 200 (fake success) to suppress bot retry loops
 
 ### Pending Todos
 
@@ -90,12 +34,13 @@ None.
 
 ### Blockers/Concerns
 
-- Raw photos from Feb 15 shoot need sorting/editing before gallery integration (Phase 3)
-- Promo video not ready -- Phase 3 builds placeholder only
-- path-to-regexp HIGH vulnerability in @astrojs/vercel@9.0.4 transitive dep -- deferred (build-time only, not browser-side)
+- Raw photos need editing/color grading before integration (IMG_4197, IMG_4204, IMG_4208, IMG_4237)
+- IMG_4204 needs cropping per client direction
+- Additional outdoor photos needed (dock, picnic table, fire pit) — may not be available yet
+- path-to-regexp HIGH vulnerability in @astrojs/vercel@9.0.4 transitive dep — deferred (build-time only)
 
 ## Session Continuity
 
-Last session: 2026-02-17
-Stopped at: Completed 04-02-PLAN.md (Phase 4 fully complete, human verification approved)
-Resume: Begin Phase 5 (deployment) -- run /gsd:execute-phase for phase 05
+Last session: 2026-02-25
+Stopped at: Starting v2.1 milestone — defining requirements
+Resume: Continue requirements definition workflow
