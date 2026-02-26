@@ -144,40 +144,40 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PRIC-01 | TBD | Pending |
-| PRIC-02 | TBD | Pending |
-| PRIC-03 | TBD | Pending |
-| PRIC-04 | TBD | Pending |
-| PRIC-05 | TBD | Pending |
-| PRIC-06 | TBD | Pending |
-| PROP-01 | TBD | Pending |
-| PROP-02 | TBD | Pending |
-| PROP-03 | TBD | Pending |
-| PHOT-01 | TBD | Pending |
-| PHOT-02 | TBD | Pending |
-| PHOT-03 | TBD | Pending |
-| PHOT-04 | TBD | Pending |
-| PERF-01 | TBD | Pending |
-| PERF-02 | TBD | Pending |
-| PERF-03 | TBD | Pending |
-| PERF-04 | TBD | Pending |
-| PERF-05 | TBD | Pending |
-| A11Y-01 | TBD | Pending |
-| A11Y-02 | TBD | Pending |
-| A11Y-03 | TBD | Pending |
-| A11Y-04 | TBD | Pending |
-| A11Y-05 | TBD | Pending |
-| A11Y-06 | TBD | Pending |
-| SEDO-01 | TBD | Pending |
-| SEDO-02 | TBD | Pending |
-| SEDO-03 | TBD | Pending |
-| SEDO-04 | TBD | Pending |
+| PRIC-01 | Phase 6 | Pending |
+| PRIC-02 | Phase 6 | Pending |
+| PRIC-03 | Phase 6 | Pending |
+| PRIC-04 | Phase 6 | Pending |
+| PRIC-05 | Phase 6 | Pending |
+| PRIC-06 | Phase 6 | Pending |
+| PROP-01 | Phase 6 | Pending |
+| PROP-02 | Phase 6 | Pending |
+| PROP-03 | Phase 6 | Pending |
+| PHOT-01 | Phase 7 | Pending |
+| PHOT-02 | Phase 7 | Pending |
+| PHOT-03 | Phase 7 | Pending |
+| PHOT-04 | Phase 7 | Pending |
+| PERF-01 | Phase 8 | Pending |
+| PERF-02 | Phase 8 | Pending |
+| PERF-03 | Phase 8 | Pending |
+| PERF-04 | Phase 8 | Pending |
+| PERF-05 | Phase 8 | Pending |
+| A11Y-01 | Phase 8 | Pending |
+| A11Y-02 | Phase 8 | Pending |
+| A11Y-03 | Phase 8 | Pending |
+| A11Y-04 | Phase 8 | Pending |
+| A11Y-05 | Phase 8 | Pending |
+| A11Y-06 | Phase 8 | Pending |
+| SEDO-01 | Phase 8 | Pending |
+| SEDO-02 | Phase 8 | Pending |
+| SEDO-03 | Phase 8 | Pending |
+| SEDO-04 | Phase 8 | Pending |
 
 **Coverage:**
 - v2.1 requirements: 28 total
-- Mapped to phases: 0
-- Unmapped: 28 (pending roadmap creation)
+- Mapped to phases: 28
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-25*
-*Last updated: 2026-02-25 after initial definition*
+*Last updated: 2026-02-25 after roadmap creation (phases 6-8 assigned)*
