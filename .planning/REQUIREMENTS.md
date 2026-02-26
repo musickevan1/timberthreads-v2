@@ -9,8 +9,8 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Pricing
 
-- [ ] **PRIC-01**: All pricing references across the site reflect the new rate structure ($60/night standard, $75/night with meals for ≤10; $600/night flat for 10-12)
-- [ ] **PRIC-02**: Booking requirements (min 4 persons, min 2 nights) displayed wherever pricing appears
+- [x] **PRIC-01**: All pricing references across the site reflect the new rate structure ($60/night standard, $75/night with meals for ≤10; $600/night flat for 10-12)
+- [x] **PRIC-02**: Booking requirements (min 4 persons, min 2 nights) displayed wherever pricing appears
 - [ ] **PRIC-03**: User can estimate stay cost via interactive calculator with group size, nights, and food option inputs
 - [ ] **PRIC-04**: Calculator enforces minimum constraints (4 persons, 2 nights) with clear feedback
 - [ ] **PRIC-05**: Calculator displays real-time line-item breakdown (nightly rate, food cost, total) as user adjusts inputs
@@ -18,9 +18,9 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Property
 
-- [ ] **PROP-01**: All references updated from 4 bedrooms to 3 bedrooms (page copy, meta descriptions, alt text)
-- [ ] **PROP-02**: Laundry facilities listed in amenities section
-- [ ] **PROP-03**: Full kitchen with dishwasher confirmed visible in amenities
+- [x] **PROP-01**: All references updated from 4 bedrooms to 3 bedrooms (page copy, meta descriptions, alt text)
+- [x] **PROP-02**: Laundry facilities listed in amenities section
+- [x] **PROP-03**: Full kitchen with dishwasher confirmed visible in amenities
 
 ### Photography
 
@@ -144,15 +144,15 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PRIC-01 | Phase 6 | Pending |
-| PRIC-02 | Phase 6 | Pending |
+| PRIC-01 | Phase 6 | Complete |
+| PRIC-02 | Phase 6 | Complete |
 | PRIC-03 | Phase 6 | Pending |
 | PRIC-04 | Phase 6 | Pending |
 | PRIC-05 | Phase 6 | Pending |
 | PRIC-06 | Phase 6 | Pending |
-| PROP-01 | Phase 6 | Pending |
-| PROP-02 | Phase 6 | Pending |
-| PROP-03 | Phase 6 | Pending |
+| PROP-01 | Phase 6 | Complete |
+| PROP-02 | Phase 6 | Complete |
+| PROP-03 | Phase 6 | Complete |
 | PHOT-01 | Phase 7 | Pending |
 | PHOT-02 | Phase 7 | Pending |
 | PHOT-03 | Phase 7 | Pending |

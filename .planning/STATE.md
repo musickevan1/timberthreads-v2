@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-25)
 ## Current Position
 
 Phase: 6 of 8 (Pricing, Calculator, and Property Corrections)
-Plan: — of 2 in current phase
-Status: Ready to plan
-Last activity: 2026-02-25 — v2.1 roadmap created, Phase 6 ready to plan
+Plan: 1 of 2 in current phase
+Status: In progress — paused at human-verify checkpoint after Plan 1
+Last activity: 2026-02-26 — Phase 6 Plan 1 complete (pending human verification)
 
-Progress: [███░░░░░░░] 33% (v2.0 complete, v2.1 not started)
+Progress: [████░░░░░░] 38% (v2.0 complete, Phase 6 Plan 1 executed)
 
 ## Performance Metrics
 
@@ -45,6 +45,9 @@ Recent decisions affecting current work:
 - [v2.0]: Hardcoded gallery data — zero runtime API calls
 - [v2.0]: PhotoSwipe for lightbox — code-split, only loaded on interaction
 - [v2.1]: Pricing calculator must be an Astro island (client:load) — no server dependency, static-first
+- [06-01]: Rate card uses sm:grid-cols-2 — two pricing tiers stack on mobile, side-by-side at sm breakpoint
+- [06-01]: Seasonal date-based pricing removed entirely; group-size-based structure only ($60/$75 for <=10, $600 flat for 10-12)
+- [06-01]: Meal options collapsed to single $15/night add-on (from three old tiers) to match new rate math
 
 ### Pending Todos
 
@@ -59,6 +62,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-25
-Stopped at: Roadmap created for v2.1 (phases 6-8) — ready to plan Phase 6
-Resume: Run `/gsd:plan-phase 6`
+Last session: 2026-02-26
+Stopped at: Phase 6 Plan 1 complete — paused at human-verify checkpoint (run npm run dev, visit http://localhost:4321)
+Resume: After verifying visual output, run `/gsd:execute-phase 6` to continue with Plan 2

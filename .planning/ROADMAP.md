@@ -140,6 +140,6 @@ v2.1: 6 → 7 → 8
 | 2. Content Sections and Embeds | v2.0 | 3/3 | Complete | 2026-02-17 |
 | 3. Gallery and Media | v2.0 | 2/2 | Complete | 2026-02-17 |
 | 4. Contact Form and Server Endpoint | v2.0 | 2/2 | Complete | 2026-02-17 |
-| 6. Pricing, Calculator, and Property Corrections | v2.1 | 0/2 | Not started | - |
+| 6. Pricing, Calculator, and Property Corrections | 1/2 | In Progress|  | - |
 | 7. Photography Integration | v2.1 | 0/1 | Not started | - |
 | 8. Polish, Accessibility, SEO, and Deploy | v2.1 | 0/3 | Not started | - |
