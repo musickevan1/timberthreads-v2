@@ -36,7 +36,7 @@ import quiltWorkspace from '../assets/images/quilt-workspace.jpeg';
               <svg class="w-5 h-5 text-brand flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
               </svg>
-              <span>4 bedrooms with comfortable beds</span>
+              <span>3 bedrooms with comfortable beds</span>
             </li>
             <li class="flex items-start gap-2">
               <svg class="w-5 h-5 text-brand flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -49,6 +49,12 @@ import quiltWorkspace from '../assets/images/quilt-workspace.jpeg';
                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
               </svg>
               <span>Bedding and towels provided</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <svg class="w-5 h-5 text-brand flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+              <span>Laundry facilities</span>
             </li>
             <li class="flex items-start gap-2">
               <svg class="w-5 h-5 text-brand flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -104,5 +110,33 @@ import quiltWorkspace from '../assets/images/quilt-workspace.jpeg';
       </div>
 
     </div>
+
+    <!-- Rate Card -->
+    <div class="mt-12 bg-white rounded-lg shadow-sm p-8 max-w-3xl mx-auto text-center">
+      <h3 class="font-serif text-2xl text-stone-800 mb-6">Pricing</h3>
+      <div class="grid sm:grid-cols-2 gap-6 mb-6">
+        <!-- Standard tier -->
+        <div class="bg-stone-50 rounded-lg p-6">
+          <p class="font-serif text-lg text-stone-800 mb-2">Groups of 10 or fewer</p>
+          <p class="text-3xl font-bold text-brand mb-1">$60<span class="text-base font-normal text-stone-500">/night</span></p>
+          <p class="text-stone-600 text-sm">per person, standard</p>
+          <p class="text-stone-500 text-sm mt-2">or $75/night per person with meals</p>
+        </div>
+        <!-- Large group tier -->
+        <div class="bg-stone-50 rounded-lg p-6">
+          <p class="font-serif text-lg text-stone-800 mb-2">Groups of 10&ndash;12</p>
+          <p class="text-3xl font-bold text-brand mb-1">$600<span class="text-base font-normal text-stone-500">/night</span></p>
+          <p class="text-stone-600 text-sm">flat rate for the entire center</p>
+        </div>
+      </div>
+      <p class="text-stone-500 text-sm mb-6">Minimum 4 persons &middot; Minimum 2-night stay</p>
+      <a
+        href="#pricing-calculator"
+        class="inline-flex items-center px-6 py-3 bg-brand text-white rounded-lg font-medium hover:bg-brand-dark transition-colors"
+      >
+        Estimate Your Stay
+      </a>
+    </div>
+
   </div>
 </section>
