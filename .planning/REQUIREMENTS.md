@@ -1,54 +1,33 @@
-# Requirements: Timber & Threads Website Rebuild
+# Requirements: Timber & Threads Website Enhancement
 
-**Defined:** 2026-02-16
+**Defined:** 2026-02-25
 **Core Value:** The website must load fast and look polished on slow rural connections, making the retreat feel warm and inviting enough that quilters, crafters, and families want to book a stay.
 
-## v1 Requirements
+## v2.1 Requirements
 
-Requirements for initial release. Each maps to roadmap phases.
+Requirements for this milestone. Each maps to roadmap phases.
 
-### Foundation
+### Pricing
 
-- [ ] **FOUND-01**: Astro 5 project with Tailwind CSS v4, TypeScript strict, and Vercel deployment pipeline
-- [ ] **FOUND-02**: BaseLayout with meta tags, Open Graph, fonts, and global styles
-- [ ] **FOUND-03**: Mobile-first responsive design with breakpoints at sm/md/lg/xl
-- [ ] **FOUND-04**: Navigation with smooth-scroll anchor links to all sections
-- [ ] **FOUND-05**: Image optimization pipeline established (Cloudinary CDN for gallery, Astro `<Image>` for local assets)
-- [ ] **FOUND-06**: Production build verified on Vercel with zero errors
+- [ ] **PRIC-01**: All pricing references across the site reflect the new rate structure ($60/night standard, $75/night with meals for ≤10; $600/night flat for 10-12)
+- [ ] **PRIC-02**: Booking requirements (min 4 persons, min 2 nights) displayed wherever pricing appears
+- [ ] **PRIC-03**: User can estimate stay cost via interactive calculator with group size, nights, and food option inputs
+- [ ] **PRIC-04**: Calculator enforces minimum constraints (4 persons, 2 nights) with clear feedback
+- [ ] **PRIC-05**: Calculator displays real-time line-item breakdown (nightly rate, food cost, total) as user adjusts inputs
+- [ ] **PRIC-06**: Calculator includes disclaimer note: "This is an estimate. Final pricing confirmed upon booking."
 
-### Content Sections
+### Property
 
-- [ ] **CONT-01**: Hero section with full-screen background image, logo, tagline, and CTA buttons
-- [ ] **CONT-02**: About section describing the island retreat setting and quilting/crafting focus
-- [ ] **CONT-03**: Workshops section covering group retreats, family gatherings, and amenities with details
-- [ ] **CONT-04**: Accommodations section with 4 bedrooms, 2 bathrooms, workspaces, and pricing ($500-600/night)
-- [ ] **CONT-05**: Connect section with Facebook page link and social preview card
-- [ ] **CONT-06**: Footer with copyright, contact info, and navigation links
-- [ ] **CONT-07**: All content migrated from current Next.js site with no information loss
+- [ ] **PROP-01**: All references updated from 4 bedrooms to 3 bedrooms (page copy, meta descriptions, alt text)
+- [ ] **PROP-02**: Laundry facilities listed in amenities section
+- [ ] **PROP-03**: Full kitchen with dishwasher confirmed visible in amenities
 
-### Media
+### Photography
 
-- [ ] **MDIA-01**: Photo gallery with Cloudinary CDN delivery, organized by category (facility, quilting)
-- [ ] **MDIA-02**: Gallery lightbox interaction for full-size image viewing
-- [ ] **MDIA-03**: Responsive images with automatic WebP/AVIF format selection
-- [ ] **MDIA-04**: Video section placeholder with poster image (swap in promo video when ready)
-- [ ] **MDIA-05**: All images lazy-loaded below the fold; hero image eager-loaded with fetchpriority="high"
-- [ ] **MDIA-06**: Hardcoded gallery image data (no dynamic API calls on page load)
-
-### Embeds
-
-- [ ] **EMBD-01**: Google Calendar embed showing retreat availability, lazy-loaded via Intersection Observer
-- [ ] **EMBD-02**: Google Maps embed showing retreat location, lazy-loaded via Intersection Observer
-- [ ] **EMBD-03**: Map section with entrance photo and written directions/description
-
-### Contact
-
-- [ ] **CNTC-01**: Contact section with phone number, email address, and physical address
-- [ ] **CNTC-02**: Contact form with name, email, and message fields with client-side validation
-- [ ] **CNTC-03**: Server endpoint (POST /api/contact) with server-side validation and email delivery via Resend
-- [ ] **CNTC-04**: Honeypot field for basic spam prevention
-- [ ] **CNTC-05**: Success/error feedback displayed to user after form submission
-- [ ] **CNTC-06**: Email credentials stored in environment variables, never exposed to client
+- [ ] **PHOT-01**: IMG_4197, IMG_4204, IMG_4208, IMG_4237 edited, color-graded, and integrated into site
+- [ ] **PHOT-02**: IMG_4204 cropped per client direction before integration
+- [ ] **PHOT-03**: Dock, picnic table, and fire pit photos added to property showcase (when available)
+- [ ] **PHOT-04**: All new images optimized for web (compressed, responsive) with descriptive alt text
 
 ### Performance
 
@@ -74,27 +53,73 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **SEDO-03**: Open Graph meta tags for social sharing preview
 - [ ] **SEDO-04**: Semantic HTML structure with proper heading hierarchy
 
-## v2 Requirements
+## v2.0 Validated Requirements
 
-Deferred to future release. Tracked but not in current roadmap.
+Shipped in v2.0 phases 1-4. Confirmed working.
+
+### Foundation
+
+- ✓ **FOUND-01**: Astro 5 project with Tailwind CSS v4, TypeScript strict, Vercel deployment — v2.0 Phase 1
+- ✓ **FOUND-02**: BaseLayout with meta tags, Open Graph, fonts, global styles — v2.0 Phase 1
+- ✓ **FOUND-03**: Mobile-first responsive design — v2.0 Phase 1
+- ✓ **FOUND-04**: Navigation with smooth-scroll anchor links — v2.0 Phase 1
+- ✓ **FOUND-05**: Image optimization pipeline (Cloudinary CDN + Astro Image) — v2.0 Phase 1
+- ✓ **FOUND-06**: Production build verified on Vercel — v2.0 Phase 1
+
+### Content Sections
+
+- ✓ **CONT-01**: Hero section with full-screen background image, logo, tagline, CTAs — v2.0 Phase 2
+- ✓ **CONT-02**: About section — v2.0 Phase 2
+- ✓ **CONT-03**: Workshops section — v2.0 Phase 2
+- ✓ **CONT-04**: Accommodations section — v2.0 Phase 2
+- ✓ **CONT-05**: Connect section — v2.0 Phase 2
+- ✓ **CONT-06**: Footer — v2.0 Phase 2
+- ✓ **CONT-07**: All content migrated with no information loss — v2.0 Phase 2
+
+### Embeds
+
+- ✓ **EMBD-01**: Google Calendar embed, lazy-loaded — v2.0 Phase 2
+- ✓ **EMBD-02**: Google Maps embed, lazy-loaded — v2.0 Phase 2
+- ✓ **EMBD-03**: Map section with entrance photo and directions — v2.0 Phase 2
+
+### Media
+
+- ✓ **MDIA-01**: Photo gallery with Cloudinary CDN, organized by category — v2.0 Phase 3
+- ✓ **MDIA-02**: Gallery lightbox with PhotoSwipe — v2.0 Phase 3
+- ✓ **MDIA-03**: Responsive images with WebP/AVIF — v2.0 Phase 3
+- ✓ **MDIA-04**: Video placeholder with poster — v2.0 Phase 3
+- ✓ **MDIA-05**: Lazy-loaded images, hero eager-loaded — v2.0 Phase 3
+- ✓ **MDIA-06**: Hardcoded gallery data — v2.0 Phase 3
+
+### Contact
+
+- ✓ **CNTC-01**: Contact section with phone, email, address — v2.0 Phase 4
+- ✓ **CNTC-02**: Contact form with validation — v2.0 Phase 4
+- ✓ **CNTC-03**: Server endpoint with Resend email delivery — v2.0 Phase 4
+- ✓ **CNTC-04**: Honeypot spam prevention — v2.0 Phase 4
+- ✓ **CNTC-05**: Success/error feedback — v2.0 Phase 4
+- ✓ **CNTC-06**: Email credentials in env vars only — v2.0 Phase 4
+
+## Future Requirements
+
+Deferred beyond v2.1. Tracked but not in current roadmap.
 
 ### Admin & Gallery Management
 
-- **ADMN-01**: Admin interface for gallery image management (add/remove/reorder)
+- **ADMN-01**: Admin interface for gallery image management
 - **ADMN-02**: Dynamic gallery powered by Cloudinary API + Upstash Redis
 - **ADMN-03**: Protected admin routes with authentication
 
 ### Content Enhancements
 
-- **CENH-01**: Detailed quilting amenity showcase (design walls, cutting stations)
-- **CENH-02**: Nearby quilt shop directory with links and addresses
+- **CENH-01**: Detailed quilting amenity showcase
+- **CENH-02**: Nearby quilt shop directory
 - **CENH-03**: Guest photo gallery from past retreats
 - **CENH-04**: Sample itineraries and group booking guide
-- **CENH-05**: Accessibility information section (stairs, mobility, bathrooms)
 
 ### Promo Video
 
-- **VIDO-01**: Promo video integrated into video section (replacing placeholder)
+- **VIDO-01**: Promo video integrated (replacing placeholder)
 - **VIDO-02**: Video optimized for streaming on slow connections
 
 ## Out of Scope
@@ -104,15 +129,14 @@ Explicitly excluded. Documented to prevent scope creep.
 | Feature | Reason |
 |---------|--------|
 | Online booking/payment system | Conflicts with personal consultation workflow; high complexity |
-| User accounts/login | Unnecessary for content site; no member portal needed |
+| User accounts/login | Unnecessary for content site |
 | Live chat widget | Resource-intensive to staff; older demographic prefers phone/email |
-| Blog | Time-consuming to maintain; creates staleness if not updated |
-| Online store | Scope creep; not core business |
+| Blog | Time-consuming to maintain |
+| Online store | Not core business |
 | Social media feed embeds | Can look stale; Facebook page link sufficient |
 | Multi-language support | Unnecessary for rural Missouri demographic |
-| Newsletter subscription | Client uses Facebook for updates; lower maintenance |
-| Full visual redesign | Client likes current look; refine, don't redesign |
-| Automated availability sync | Over-engineering; Google Calendar embed matches current workflow |
+| Newsletter subscription | Client uses Facebook for updates |
+| Full visual redesign | Client likes current look |
 
 ## Traceability
 
@@ -120,55 +144,40 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FOUND-01 | Phase 1 | Pending |
-| FOUND-02 | Phase 1 | Pending |
-| FOUND-03 | Phase 1 | Pending |
-| FOUND-04 | Phase 1 | Pending |
-| FOUND-05 | Phase 1 | Pending |
-| FOUND-06 | Phase 1 | Pending |
-| CONT-01 | Phase 2 | Pending |
-| CONT-02 | Phase 2 | Pending |
-| CONT-03 | Phase 2 | Pending |
-| CONT-04 | Phase 2 | Pending |
-| CONT-05 | Phase 2 | Pending |
-| CONT-06 | Phase 2 | Pending |
-| CONT-07 | Phase 2 | Pending |
-| EMBD-01 | Phase 2 | Pending |
-| EMBD-02 | Phase 2 | Pending |
-| EMBD-03 | Phase 2 | Pending |
-| MDIA-01 | Phase 3 | Pending |
-| MDIA-02 | Phase 3 | Pending |
-| MDIA-03 | Phase 3 | Pending |
-| MDIA-04 | Phase 3 | Pending |
-| MDIA-05 | Phase 3 | Pending |
-| MDIA-06 | Phase 3 | Pending |
-| CNTC-01 | Phase 4 | Pending |
-| CNTC-02 | Phase 4 | Pending |
-| CNTC-03 | Phase 4 | Pending |
-| CNTC-04 | Phase 4 | Pending |
-| CNTC-05 | Phase 4 | Pending |
-| CNTC-06 | Phase 4 | Pending |
-| PERF-01 | Phase 5 | Pending |
-| PERF-02 | Phase 5 | Pending |
-| PERF-03 | Phase 5 | Pending |
-| PERF-04 | Phase 5 | Pending |
-| PERF-05 | Phase 5 | Pending |
-| A11Y-01 | Phase 5 | Pending |
-| A11Y-02 | Phase 5 | Pending |
-| A11Y-03 | Phase 5 | Pending |
-| A11Y-04 | Phase 5 | Pending |
-| A11Y-05 | Phase 5 | Pending |
-| A11Y-06 | Phase 5 | Pending |
-| SEDO-01 | Phase 5 | Pending |
-| SEDO-02 | Phase 5 | Pending |
-| SEDO-03 | Phase 5 | Pending |
-| SEDO-04 | Phase 5 | Pending |
+| PRIC-01 | TBD | Pending |
+| PRIC-02 | TBD | Pending |
+| PRIC-03 | TBD | Pending |
+| PRIC-04 | TBD | Pending |
+| PRIC-05 | TBD | Pending |
+| PRIC-06 | TBD | Pending |
+| PROP-01 | TBD | Pending |
+| PROP-02 | TBD | Pending |
+| PROP-03 | TBD | Pending |
+| PHOT-01 | TBD | Pending |
+| PHOT-02 | TBD | Pending |
+| PHOT-03 | TBD | Pending |
+| PHOT-04 | TBD | Pending |
+| PERF-01 | TBD | Pending |
+| PERF-02 | TBD | Pending |
+| PERF-03 | TBD | Pending |
+| PERF-04 | TBD | Pending |
+| PERF-05 | TBD | Pending |
+| A11Y-01 | TBD | Pending |
+| A11Y-02 | TBD | Pending |
+| A11Y-03 | TBD | Pending |
+| A11Y-04 | TBD | Pending |
+| A11Y-05 | TBD | Pending |
+| A11Y-06 | TBD | Pending |
+| SEDO-01 | TBD | Pending |
+| SEDO-02 | TBD | Pending |
+| SEDO-03 | TBD | Pending |
+| SEDO-04 | TBD | Pending |
 
 **Coverage:**
-- v1 requirements: 43 total
-- Mapped to phases: 43
-- Unmapped: 0
+- v2.1 requirements: 28 total
+- Mapped to phases: 0
+- Unmapped: 28 (pending roadmap creation)
 
 ---
-*Requirements defined: 2026-02-16*
-*Last updated: 2026-02-16 after roadmap creation*
+*Requirements defined: 2026-02-25*
+*Last updated: 2026-02-25 after initial definition*
