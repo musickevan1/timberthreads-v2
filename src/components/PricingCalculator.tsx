@@ -65,19 +65,18 @@ export default function PricingCalculator() {
   // Pricing logic
   const isFlatRate = groupSize > 10;
   let accommodationCost: number;
-  let nightlyRate: number;
   let foodCost: number;
   let total: number;
 
+  const mealRate = isFlatRate ? 12.5 : 15;
+
   if (!isFlatRate) {
-    nightlyRate = includeMeals ? 75 : 60;
     accommodationCost = 60 * groupSize * nights;
-    foodCost = includeMeals ? 15 * groupSize * nights : 0;
+    foodCost = includeMeals ? mealRate * groupSize * nights : 0;
     total = accommodationCost + foodCost;
   } else {
-    nightlyRate = 600;
     accommodationCost = 600 * nights;
-    foodCost = includeMeals ? 15 * groupSize * nights : 0;
+    foodCost = includeMeals ? mealRate * groupSize * nights : 0;
     total = accommodationCost + foodCost;
   }
 
@@ -111,7 +110,7 @@ export default function PricingCalculator() {
         <div class="flex items-center justify-between mt-4">
           <div>
             <p class="text-sm font-medium text-stone-700">Include Meals</p>
-            <p class="text-xs text-stone-500">+$15/night per person</p>
+            <p class="text-xs text-stone-500">+${isFlatRate ? '12.50' : '15'}/night per person{isFlatRate ? ' (2 meals & snacks)' : ''}</p>
           </div>
           <button
             type="button"
@@ -160,7 +159,7 @@ export default function PricingCalculator() {
           {includeMeals && (
             <div class="flex justify-between items-start text-stone-700">
               <span class="text-sm leading-snug pr-4">
-                Meals: {groupSize} guests &times; $15/night &times; {nights} night{nights !== 1 ? 's' : ''}
+                Meals: {groupSize} guests &times; ${isFlatRate ? '12.50' : '15'}/night &times; {nights} night{nights !== 1 ? 's' : ''}
               </span>
               <span class="text-sm font-semibold whitespace-nowrap">{formatCurrency(foodCost)}</span>
             </div>
