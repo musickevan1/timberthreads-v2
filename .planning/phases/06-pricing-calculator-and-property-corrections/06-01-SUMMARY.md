@@ -53,7 +53,7 @@ completed: 2026-02-26
 - **Duration:** 2 min
 - **Started:** 2026-02-26T06:26:10Z
 - **Completed:** 2026-02-26T06:28:03Z
-- **Tasks:** 1 of 2 (paused at human-verify checkpoint)
+- **Tasks:** 2 of 2 (all tasks complete including human-verify checkpoint)
 - **Files modified:** 3
 
 ## Accomplishments
@@ -70,7 +70,9 @@ Each task was committed atomically:
 
 1. **Task 1: Update pricing and property details across Accommodations, Calendar, and Workshops** - `3e2b841` (feat)
 
-**Plan metadata:** (pending — checkpoint paused before final commit)
+2. **Task 2: Human verify — visual review of pricing and property corrections** - checkpoint approved
+
+**Plan metadata:** `20db178` (docs: complete pricing and property corrections plan)
 
 ## Files Created/Modified
 - `src/components/Accommodations.astro` - Fixed bedroom count, added laundry amenity, added rate card with CTA
@@ -97,7 +99,7 @@ None - no external service configuration required.
 ## Next Phase Readiness
 - Accommodations has the `#pricing-calculator` anchor CTA ready — Plan 02 can implement the calculator component at that ID
 - All pricing and property copy is accurate; Plan 02 can reference these values in the calculator logic ($60, $75, $600, min 4 persons, min 2 nights)
-- Human verification checkpoint is active — user must review at http://localhost:4321 before marking complete
+- Human verification checkpoint passed — user reviewed and approved all visual changes at http://localhost:4321
 
 ---
 *Phase: 06-pricing-calculator-and-property-corrections*
