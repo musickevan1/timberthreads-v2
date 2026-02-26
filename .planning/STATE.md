@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-25)
 ## Current Position
 
 Phase: 6 of 8 (Pricing, Calculator, and Property Corrections)
-Plan: 2 of 2 in current phase
-Status: Ready — Plan 1 complete and human-verified; Plan 2 (pricing calculator) next
-Last activity: 2026-02-26 — Phase 6 Plan 1 complete and human-verified (approved)
+Plan: 2 of 2 in current phase — COMPLETE
+Status: Phase 6 complete — both plans human-verified; ready for Phase 7 (gallery and media)
+Last activity: 2026-02-26 — Phase 6 Plan 2 complete and human-verified (approved)
 
-Progress: [████░░░░░░] 40% (v2.0 complete, Phase 6 Plan 1 complete)
+Progress: [█████░░░░░] 50% (v2.0 complete, Phase 6 complete)
 
 ## Performance Metrics
 
@@ -48,6 +48,9 @@ Recent decisions affecting current work:
 - [06-01]: Rate card uses sm:grid-cols-2 — two pricing tiers stack on mobile, side-by-side at sm breakpoint
 - [06-01]: Seasonal date-based pricing removed entirely; group-size-based structure only ($60/$75 for <=10, $600 flat for 10-12)
 - [06-01]: Meal options collapsed to single $15/night add-on (from three old tiers) to match new rate math
+- [06-02]: Preact chosen over React for calculator island — lighter bundle, same hooks API for this use case
+- [06-02]: client:load directive used for calculator so it is immediately interactive when users arrive via CTA click
+- [06-02]: Meal rate for groups of 10-12 corrected to $12.50/person/day (2 meals & snacks), not $15/person/night
 
 ### Pending Todos
 
@@ -63,5 +66,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-26
-Stopped at: Phase 6 Plan 1 complete and human-verified — ready to begin Plan 2 (pricing calculator)
-Resume: Run `/gsd:execute-phase 6` to execute Plan 2 (pricing calculator Astro island component)
+Stopped at: Phase 6 Plan 2 complete and human-verified — phase 6 fully done
+Resume: Run `/gsd:execute-phase 7` to begin Phase 7 (gallery and media)
