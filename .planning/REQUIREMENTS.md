@@ -24,10 +24,10 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Photography
 
-- [ ] **PHOT-01**: IMG_4197, IMG_4204, IMG_4208, IMG_4237 edited, color-graded, and integrated into site
-- [ ] **PHOT-02**: IMG_4204 cropped per client direction before integration
-- [ ] **PHOT-03**: Dock, picnic table, and fire pit photos added to property showcase (when available)
-- [ ] **PHOT-04**: All new images optimized for web (compressed, responsive) with descriptive alt text
+- [x] **PHOT-01**: IMG_4197, IMG_4204, IMG_4208, IMG_4237 edited, color-graded, and integrated into site
+- [x] **PHOT-02**: IMG_4204 cropped per client direction before integration
+- [x] **PHOT-03**: Dock, picnic table, and fire pit photos added to property showcase (when available)
+- [x] **PHOT-04**: All new images optimized for web (compressed, responsive) with descriptive alt text
 
 ### Performance
 
@@ -153,10 +153,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PROP-01 | Phase 6 | Complete |
 | PROP-02 | Phase 6 | Complete |
 | PROP-03 | Phase 6 | Complete |
-| PHOT-01 | Phase 7 | Pending |
-| PHOT-02 | Phase 7 | Pending |
-| PHOT-03 | Phase 7 | Pending |
-| PHOT-04 | Phase 7 | Pending |
+| PHOT-01 | Phase 7 | Complete |
+| PHOT-02 | Phase 7 | Complete |
+| PHOT-03 | Phase 7 | Complete |
+| PHOT-04 | Phase 7 | Complete |
 | PERF-01 | Phase 8 | Pending |
 | PERF-02 | Phase 8 | Pending |
 | PERF-03 | Phase 8 | Pending |

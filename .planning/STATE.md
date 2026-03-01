@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-25)
 
 **Core value:** The website must load fast and look polished on slow rural connections, making the retreat feel warm and inviting enough that quilters, crafters, and families want to book a stay.
-**Current focus:** Phase 6 — Pricing, Calculator, and Property Corrections
+**Current focus:** Phase 7 — Photography Integration
 
 ## Current Position
 
-Phase: 6 of 8 (Pricing, Calculator, and Property Corrections)
-Plan: 2 of 2 in current phase — COMPLETE
-Status: Phase 6 complete — both plans human-verified; ready for Phase 7 (gallery and media)
-Last activity: 2026-02-26 — Phase 6 Plan 2 complete and human-verified (approved)
+Phase: 7 of 8 (Photography Integration)
+Plan: 1 of 2 in current phase — awaiting human-verify checkpoint
+Status: Phase 7 Plan 1 tasks complete — pending human verification of gallery and content section images
+Last activity: 2026-03-01 — Phase 7 Plan 1 tasks 1 and 2 complete; paused at checkpoint:human-verify
 
-Progress: [█████░░░░░] 50% (v2.0 complete, Phase 6 complete)
+Progress: [██████░░░░] 60% (v2.0 complete, Phase 6 complete, Phase 7 in progress)
 
 ## Performance Metrics
 
@@ -51,6 +51,10 @@ Recent decisions affecting current work:
 - [06-02]: Preact chosen over React for calculator island — lighter bundle, same hooks API for this use case
 - [06-02]: client:load directive used for calculator so it is immediately interactive when users arrive via CTA click
 - [06-02]: Meal rate for groups of 10-12 corrected to $12.50/person/day (2 meals & snacks), not $15/person/night
+- [07-01]: Gallery reorganized from 2 categories (facility/quilting) to 3 categories (property/bedrooms/workspaces) for property tour experience
+- [07-01]: All existing photos retained alongside new v2 photos — different angles remain valuable
+- [07-01]: quiltDisplay1/2/3 recategorized to 'workspaces' since quilts are displayed in workspace areas
+- [07-01]: v2- prefix naming convention for updated photography batches
 
 ### Pending Todos
 
@@ -65,6 +69,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-26
-Stopped at: Phase 6 Plan 2 complete and human-verified — phase 6 fully done
-Resume: Run `/gsd:execute-phase 7` to begin Phase 7 (gallery and media)
+Last session: 2026-03-01
+Stopped at: Phase 7 Plan 1 — checkpoint:human-verify after tasks 1 and 2 (gallery rebuild and content image upgrades)
+Resume: Human verify gallery at http://localhost:4321, then type "approved" to continue Phase 7 Plan 1

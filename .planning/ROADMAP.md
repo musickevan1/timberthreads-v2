@@ -141,5 +141,5 @@ v2.1: 6 → 7 → 8
 | 3. Gallery and Media | v2.0 | 2/2 | Complete | 2026-02-17 |
 | 4. Contact Form and Server Endpoint | v2.0 | 2/2 | Complete | 2026-02-17 |
 | 6. Pricing, Calculator, and Property Corrections | 1/2 | In Progress|  | - |
-| 7. Photography Integration | v2.1 | 0/1 | Not started | - |
+| 7. Photography Integration | 1/1 | Complete   | 2026-03-01 | - |
 | 8. Polish, Accessibility, SEO, and Deploy | v2.1 | 0/3 | Not started | - |
