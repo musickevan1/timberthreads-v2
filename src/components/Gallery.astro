@@ -1,7 +1,7 @@
 ---
 import GalleryCategory from './GalleryCategory.astro';
 import PromoVideo from './PromoVideo.astro';
-import { facilityImages, quiltingImages } from '../data/gallery';
+import { propertyImages, bedroomImages, workspaceImages } from '../data/gallery';
 ---
 
 <section id="gallery" class="py-16 md:py-24 bg-white">
@@ -20,8 +20,9 @@ import { facilityImages, quiltingImages } from '../data/gallery';
 
     <!-- Category grids -->
     <div class="space-y-12">
-      <GalleryCategory title="Facility" images={facilityImages} />
-      <GalleryCategory title="Quilting" images={quiltingImages} />
+      <GalleryCategory title="The Property" images={propertyImages} />
+      <GalleryCategory title="Bedrooms" images={bedroomImages} />
+      <GalleryCategory title="Workspaces" images={workspaceImages} />
     </div>
 
   </div>
