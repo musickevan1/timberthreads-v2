@@ -40,18 +40,18 @@ Requirements for this milestone. Each maps to roadmap phases.
 ### Accessibility
 
 - [x] **A11Y-01**: Minimum 16px font size, 18px preferred for body text
-- [ ] **A11Y-02**: Touch targets minimum 44x44px for all interactive elements
-- [ ] **A11Y-03**: WCAG AA color contrast compliance
-- [ ] **A11Y-04**: Alt text on all images
-- [ ] **A11Y-05**: Click-to-call phone numbers on mobile
-- [ ] **A11Y-06**: Keyboard navigation support for all interactive elements
+- [x] **A11Y-02**: Touch targets minimum 44x44px for all interactive elements
+- [x] **A11Y-03**: WCAG AA color contrast compliance
+- [x] **A11Y-04**: Alt text on all images
+- [x] **A11Y-05**: Click-to-call phone numbers on mobile
+- [x] **A11Y-06**: Keyboard navigation support for all interactive elements
 
 ### SEO & Deploy
 
 - [ ] **SEDO-01**: Deploy to Vercel on timberandthreadsretreat.com domain
 - [ ] **SEDO-02**: robots.txt and sitemap.xml generated
 - [ ] **SEDO-03**: Open Graph meta tags for social sharing preview
-- [ ] **SEDO-04**: Semantic HTML structure with proper heading hierarchy
+- [x] **SEDO-04**: Semantic HTML structure with proper heading hierarchy
 
 ## v2.0 Validated Requirements
 
@@ -163,15 +163,15 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PERF-04 | Phase 8 | Complete |
 | PERF-05 | Phase 8 | Complete |
 | A11Y-01 | Phase 8 | Complete |
-| A11Y-02 | Phase 8 | Pending |
-| A11Y-03 | Phase 8 | Pending |
-| A11Y-04 | Phase 8 | Pending |
-| A11Y-05 | Phase 8 | Pending |
-| A11Y-06 | Phase 8 | Pending |
+| A11Y-02 | Phase 8 | Complete |
+| A11Y-03 | Phase 8 | Complete |
+| A11Y-04 | Phase 8 | Complete |
+| A11Y-05 | Phase 8 | Complete |
+| A11Y-06 | Phase 8 | Complete |
 | SEDO-01 | Phase 8 | Pending |
 | SEDO-02 | Phase 8 | Pending |
 | SEDO-03 | Phase 8 | Pending |
-| SEDO-04 | Phase 8 | Pending |
+| SEDO-04 | Phase 8 | Complete |
 
 **Coverage:**
 - v2.1 requirements: 28 total

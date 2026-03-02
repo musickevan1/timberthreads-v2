@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v2.1
 milestone_name: Website Enhancement
 status: unknown
-last_updated: "2026-03-02T17:20:17.754Z"
+last_updated: "2026-03-02T17:26:11.411Z"
 progress:
   total_phases: 8
   completed_phases: 6
   total_plans: 16
-  completed_plans: 14
+  completed_plans: 15
 ---
 
 # Project State
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-02-25)
 ## Current Position
 
 Phase: 8 of 8 (Polish, Accessibility, SEO and Deploy)
-Plan: 1 of 3 complete — ready to continue Phase 8 Plan 2
-Status: Phase 8 Plan 1 complete — Performance Audit and Optimization done
-Last activity: 2026-03-02 — Phase 8 Plan 1 complete; Lighthouse 98, FCP 1205ms, font self-hosted, 18px body text enforced
+Plan: 2 of 3 complete — ready to continue Phase 8 Plan 3
+Status: Phase 8 Plan 2 complete — WCAG AA Accessibility Audit done
+Last activity: 2026-03-02 — Phase 8 Plan 2 complete; focus-visible CSS, 44px touch targets, footer contrast fixed, skip-to-content link added
 
-Progress: [████████░░] 80% (Phase 7 complete, Phase 8 Plan 1 complete)
+Progress: [█████████░] 87% (Phase 7 complete, Phase 8 Plans 1-2 complete)
 
 ## Performance Metrics
 
@@ -47,6 +47,7 @@ Progress: [████████░░] 80% (Phase 7 complete, Phase 8 Plan 1
 
 *Updated after each plan completion*
 | Phase 08-polish-accessibility-seo-and-deploy P01 | 5 | 3 tasks | 15 files |
+| Phase 08 P02 | 3 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -72,6 +73,8 @@ Recent decisions affecting current work:
 - [Phase 08-01]: Self-hosted Inter Variable font uses inter-latin-wght-normal.woff2 (wkst filename in plan does not exist); font-display swap enabled via @font-face + preload link
 - [Phase 08-01]: A11Y-01: body font-size raised to 1.125rem (18px); text-base minimum enforced across all content text sitewide
 - [Phase 08-01]: Map numbered badges (1-6 in fixed 28px circles) kept at text-sm — decorative positional indicators where overflow would occur
+- [Phase 08]: Footer link contrast changed to text-stone-600 (was text-stone-400, ~2.7:1 failing WCAG AA)
+- [Phase 08]: Skip-to-content links to #home (first section) for this single-page layout
 
 ### Pending Todos
 
@@ -87,5 +90,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-02
-Stopped at: Completed 08-01-PLAN.md (Performance Audit and Optimization)
-Resume: Continue with Phase 8 Plan 2 (08-02-PLAN.md — Accessibility and SEO)
+Stopped at: Completed 08-02-PLAN.md (Accessibility Audit and Fixes WCAG AA)
+Resume: Continue with Phase 8 Plan 3 (08-03-PLAN.md — SEO and Deploy)
