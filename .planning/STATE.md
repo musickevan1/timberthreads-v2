@@ -25,7 +25,7 @@ See: .planning/PROJECT.md (updated 2026-02-25)
 Phase: 8 of 8 (Polish, Accessibility, SEO and Deploy)
 Plan: 2 of 3 complete — ready to continue Phase 8 Plan 3
 Status: Phase 8 Plan 2 complete — WCAG AA Accessibility Audit done
-Last activity: 2026-03-02 — Phase 8 Plan 2 complete; focus-visible CSS, 44px touch targets, footer contrast fixed, skip-to-content link added
+Last activity: 2026-03-02 - Completed quick task 1: Improve and align gallery — review all v2-gallery images, find best shots, label, organize, and prepare for gallery sections
 
 Progress: [█████████░] 87% (Phase 7 complete, Phase 8 Plans 1-2 complete)
 
@@ -83,6 +83,12 @@ Recent decisions affecting current work:
 ### Pending Todos
 
 None.
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 1 | Improve and align gallery — review all v2-gallery images, find best shots, label, organize, and prepare for gallery sections | 2026-03-02 | 4eda828 | [1-improve-and-align-gallery-review-all-v2-](./quick/1-improve-and-align-gallery-review-all-v2-/) |
 
 ### Blockers/Concerns
 
