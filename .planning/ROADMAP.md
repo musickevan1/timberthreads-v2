@@ -3,7 +3,8 @@
 ## Milestones
 
 - ✅ **v2.0 Website Rebuild** - Phases 1-4 (shipped 2026-02-17)
-- 🚧 **v2.1 Website Enhancement** - Phases 6-8 (in progress)
+- ✅ **v2.1 Website Enhancement** - Phases 6-8 (shipped 2026-03-02)
+- 🚧 **v2.2 Client Preview Polish** - Phases 9-13 (in progress)
 
 ## Phases
 
@@ -77,11 +78,10 @@ Plans:
 
 </details>
 
-### 🚧 v2.1 Website Enhancement (In Progress)
+<details>
+<summary>✅ v2.1 Website Enhancement (Phases 6-8) - SHIPPED 2026-03-02</summary>
 
-**Milestone Goal:** Update pricing and property details, add an interactive pricing calculator, integrate new photography, and complete the polish/accessibility/SEO/deploy work carried from v2.0.
-
-#### Phase 6: Pricing, Calculator, and Property Corrections
+### Phase 6: Pricing, Calculator, and Property Corrections
 **Goal**: Visitors see accurate pricing and property details everywhere on the site, and can interactively estimate their stay cost before contacting the retreat
 **Depends on**: Phase 4 (content foundation complete)
 **Requirements**: PRIC-01, PRIC-02, PRIC-03, PRIC-04, PRIC-05, PRIC-06, PROP-01, PROP-02, PROP-03
@@ -91,13 +91,13 @@ Plans:
   3. The calculator enforces minimum constraints: entering fewer than 4 persons or fewer than 2 nights shows a clear inline message explaining the minimums
   4. The calculator displays a disclaimer note: "This is an estimate. Final pricing confirmed upon booking."
   5. All references to bedrooms read "3 bedrooms" (not 4), laundry facilities appear in the amenities list, and the full kitchen with dishwasher is visible in accommodations copy
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 06-01-PLAN.md -- Update pricing copy across all sections (Accommodations, pricing references, meta descriptions, alt text) and correct property details (3 bedrooms, laundry, kitchen)
-- [ ] 06-02-PLAN.md -- Build PricingCalculator Astro island component with real-time estimates, constraint validation, disclaimer, and integration into the page
+- [x] 06-01-PLAN.md -- Update pricing copy across all sections (Accommodations, pricing references, meta descriptions, alt text) and correct property details (3 bedrooms, laundry, kitchen)
+- [x] 06-02-PLAN.md -- Build PricingCalculator Astro island component with real-time estimates, constraint validation, disclaimer, and integration into the page
 
-#### Phase 7: Photography Integration
+### Phase 7: Photography Integration
 **Goal**: The site showcases the retreat property with updated photography -- edited, color-graded, and optimized images integrated into the gallery and property sections
 **Depends on**: Phase 6 (content stable before gallery additions)
 **Requirements**: PHOT-01, PHOT-02, PHOT-03, PHOT-04
@@ -106,12 +106,12 @@ Plans:
   2. IMG_4204 is visibly cropped per client direction (no unwanted edges or distracting elements in frame)
   3. New outdoor photos (dock, picnic table, fire pit) appear in the property showcase section when provided -- if not yet available, placeholder positions are marked in gallery data with a TODO comment
   4. Every new image has descriptive alt text that communicates the subject to screen reader users
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 07-01-PLAN.md -- Edit and color-grade IMG_4197, IMG_4204, IMG_4208, IMG_4237 (crop IMG_4204), upload to Cloudinary, integrate into gallery data with alt text
+- [x] 07-01-PLAN.md -- Edit and color-grade IMG_4197, IMG_4204, IMG_4208, IMG_4237 (crop IMG_4204), upload to Cloudinary, integrate into gallery data with alt text
 
-#### Phase 8: Polish, Accessibility, SEO, and Deploy
+### Phase 8: Polish, Accessibility, SEO, and Deploy
 **Goal**: The site meets Lighthouse 90+ on mobile Fast 3G, passes WCAG AA, has complete SEO markup, and is live at timberandthreadsretreat.com -- ready for real visitors on slow rural connections
 **Depends on**: Phase 7 (all content and photography finalized)
 **Requirements**: PERF-01, PERF-02, PERF-03, PERF-04, PERF-05, A11Y-01, A11Y-02, A11Y-03, A11Y-04, A11Y-05, A11Y-06, SEDO-01, SEDO-02, SEDO-03, SEDO-04
@@ -121,18 +121,94 @@ Plans:
   3. All interactive elements have 44x44px minimum touch targets, body text is at least 16px (18px preferred), and color contrast passes WCAG AA -- verified by axe-core audit with zero critical violations
   4. Every image has descriptive alt text, all interactive elements (including the pricing calculator) are keyboard-navigable, and phone numbers are click-to-call links on mobile
   5. The site is live at timberandthreadsretreat.com with robots.txt, sitemap.xml, Open Graph meta tags, and semantic HTML with proper heading hierarchy
+**Plans**: 3 plans
+
+Plans:
+- [x] 08-01-PLAN.md -- Performance audit and optimization (Lighthouse, JS budget, lazy loading, third-party embed deferral)
+- [x] 08-02-PLAN.md -- Accessibility audit and fixes (WCAG AA, touch targets, keyboard nav, font sizes, click-to-call)
+- [x] 08-03-PLAN.md -- SEO markup (robots.txt, sitemap.xml, OG tags, semantic HTML) and production domain deployment
+
+</details>
+
+### 🚧 v2.2 Client Preview Polish (In Progress)
+
+**Milestone Goal:** Polish the site for client preview -- remove duplicate pricing cards, enhance the calculator with per-person breakdown and a quote CTA that pre-fills the contact form, fix mobile header branding, add visual driving directions to the map, and verify all viewport sizes with Playwright.
+
+#### Phase 9: Mobile Header and Pricing Cleanup
+**Goal**: The site header shows the retreat name on mobile, and the Accommodations section no longer duplicates the pricing cards that belong in the Pricing section
+**Depends on**: Phase 8 (polished baseline)
+**Requirements**: MOBL-01, PRIC-07
+**Success Criteria** (what must be TRUE):
+  1. On a 375px mobile viewport, the header displays the "Timber & Threads" text alongside the logo without overflowing or pushing the hamburger button off-screen
+  2. On a 320px mobile viewport, the header text remains legible and the layout does not overflow horizontally
+  3. The Accommodations section contains no duplicate pricing tier cards -- pricing cards appear only in the Pricing/Calculator section
+  4. The desktop layout at 1280px is unchanged after the mobile header fix -- sticky nav, logo, and links all render correctly
 **Plans**: TBD
 
 Plans:
-- [ ] 08-01-PLAN.md -- Performance audit and optimization (Lighthouse, JS budget, lazy loading, third-party embed deferral)
-- [ ] 08-02-PLAN.md -- Accessibility audit and fixes (WCAG AA, touch targets, keyboard nav, font sizes, click-to-call)
-- [ ] 08-03-PLAN.md -- SEO markup (robots.txt, sitemap.xml, OG tags, semantic HTML) and production domain deployment
+- [ ] 09-01-PLAN.md -- Remove `hidden sm:block` from Nav.astro brand span, adjust font size to `text-xl sm:text-2xl`, remove duplicate pricing cards from Accommodations section
+
+#### Phase 10: Calculator Per-Person Breakdown
+**Goal**: The pricing calculator shows a per-person cost breakdown below the total estimate, giving group organizers the number they need to communicate individual costs to their group
+**Depends on**: Phase 9
+**Requirements**: PRIC-08
+**Success Criteria** (what must be TRUE):
+  1. After entering a valid group size and number of nights, the calculator breakdown panel displays a per-person cost line below the total estimate
+  2. The per-person cost updates in real time as the visitor adjusts group size, nights, or the food option
+  3. The per-person breakdown is not shown when the calculator inputs are below minimum constraints (fewer than 4 persons or fewer than 2 nights)
+**Plans**: TBD
+
+Plans:
+- [ ] 10-01-PLAN.md -- Add per-person cost calculation and breakdown display to PricingCalculator.tsx Preact island
+
+#### Phase 11: Calculator-to-Contact Quote Flow
+**Goal**: Visitors can move directly from seeing their cost estimate to sending a quote request -- the "Get a Quote" button scrolls to the contact form and pre-fills it with the full estimate details so they never have to re-type what they just calculated
+**Depends on**: Phase 10 (breakdown panel must exist before adding the CTA adjacent to it)
+**Requirements**: PRIC-09, PRIC-10
+**Success Criteria** (what must be TRUE):
+  1. A "Get a Quote" button is visible below the calculator estimate when valid inputs are entered
+  2. Clicking "Get a Quote" scrolls the page to the contact form section, with the section heading fully visible below the fixed navigation bar
+  3. The contact form message field is pre-filled with a formatted summary of the estimate (group size, nights, meal option, total cost, per-person cost)
+  4. If the visitor has already typed a message in the contact form, clicking "Get a Quote" does not overwrite their draft -- the pre-fill only applies to an empty message field
+**Plans**: TBD
+
+Plans:
+- [ ] 11-01-PLAN.md -- Add "Get a Quote" button and `handleGetQuote()` to PricingCalculator.tsx; dispatch `CustomEvent('calculator:quote-requested')` with estimate payload; add listener in Contact.astro that pre-fills message field via DOM property assignment; verify scroll-margin-top on #contact section
+
+#### Phase 12: Google Maps Driving Route
+**Goal**: The embedded map shows an interactive visual driving route to the retreat property, replacing the static location pin with a route that first-time visitors can actually follow
+**Depends on**: Phase 9 (site stable; API key setup can happen in parallel with Phases 10-11)
+**Requirements**: MAPS-01, MAPS-02
+**Success Criteria** (what must be TRUE):
+  1. The map section displays an interactive Google Map showing a driving route from a nearby highway landmark to 306 NW 300 Rd, Clinton, MO 64735
+  2. A visitor can zoom and pan the embedded route map without leaving the page
+  3. The Maps API key is stored as `PUBLIC_GOOGLE_MAPS_KEY` in the environment (not committed to git) and restricted to the production domain in Google Cloud Console
+**Plans**: TBD
+
+Plans:
+- [ ] 12-01-PLAN.md -- Set up Google Maps Embed API key (Google Cloud Console, domain restriction), update Map.astro `data-src` to `v1/directions` URL using `import.meta.env.PUBLIC_GOOGLE_MAPS_KEY`, add key to .env and Vercel dashboard
+
+#### Phase 13: Playwright Viewport Verification
+**Goal**: Automated tests confirm that every v2.2 feature works correctly at desktop and mobile viewport sizes, running against the production build so results reflect what real visitors experience
+**Depends on**: Phases 9-12 (tests validate the complete v2.2 feature set)
+**Requirements**: MOBL-02, MOBL-03, MOBL-04, TEST-01, TEST-02, TEST-03
+**Success Criteria** (what must be TRUE):
+  1. Running `npx playwright test` against the production build (`npm run build && npm run preview`) completes with all tests passing and no flaky failures
+  2. Tests assert that key elements are visible at desktop 1280px: header brand text, pricing calculator, "Get a Quote" button, map iframe, and contact form
+  3. Tests assert that key elements are visible at mobile 375px: header brand text visible (not hidden), calculator renders without horizontal overflow, contact form is accessible
+  4. A test verifies that clicking "Get a Quote" pre-fills the contact form message field at both desktop and mobile viewports
+  5. No test uses screenshot pixel comparisons -- all assertions are element visibility and content checks
+**Plans**: TBD
+
+Plans:
+- [ ] 13-01-PLAN.md -- Install `@playwright/test`, create `playwright.config.ts` with desktop/mobile/Pixel 5/iPhone 12 profiles and `webServer` build+preview command, write `tests/viewport.spec.ts` with assertion-based tests covering all v2.2 features
 
 ## Progress
 
 **Execution Order:**
 v2.0: 1 → 2 → 3 → 4 (complete)
-v2.1: 6 → 7 → 8
+v2.1: 6 → 7 → 8 (complete)
+v2.2: 9 → 10 → 11 → 12 → 13
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -140,6 +216,11 @@ v2.1: 6 → 7 → 8
 | 2. Content Sections and Embeds | v2.0 | 3/3 | Complete | 2026-02-17 |
 | 3. Gallery and Media | v2.0 | 2/2 | Complete | 2026-02-17 |
 | 4. Contact Form and Server Endpoint | v2.0 | 2/2 | Complete | 2026-02-17 |
-| 6. Pricing, Calculator, and Property Corrections | 1/2 | In Progress|  | - |
-| 7. Photography Integration | 1/1 | Complete   | 2026-03-01 | - |
-| 8. Polish, Accessibility, SEO, and Deploy | 3/3 | Complete   | 2026-03-02 | - |
+| 6. Pricing, Calculator, and Property Corrections | v2.1 | 2/2 | Complete | 2026-03-02 |
+| 7. Photography Integration | v2.1 | 1/1 | Complete | 2026-03-01 |
+| 8. Polish, Accessibility, SEO, and Deploy | v2.1 | 3/3 | Complete | 2026-03-02 |
+| 9. Mobile Header and Pricing Cleanup | v2.2 | 0/1 | Not started | - |
+| 10. Calculator Per-Person Breakdown | v2.2 | 0/1 | Not started | - |
+| 11. Calculator-to-Contact Quote Flow | v2.2 | 0/1 | Not started | - |
+| 12. Google Maps Driving Route | v2.2 | 0/1 | Not started | - |
+| 13. Playwright Viewport Verification | v2.2 | 0/1 | Not started | - |

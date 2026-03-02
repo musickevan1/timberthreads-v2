@@ -178,25 +178,25 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PRIC-07 | TBD | Pending |
-| PRIC-08 | TBD | Pending |
-| PRIC-09 | TBD | Pending |
-| PRIC-10 | TBD | Pending |
-| MOBL-01 | TBD | Pending |
-| MOBL-02 | TBD | Pending |
-| MOBL-03 | TBD | Pending |
-| MOBL-04 | TBD | Pending |
-| MAPS-01 | TBD | Pending |
-| MAPS-02 | TBD | Pending |
-| TEST-01 | TBD | Pending |
-| TEST-02 | TBD | Pending |
-| TEST-03 | TBD | Pending |
+| PRIC-07 | Phase 9 | Pending |
+| PRIC-08 | Phase 10 | Pending |
+| PRIC-09 | Phase 11 | Pending |
+| PRIC-10 | Phase 11 | Pending |
+| MOBL-01 | Phase 9 | Pending |
+| MOBL-02 | Phase 13 | Pending |
+| MOBL-03 | Phase 13 | Pending |
+| MOBL-04 | Phase 13 | Pending |
+| MAPS-01 | Phase 12 | Pending |
+| MAPS-02 | Phase 12 | Pending |
+| TEST-01 | Phase 13 | Pending |
+| TEST-02 | Phase 13 | Pending |
+| TEST-03 | Phase 13 | Pending |
 
 **Coverage:**
 - v2.2 requirements: 13 total
-- Mapped to phases: 0
-- Unmapped: 13 ⚠️
+- Mapped to phases: 13
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-25*
-*Last updated: 2026-03-02 after v2.2 milestone definition*
+*Last updated: 2026-03-02 after v2.2 roadmap creation*
