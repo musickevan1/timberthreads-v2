@@ -12,7 +12,6 @@ import commonArea from '../assets/images/common-area.jpeg';
 import quiltDisplay1 from '../assets/images/quilt-display-1-cropped.jpg';
 import quiltDisplay2 from '../assets/images/quilt-display-2-cropped.jpg';
 import quiltDisplay3 from '../assets/images/quilt-display-3.jpeg';
-import quiltTreePattern from '../assets/images/quilt-tree-pattern.png';
 import quiltWorkspace from '../assets/images/quilt-workspace.jpeg';
 
 // Import v2 gallery images
@@ -177,14 +176,6 @@ export const galleryImages: GalleryImage[] = [
   },
   {
     id: 'quilts-3',
-    image: quiltTreePattern,
-    alt: 'Colorful quilted tree pattern with geometric leaf design in teal, olive, and rust',
-    caption: 'Another view of the tree-pattern quilt — intricate geometric leaf work',
-    category: 'quilts',
-    order: 3,
-  },
-  {
-    id: 'quilts-4',
     image: quiltDisplay3,
     alt: 'Cheerful quilted fabric panels with flower vase designs in pink, blue, and green',
     caption: 'Playful flower vase panels — vibrant colors and whimsical applique',
