@@ -31,15 +31,15 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Performance
 
-- [ ] **PERF-01**: Lighthouse mobile performance score 90+ on simulated Fast 3G
-- [ ] **PERF-02**: Total JavaScript shipped to client under 50KB (islands only)
-- [ ] **PERF-03**: First Contentful Paint under 2 seconds on Fast 3G
-- [ ] **PERF-04**: Zero client-side JavaScript for static content sections
-- [ ] **PERF-05**: All third-party embeds deferred until scrolled into view
+- [x] **PERF-01**: Lighthouse mobile performance score 90+ on simulated Fast 3G
+- [x] **PERF-02**: Total JavaScript shipped to client under 50KB (islands only)
+- [x] **PERF-03**: First Contentful Paint under 2 seconds on Fast 3G
+- [x] **PERF-04**: Zero client-side JavaScript for static content sections
+- [x] **PERF-05**: All third-party embeds deferred until scrolled into view
 
 ### Accessibility
 
-- [ ] **A11Y-01**: Minimum 16px font size, 18px preferred for body text
+- [x] **A11Y-01**: Minimum 16px font size, 18px preferred for body text
 - [ ] **A11Y-02**: Touch targets minimum 44x44px for all interactive elements
 - [ ] **A11Y-03**: WCAG AA color contrast compliance
 - [ ] **A11Y-04**: Alt text on all images
@@ -157,12 +157,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PHOT-02 | Phase 7 | Complete |
 | PHOT-03 | Phase 7 | Complete |
 | PHOT-04 | Phase 7 | Complete |
-| PERF-01 | Phase 8 | Pending |
-| PERF-02 | Phase 8 | Pending |
-| PERF-03 | Phase 8 | Pending |
-| PERF-04 | Phase 8 | Pending |
-| PERF-05 | Phase 8 | Pending |
-| A11Y-01 | Phase 8 | Pending |
+| PERF-01 | Phase 8 | Complete |
+| PERF-02 | Phase 8 | Complete |
+| PERF-03 | Phase 8 | Complete |
+| PERF-04 | Phase 8 | Complete |
+| PERF-05 | Phase 8 | Complete |
+| A11Y-01 | Phase 8 | Complete |
 | A11Y-02 | Phase 8 | Pending |
 | A11Y-03 | Phase 8 | Pending |
 | A11Y-04 | Phase 8 | Pending |
