@@ -24,3 +24,23 @@
 - 7 plans executed across 4 phases
 - Average plan duration: 4 min
 - Total execution time: 26 min
+
+## v2.1 — Website Enhancement
+
+**Dates:** 2026-02-25 → 2026-03-02 (phases 6-8)
+**Status:** Complete
+**Last Phase:** 8
+
+**What shipped:**
+- Updated pricing with new rate structure ($60/$75 per person, $600 flat for 10-12)
+- Interactive pricing calculator (Preact island) with real-time estimates
+- Property corrections (3 bedrooms, laundry facilities)
+- Gallery reorganized to property/bedrooms/workspaces/quilts with new photography
+- Lighthouse 90+ mobile performance, self-hosted Inter font
+- WCAG AA accessibility (contrast, touch targets, keyboard nav, font sizes)
+- SEO markup (robots.txt, sitemap, OG tags, JSON-LD LodgingBusiness)
+- Production deployment prep (DNS cutover pending)
+
+**Stats:**
+- 6 plans executed across 3 phases
+- Phases: 6 (Pricing/Calculator/Property), 7 (Photography), 8 (Polish/A11Y/SEO/Deploy)

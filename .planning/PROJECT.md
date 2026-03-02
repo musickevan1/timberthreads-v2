@@ -4,16 +4,18 @@
 
 The Timber & Threads Retreat website built with Astro — a static-first framework that ships zero JavaScript for content sections and only hydrates interactive islands. The retreat center is a quilting and crafting getaway on a small island surrounded by a lake in rural Clinton, Missouri. The site showcases the property, provides pricing information with an interactive calculator, and lets prospective guests inquire via a contact form.
 
-## Current Milestone: v2.1 Website Enhancement
+## Current Milestone: v2.2 Client Preview Polish
 
-**Goal:** Update pricing to the new rate structure, add an interactive pricing quote calculator, correct property details (3 bedrooms, laundry), integrate new photography, and complete polish/accessibility/deploy work carried from v2.0.
+**Goal:** Polish the site for client preview — clean up duplicate pricing, enhance the calculator-to-contact flow, optimize mobile viewport, add visual driving directions, and verify across viewports with Playwright.
 
 **Target features:**
-- Updated pricing across the site (per-person rates for ≤10, flat rate for 10-12)
-- Interactive pricing quote calculator with real-time estimates
-- Property detail corrections (3 bedrooms, laundry facilities)
-- New photography (dock, picnic table, fire pit, 4 edited images)
-- Lighthouse 90+ performance, WCAG AA accessibility, SEO, production deploy
+- Remove duplicate pricing cards from Accommodations section
+- Per-person price breakdown under calculator total estimate
+- "Get a Quote" button connecting calculator estimates to contact form
+- Text title visible in mobile header
+- Mobile viewport optimization and general polish
+- Map with visual driving route highlighted
+- Playwright-based desktop/mobile viewport verification
 
 ## Core Value
 
@@ -31,19 +33,25 @@ The website must load fast and look polished on slow rural connections, making t
 - ✓ Cloudinary CDN gallery with category organization and PhotoSwipe lightbox — v2.0 Phase 3
 - ✓ Video placeholder section with poster image — v2.0 Phase 3
 - ✓ Contact form with Resend email delivery, validation, honeypot spam prevention — v2.0 Phase 4
+- ✓ Updated pricing with new rate structure ($60/$75 per person, $600 flat for 10-12) — v2.1 Phase 6
+- ✓ Interactive pricing calculator (Preact island) with real-time estimates — v2.1 Phase 6
+- ✓ Property details corrected (3 bedrooms, laundry facilities) — v2.1 Phase 6
+- ✓ Gallery reorganized (property/bedrooms/workspaces/quilts) with new photography — v2.1 Phase 7
+- ✓ Lighthouse 90+ mobile performance, self-hosted fonts, optimized images — v2.1 Phase 8
+- ✓ WCAG AA accessibility (contrast, touch targets, keyboard nav, font sizes) — v2.1 Phase 8
+- ✓ SEO markup (robots.txt, sitemap, OG tags, JSON-LD, semantic HTML) — v2.1 Phase 8
 
 ### Active
 
-<!-- v2.1 scope -->
+<!-- v2.2 scope -->
 
-- [ ] Updated pricing across all site sections to new rate structure
-- [ ] Interactive pricing quote calculator with real-time total estimates
-- [ ] Property details corrected: 3 bedrooms (was 4), laundry facilities added
-- [ ] New photography integrated (dock, picnic table, fire pit, 4 edited images)
-- [ ] Lighthouse mobile performance score 90+ on Fast 3G
-- [ ] WCAG AA accessibility compliance
-- [ ] SEO markup (robots.txt, sitemap, OG tags, semantic HTML)
-- [ ] Production domain deployment (timberandthreadsretreat.com)
+- [ ] Duplicate pricing cards removed from Accommodations section
+- [ ] Calculator shows per-person price breakdown under total estimate
+- [ ] "Get a Quote" button scrolls to contact form with pre-filled estimate details
+- [ ] Mobile header shows "Timber & Threads" text title
+- [ ] Mobile viewport optimized across all sections
+- [ ] Map displays visual driving route to property
+- [ ] Desktop and mobile viewports verified via Playwright
 
 ### Out of Scope
 
@@ -56,6 +64,7 @@ The website must load fast and look polished on slow rural connections, making t
 - Promo video editing — separate workflow, placeholder already built
 - Online store — not core business
 - Newsletter subscription — client uses Facebook for updates
+- Gallery image swap — deferred until client selects new images
 
 ## Context
 
@@ -108,4 +117,4 @@ The website must load fast and look polished on slow rural connections, making t
 | Video placeholder | Promo video not ready — section structure built, swap later | ✓ Good |
 
 ---
-*Last updated: 2026-02-25 after v2.1 milestone start*
+*Last updated: 2026-03-02 after v2.2 milestone start*

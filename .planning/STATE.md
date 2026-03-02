@@ -1,33 +1,31 @@
 ---
 gsd_state_version: 1.0
-milestone: v2.1
-milestone_name: Website Enhancement
-status: unknown
-last_updated: "2026-03-02T17:30:41.733Z"
+milestone: v2.2
+milestone_name: Client Preview Polish
+status: defining_requirements
+last_updated: "2026-03-02"
 progress:
-  total_phases: 8
-  completed_phases: 7
-  total_plans: 16
-  completed_plans: 16
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-02-25)
+See: .planning/PROJECT.md (updated 2026-03-02)
 
 **Core value:** The website must load fast and look polished on slow rural connections, making the retreat feel warm and inviting enough that quilters, crafters, and families want to book a stay.
-**Current focus:** Phase 8 — Polish, Accessibility, SEO and Deploy
+**Current focus:** Defining requirements for v2.2
 
 ## Current Position
 
-Phase: 8 of 8 (Polish, Accessibility, SEO and Deploy)
-Plan: 2 of 3 complete — ready to continue Phase 8 Plan 3
-Status: Phase 8 Plan 2 complete — WCAG AA Accessibility Audit done
-Last activity: 2026-03-02 - Completed quick task 1: Improve and align gallery — review all v2-gallery images, find best shots, label, organize, and prepare for gallery sections
-
-Progress: [█████████░] 87% (Phase 7 complete, Phase 8 Plans 1-2 complete)
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-02 — Milestone v2.2 started
 
 ## Performance Metrics
 
@@ -45,11 +43,6 @@ Progress: [█████████░] 87% (Phase 7 complete, Phase 8 Plans 
 | 3. Gallery | 2 | 4 min |
 | 4. Contact | 2 | 4 min |
 
-*Updated after each plan completion*
-| Phase 08-polish-accessibility-seo-and-deploy P01 | 5 | 3 tasks | 15 files |
-| Phase 08 P02 | 3 | 2 tasks | 5 files |
-| Phase 08-polish-accessibility-seo-and-deploy P03 | 5 | 2 tasks | 7 files |
-
 ## Accumulated Context
 
 ### Decisions
@@ -61,44 +54,21 @@ Recent decisions affecting current work:
 - [v2.0]: Hardcoded gallery data — zero runtime API calls
 - [v2.0]: PhotoSwipe for lightbox — code-split, only loaded on interaction
 - [v2.1]: Pricing calculator must be an Astro island (client:load) — no server dependency, static-first
-- [06-01]: Rate card uses sm:grid-cols-2 — two pricing tiers stack on mobile, side-by-side at sm breakpoint
-- [06-01]: Seasonal date-based pricing removed entirely; group-size-based structure only ($60/$75 for <=10, $600 flat for 10-12)
-- [06-01]: Meal options collapsed to single $15/night add-on (from three old tiers) to match new rate math
-- [06-02]: Preact chosen over React for calculator island — lighter bundle, same hooks API for this use case
-- [06-02]: client:load directive used for calculator so it is immediately interactive when users arrive via CTA click
-- [06-02]: Meal rate for groups of 10-12 corrected to $12.50/person/day (2 meals & snacks), not $15/person/night
-- [07-01]: Gallery reorganized from 2 categories (facility/quilting) to 3 categories (property/bedrooms/workspaces) for property tour experience
-- [07-01]: All existing photos retained alongside new v2 photos — different angles remain valuable
-- [07-01]: quiltDisplay1/2/3 recategorized to 'workspaces' since quilts are displayed in workspace areas
-- [07-01]: v2- prefix naming convention for updated photography batches
-- [Phase 08-01]: Self-hosted Inter Variable font uses inter-latin-wght-normal.woff2 (wkst filename in plan does not exist); font-display swap enabled via @font-face + preload link
-- [Phase 08-01]: A11Y-01: body font-size raised to 1.125rem (18px); text-base minimum enforced across all content text sitewide
-- [Phase 08-01]: Map numbered badges (1-6 in fixed 28px circles) kept at text-sm — decorative positional indicators where overflow would occur
-- [Phase 08]: Footer link contrast changed to text-stone-600 (was text-stone-400, ~2.7:1 failing WCAG AA)
-- [Phase 08]: Skip-to-content links to #home (first section) for this single-page layout
-- [Phase 08-03]: OG image: copied PNG hero to public/og-image.jpg with .jpg extension — browsers parse image data, extension ignored by OG parsers
-- [Phase 08-03]: @astrojs/sitemap chosen for automatic sitemap-index.xml generation — first-party Astro integration, zero config required
-- [Phase 08-03]: JSON-LD uses LodgingBusiness schema type (more specific than LocalBusiness), set:html directive prevents HTML escaping
+- [v2.1]: Preact chosen over React for calculator island — lighter bundle, same hooks API
+- [v2.1]: Gallery reorganized to property/bedrooms/workspaces/quilts categories
+- [v2.1]: Self-hosted Inter Variable font with font-display swap
+- [v2.1]: JSON-LD uses LodgingBusiness schema type
 
 ### Pending Todos
 
 None.
 
-### Quick Tasks Completed
-
-| # | Description | Date | Commit | Directory |
-|---|-------------|------|--------|-----------|
-| 1 | Improve and align gallery — review all v2-gallery images, find best shots, label, organize, and prepare for gallery sections | 2026-03-02 | 4eda828 | [1-improve-and-align-gallery-review-all-v2-](./quick/1-improve-and-align-gallery-review-all-v2-/) |
-
 ### Blockers/Concerns
 
-- Raw photos need editing/color grading before integration (IMG_4197, IMG_4204, IMG_4208, IMG_4237)
-- IMG_4204 needs cropping per client direction
-- Outdoor photos (dock, picnic table, fire pit) may not be available yet — Phase 7 should handle gracefully
 - path-to-regexp HIGH vulnerability in @astrojs/vercel@9.0.4 transitive dep — deferred (build-time only, not shipped to client)
 
 ## Session Continuity
 
 Last session: 2026-03-02
-Stopped at: 08-03-PLAN.md Task 3 checkpoint — human-verify DNS cutover and client approval
-Resume: After DNS cutover verified — type "approved" to confirm Phase 8 complete
+Stopped at: Milestone v2.2 initialization
+Resume: Continue with requirements definition and roadmap creation
