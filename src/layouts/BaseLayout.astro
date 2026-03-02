@@ -51,6 +51,13 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://timberan
     <slot name="head" />
   </head>
   <body>
+    <!-- Skip to main content (visible on focus for keyboard users) -->
+    <a
+      href="#home"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-white focus:text-brand focus:font-medium focus:rounded-lg focus:shadow-lg focus:border-2 focus:border-brand"
+    >
+      Skip to main content
+    </a>
     <Nav />
     <main>
       <slot />
