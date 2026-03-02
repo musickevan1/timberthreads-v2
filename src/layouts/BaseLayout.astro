@@ -12,10 +12,10 @@ interface Props {
 const {
   title = 'Timber & Threads Retreat',
   description = 'A quilting and crafting retreat on a private island in the Missouri Ozarks',
-  ogImage = '/og-default.jpg',
+  ogImage = '/og-image.jpg',
 } = Astro.props;
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://timberandthreadsretreat.com');
+const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://timberandthreadsretreat.com').toString();
 ---
 
 <!doctype html>
@@ -28,12 +28,25 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://timberan
     <title>{title}</title>
     <meta name="description" content={description} />
 
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonicalURL} />
+
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={ogImage} />
+    <meta property="og:image" content={`https://timberandthreadsretreat.com${ogImage}`} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="Timber & Threads Retreat" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={`https://timberandthreadsretreat.com${ogImage}`} />
 
     <!-- Preload self-hosted Inter Variable font -->
     <link
@@ -47,6 +60,38 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://timberan
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
+
+    <!-- LocalBusiness Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "LodgingBusiness",
+      "name": "Timber & Threads Retreat",
+      "description": "A private quilting and crafting retreat on a serene island in Clinton, Missouri. Perfect for groups of 4–12.",
+      "url": "https://timberandthreadsretreat.com",
+      "telephone": "+14173431473",
+      "email": "timberandthreads24@gmail.com",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "306 NW 300 Rd",
+        "addressLocality": "Clinton",
+        "addressRegion": "MO",
+        "postalCode": "64735",
+        "addressCountry": "US"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 38.35667797966,
+        "longitude": -93.73333482388574
+      },
+      "image": "https://timberandthreadsretreat.com/og-image.jpg",
+      "priceRange": "$60-$75/night per person",
+      "amenityFeature": [
+        { "@type": "LocationFeatureSpecification", "name": "Quilting Workspaces", "value": true },
+        { "@type": "LocationFeatureSpecification", "name": "Full Kitchen", "value": true },
+        { "@type": "LocationFeatureSpecification", "name": "Laundry Facilities", "value": true },
+        { "@type": "LocationFeatureSpecification", "name": "Starlink Internet", "value": true }
+      ]
+    })} />
 
     <slot name="head" />
   </head>
