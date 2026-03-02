@@ -5,8 +5,8 @@
 import type { ImageMetadata } from 'astro';
 
 // Import existing gallery images
-import heroFrontView from '../assets/images/hero-front-view.jpeg';
-import entranceDriveway from '../assets/images/entrance-driveway.jpeg';
+import heroFrontView from '../assets/images/hero-front-view-cropped.jpg';
+import entranceDriveway from '../assets/images/entrance-driveway-summer.jpg';
 import workspace from '../assets/images/workspace.jpeg';
 import commonArea from '../assets/images/common-area.jpeg';
 import quiltDisplay1 from '../assets/images/quilt-display-1.jpeg';
@@ -15,7 +15,6 @@ import quiltDisplay3 from '../assets/images/quilt-display-3.jpeg';
 import quiltWorkspace from '../assets/images/quilt-workspace.jpeg';
 
 // Import v2 gallery images
-import v2ExteriorDriveway from '../assets/images/v2-exterior-driveway.jpg';
 import v2QuiltingWorkspace from '../assets/images/v2-quilting-workspace.jpg';
 import v2BedroomQuiltedBedding from '../assets/images/v2-bedroom-quilted-bedding.jpg';
 import v2BedroomQuiltsHangings from '../assets/images/v2-bedroom-quilts-hangings.jpg';
@@ -37,6 +36,8 @@ export interface GalleryImage {
   caption: string;
   category: GalleryCategoryName;
   order?: number;
+  /** CSS object-position for thumbnail cropping (default: 'center') */
+  cropPosition?: string;
 }
 
 // ============================================================
@@ -52,46 +53,42 @@ export const galleryImages: GalleryImage[] = [
     caption: 'The retreat nestled among the trees on a private Missouri Ozarks island',
     category: 'property',
     order: 1,
+    cropPosition: '50% 45%',
   },
   {
     id: 'property-2',
-    image: v2ExteriorDriveway,
-    alt: 'Tree-lined driveway and curved walkway leading to the retreat, with guest parking among the Ozark trees',
-    caption: 'Arriving at the retreat — a welcoming curved walkway through the trees',
+    image: entranceDriveway,
+    alt: 'Scenic grounds with mature oak trees, gravel driveway, and lush green lawn',
+    caption: 'The peaceful retreat grounds — mature trees, open lawn, and a winding path to the island',
     category: 'property',
     order: 2,
   },
   {
     id: 'property-3',
-    image: entranceDriveway,
-    alt: 'Tree-lined entrance driveway leading to the retreat property',
-    caption: 'Arriving at the retreat — a peaceful drive through the Ozark forest',
-    category: 'property',
-    order: 3,
-  },
-  {
-    id: 'property-4',
     image: v2CommonAreaSectional,
     alt: 'Cozy common area with large sectional sofa, handmade quilts on walls, and a vintage tool chest accent piece',
     caption: 'Relax in the spacious common area — quilts and comfort everywhere you look',
     category: 'property',
-    order: 4,
+    order: 3,
+    cropPosition: '50% 60%',
   },
   {
-    id: 'property-5',
+    id: 'property-4',
     image: commonArea,
     alt: 'Cozy common area with comfortable seating and rustic wood decor',
     caption: 'Relax and connect with fellow crafters in the welcoming common area',
     category: 'property',
-    order: 5,
+    order: 4,
+    cropPosition: '50% 55%',
   },
   {
-    id: 'property-6',
+    id: 'property-5',
     image: v2DiningWorkArea,
     alt: 'Bright dining and work area with tables arranged for group activities, quilts on display, and natural light streaming through windows',
     caption: 'Gather around the tables for meals, crafting, or conversation',
     category: 'property',
-    order: 6,
+    order: 5,
+    cropPosition: '50% 55%',
   },
 
   // --- Bedrooms: Settle in ---
@@ -102,6 +99,7 @@ export const galleryImages: GalleryImage[] = [
     caption: 'Sleep surrounded by handcrafted quilts — every room tells a creative story',
     category: 'bedrooms',
     order: 1,
+    cropPosition: '50% 55%',
   },
   {
     id: 'bedrooms-2',
@@ -110,6 +108,7 @@ export const galleryImages: GalleryImage[] = [
     caption: 'Vibrant quilt art adorns the walls of each bedroom',
     category: 'bedrooms',
     order: 2,
+    cropPosition: '50% 50%',
   },
   {
     id: 'bedrooms-3',
@@ -118,6 +117,7 @@ export const galleryImages: GalleryImage[] = [
     caption: 'Twin beds with quilted bedspreads and a peaceful view',
     category: 'bedrooms',
     order: 3,
+    cropPosition: '50% 60%',
   },
 
   // --- Workspaces: Create ---
@@ -128,6 +128,7 @@ export const galleryImages: GalleryImage[] = [
     caption: 'Dedicated cutting and quilting workspace with everything you need to create',
     category: 'workspaces',
     order: 1,
+    cropPosition: '50% 45%',
   },
   {
     id: 'workspaces-2',
@@ -144,6 +145,7 @@ export const galleryImages: GalleryImage[] = [
     caption: 'Bright, airy workspace with plenty of room to spread out your projects',
     category: 'workspaces',
     order: 3,
+    cropPosition: '50% 50%',
   },
   {
     id: 'workspaces-4',
@@ -152,6 +154,7 @@ export const galleryImages: GalleryImage[] = [
     caption: 'Fully equipped quilting stations ready for your creative sessions',
     category: 'workspaces',
     order: 4,
+    cropPosition: '50% 55%',
   },
   {
     id: 'workspaces-5',
