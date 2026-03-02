@@ -1,57 +1,86 @@
-# Requirements: Timber & Threads Website Enhancement
+# Requirements: Timber & Threads Website
 
 **Defined:** 2026-02-25
 **Core Value:** The website must load fast and look polished on slow rural connections, making the retreat feel warm and inviting enough that quilters, crafters, and families want to book a stay.
 
-## v2.1 Requirements
+## v2.2 Requirements
 
-Requirements for this milestone. Each maps to roadmap phases.
+Requirements for Client Preview Polish milestone. Each maps to roadmap phases.
+
+### Pricing & Calculator
+
+- [ ] **PRIC-07**: Duplicate pricing tier cards removed from Accommodations section (kept in Pricing section only)
+- [ ] **PRIC-08**: Calculator displays per-person price breakdown under the total estimate
+- [ ] **PRIC-09**: "Get a Quote" button below calculator estimate scrolls to contact form
+- [ ] **PRIC-10**: Contact form message field pre-filled with estimate details (group size, nights, meals, total) when arriving from calculator — only if message field is empty
+
+### Mobile Experience
+
+- [ ] **MOBL-01**: Mobile header displays "Timber & Threads" text title alongside logo
+- [ ] **MOBL-02**: All site sections render correctly at 375px mobile viewport
+- [ ] **MOBL-03**: All site sections render correctly at 320px minimum viewport
+- [ ] **MOBL-04**: Mobile layout changes do not break desktop layout at 1280px
+
+### Map & Directions
+
+- [ ] **MAPS-01**: Embedded Google Map displays visual driving route to the property
+- [ ] **MAPS-02**: Maps API key is domain-restricted and stored as environment variable
+
+### Testing & Verification
+
+- [ ] **TEST-01**: Playwright tests verify key elements visible and functional at desktop viewport (1280px)
+- [ ] **TEST-02**: Playwright tests verify key elements visible and functional at mobile viewport (375px)
+- [ ] **TEST-03**: Playwright tests run against production build (astro preview)
+
+## v2.1 Validated Requirements
+
+Shipped in v2.1 phases 6-8. Confirmed working.
 
 ### Pricing
 
-- [x] **PRIC-01**: All pricing references across the site reflect the new rate structure ($60/night standard, $75/night with meals for ≤10; $600/night flat for 10-12)
-- [x] **PRIC-02**: Booking requirements (min 4 persons, min 2 nights) displayed wherever pricing appears
-- [ ] **PRIC-03**: User can estimate stay cost via interactive calculator with group size, nights, and food option inputs
-- [ ] **PRIC-04**: Calculator enforces minimum constraints (4 persons, 2 nights) with clear feedback
-- [ ] **PRIC-05**: Calculator displays real-time line-item breakdown (nightly rate, food cost, total) as user adjusts inputs
-- [ ] **PRIC-06**: Calculator includes disclaimer note: "This is an estimate. Final pricing confirmed upon booking."
+- ✓ **PRIC-01**: All pricing references reflect new rate structure ($60/$75 for ≤10; $600 flat for 10-12) — v2.1 Phase 6
+- ✓ **PRIC-02**: Booking requirements (min 4 persons, min 2 nights) displayed with pricing — v2.1 Phase 6
+- ✓ **PRIC-03**: Interactive calculator with group size, nights, and food option inputs — v2.1 Phase 6
+- ✓ **PRIC-04**: Calculator enforces minimum constraints with clear feedback — v2.1 Phase 6
+- ✓ **PRIC-05**: Calculator displays real-time line-item breakdown — v2.1 Phase 6
+- ✓ **PRIC-06**: Calculator includes estimate disclaimer — v2.1 Phase 6
 
 ### Property
 
-- [x] **PROP-01**: All references updated from 4 bedrooms to 3 bedrooms (page copy, meta descriptions, alt text)
-- [x] **PROP-02**: Laundry facilities listed in amenities section
-- [x] **PROP-03**: Full kitchen with dishwasher confirmed visible in amenities
+- ✓ **PROP-01**: All references updated from 4 bedrooms to 3 bedrooms — v2.1 Phase 6
+- ✓ **PROP-02**: Laundry facilities listed in amenities — v2.1 Phase 6
+- ✓ **PROP-03**: Full kitchen with dishwasher visible in amenities — v2.1 Phase 6
 
 ### Photography
 
-- [x] **PHOT-01**: IMG_4197, IMG_4204, IMG_4208, IMG_4237 edited, color-graded, and integrated into site
-- [x] **PHOT-02**: IMG_4204 cropped per client direction before integration
-- [x] **PHOT-03**: Dock, picnic table, and fire pit photos added to property showcase (when available)
-- [x] **PHOT-04**: All new images optimized for web (compressed, responsive) with descriptive alt text
+- ✓ **PHOT-01**: IMG_4197, IMG_4204, IMG_4208, IMG_4237 edited and integrated — v2.1 Phase 7
+- ✓ **PHOT-02**: IMG_4204 cropped per client direction — v2.1 Phase 7
+- ✓ **PHOT-03**: Outdoor photos added to property showcase — v2.1 Phase 7
+- ✓ **PHOT-04**: All new images optimized with descriptive alt text — v2.1 Phase 7
 
 ### Performance
 
-- [x] **PERF-01**: Lighthouse mobile performance score 90+ on simulated Fast 3G
-- [x] **PERF-02**: Total JavaScript shipped to client under 50KB (islands only)
-- [x] **PERF-03**: First Contentful Paint under 2 seconds on Fast 3G
-- [x] **PERF-04**: Zero client-side JavaScript for static content sections
-- [x] **PERF-05**: All third-party embeds deferred until scrolled into view
+- ✓ **PERF-01**: Lighthouse mobile 90+ on Fast 3G — v2.1 Phase 8
+- ✓ **PERF-02**: JS under 50KB (islands only) — v2.1 Phase 8
+- ✓ **PERF-03**: FCP under 2s on Fast 3G — v2.1 Phase 8
+- ✓ **PERF-04**: Zero client-side JS for static sections — v2.1 Phase 8
+- ✓ **PERF-05**: Third-party embeds deferred until scroll — v2.1 Phase 8
 
 ### Accessibility
 
-- [x] **A11Y-01**: Minimum 16px font size, 18px preferred for body text
-- [x] **A11Y-02**: Touch targets minimum 44x44px for all interactive elements
-- [x] **A11Y-03**: WCAG AA color contrast compliance
-- [x] **A11Y-04**: Alt text on all images
-- [x] **A11Y-05**: Click-to-call phone numbers on mobile
-- [x] **A11Y-06**: Keyboard navigation support for all interactive elements
+- ✓ **A11Y-01**: 16px min font, 18px body text — v2.1 Phase 8
+- ✓ **A11Y-02**: 44x44px touch targets — v2.1 Phase 8
+- ✓ **A11Y-03**: WCAG AA contrast — v2.1 Phase 8
+- ✓ **A11Y-04**: Alt text on all images — v2.1 Phase 8
+- ✓ **A11Y-05**: Click-to-call phone numbers — v2.1 Phase 8
+- ✓ **A11Y-06**: Keyboard navigation — v2.1 Phase 8
 
 ### SEO & Deploy
 
-- [x] **SEDO-01**: Deploy to Vercel on timberandthreadsretreat.com domain
-- [x] **SEDO-02**: robots.txt and sitemap.xml generated
-- [x] **SEDO-03**: Open Graph meta tags for social sharing preview
-- [x] **SEDO-04**: Semantic HTML structure with proper heading hierarchy
+- ✓ **SEDO-01**: Deployed to timberandthreadsretreat.com — v2.1 Phase 8
+- ✓ **SEDO-02**: robots.txt and sitemap.xml — v2.1 Phase 8
+- ✓ **SEDO-03**: Open Graph meta tags — v2.1 Phase 8
+- ✓ **SEDO-04**: Semantic HTML with heading hierarchy — v2.1 Phase 8
 
 ## v2.0 Validated Requirements
 
@@ -59,50 +88,50 @@ Shipped in v2.0 phases 1-4. Confirmed working.
 
 ### Foundation
 
-- ✓ **FOUND-01**: Astro 5 project with Tailwind CSS v4, TypeScript strict, Vercel deployment — v2.0 Phase 1
-- ✓ **FOUND-02**: BaseLayout with meta tags, Open Graph, fonts, global styles — v2.0 Phase 1
+- ✓ **FOUND-01**: Astro 5 + Tailwind v4 + TypeScript + Vercel — v2.0 Phase 1
+- ✓ **FOUND-02**: BaseLayout with meta tags, OG, fonts, global styles — v2.0 Phase 1
 - ✓ **FOUND-03**: Mobile-first responsive design — v2.0 Phase 1
 - ✓ **FOUND-04**: Navigation with smooth-scroll anchor links — v2.0 Phase 1
-- ✓ **FOUND-05**: Image optimization pipeline (Cloudinary CDN + Astro Image) — v2.0 Phase 1
+- ✓ **FOUND-05**: Image optimization pipeline (Cloudinary + Astro Image) — v2.0 Phase 1
 - ✓ **FOUND-06**: Production build verified on Vercel — v2.0 Phase 1
 
 ### Content Sections
 
-- ✓ **CONT-01**: Hero section with full-screen background image, logo, tagline, CTAs — v2.0 Phase 2
+- ✓ **CONT-01**: Hero section — v2.0 Phase 2
 - ✓ **CONT-02**: About section — v2.0 Phase 2
 - ✓ **CONT-03**: Workshops section — v2.0 Phase 2
 - ✓ **CONT-04**: Accommodations section — v2.0 Phase 2
 - ✓ **CONT-05**: Connect section — v2.0 Phase 2
 - ✓ **CONT-06**: Footer — v2.0 Phase 2
-- ✓ **CONT-07**: All content migrated with no information loss — v2.0 Phase 2
+- ✓ **CONT-07**: All content migrated — v2.0 Phase 2
 
 ### Embeds
 
-- ✓ **EMBD-01**: Google Calendar embed, lazy-loaded — v2.0 Phase 2
-- ✓ **EMBD-02**: Google Maps embed, lazy-loaded — v2.0 Phase 2
-- ✓ **EMBD-03**: Map section with entrance photo and directions — v2.0 Phase 2
+- ✓ **EMBD-01**: Google Calendar lazy-loaded — v2.0 Phase 2
+- ✓ **EMBD-02**: Google Maps lazy-loaded — v2.0 Phase 2
+- ✓ **EMBD-03**: Map with entrance photo and directions — v2.0 Phase 2
 
 ### Media
 
-- ✓ **MDIA-01**: Photo gallery with Cloudinary CDN, organized by category — v2.0 Phase 3
-- ✓ **MDIA-02**: Gallery lightbox with PhotoSwipe — v2.0 Phase 3
-- ✓ **MDIA-03**: Responsive images with WebP/AVIF — v2.0 Phase 3
+- ✓ **MDIA-01**: Gallery with Cloudinary CDN by category — v2.0 Phase 3
+- ✓ **MDIA-02**: PhotoSwipe lightbox — v2.0 Phase 3
+- ✓ **MDIA-03**: Responsive WebP/AVIF images — v2.0 Phase 3
 - ✓ **MDIA-04**: Video placeholder with poster — v2.0 Phase 3
-- ✓ **MDIA-05**: Lazy-loaded images, hero eager-loaded — v2.0 Phase 3
+- ✓ **MDIA-05**: Lazy-loaded images, hero eager — v2.0 Phase 3
 - ✓ **MDIA-06**: Hardcoded gallery data — v2.0 Phase 3
 
 ### Contact
 
 - ✓ **CNTC-01**: Contact section with phone, email, address — v2.0 Phase 4
 - ✓ **CNTC-02**: Contact form with validation — v2.0 Phase 4
-- ✓ **CNTC-03**: Server endpoint with Resend email delivery — v2.0 Phase 4
+- ✓ **CNTC-03**: Resend email delivery — v2.0 Phase 4
 - ✓ **CNTC-04**: Honeypot spam prevention — v2.0 Phase 4
 - ✓ **CNTC-05**: Success/error feedback — v2.0 Phase 4
-- ✓ **CNTC-06**: Email credentials in env vars only — v2.0 Phase 4
+- ✓ **CNTC-06**: Email credentials in env vars — v2.0 Phase 4
 
 ## Future Requirements
 
-Deferred beyond v2.1. Tracked but not in current roadmap.
+Deferred beyond v2.2. Tracked but not in current roadmap.
 
 ### Admin & Gallery Management
 
@@ -122,6 +151,10 @@ Deferred beyond v2.1. Tracked but not in current roadmap.
 - **VIDO-01**: Promo video integrated (replacing placeholder)
 - **VIDO-02**: Video optimized for streaming on slow connections
 
+### Gallery Updates
+
+- **GALL-01**: Gallery image swap with client-selected photos
+
 ## Out of Scope
 
 Explicitly excluded. Documented to prevent scope creep.
@@ -137,6 +170,7 @@ Explicitly excluded. Documented to prevent scope creep.
 | Multi-language support | Unnecessary for rural Missouri demographic |
 | Newsletter subscription | Client uses Facebook for updates |
 | Full visual redesign | Client likes current look |
+| Gallery image swap | Deferred until client selects new images |
 
 ## Traceability
 
@@ -144,40 +178,25 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PRIC-01 | Phase 6 | Complete |
-| PRIC-02 | Phase 6 | Complete |
-| PRIC-03 | Phase 6 | Pending |
-| PRIC-04 | Phase 6 | Pending |
-| PRIC-05 | Phase 6 | Pending |
-| PRIC-06 | Phase 6 | Pending |
-| PROP-01 | Phase 6 | Complete |
-| PROP-02 | Phase 6 | Complete |
-| PROP-03 | Phase 6 | Complete |
-| PHOT-01 | Phase 7 | Complete |
-| PHOT-02 | Phase 7 | Complete |
-| PHOT-03 | Phase 7 | Complete |
-| PHOT-04 | Phase 7 | Complete |
-| PERF-01 | Phase 8 | Complete |
-| PERF-02 | Phase 8 | Complete |
-| PERF-03 | Phase 8 | Complete |
-| PERF-04 | Phase 8 | Complete |
-| PERF-05 | Phase 8 | Complete |
-| A11Y-01 | Phase 8 | Complete |
-| A11Y-02 | Phase 8 | Complete |
-| A11Y-03 | Phase 8 | Complete |
-| A11Y-04 | Phase 8 | Complete |
-| A11Y-05 | Phase 8 | Complete |
-| A11Y-06 | Phase 8 | Complete |
-| SEDO-01 | Phase 8 | Complete |
-| SEDO-02 | Phase 8 | Complete |
-| SEDO-03 | Phase 8 | Complete |
-| SEDO-04 | Phase 8 | Complete |
+| PRIC-07 | TBD | Pending |
+| PRIC-08 | TBD | Pending |
+| PRIC-09 | TBD | Pending |
+| PRIC-10 | TBD | Pending |
+| MOBL-01 | TBD | Pending |
+| MOBL-02 | TBD | Pending |
+| MOBL-03 | TBD | Pending |
+| MOBL-04 | TBD | Pending |
+| MAPS-01 | TBD | Pending |
+| MAPS-02 | TBD | Pending |
+| TEST-01 | TBD | Pending |
+| TEST-02 | TBD | Pending |
+| TEST-03 | TBD | Pending |
 
 **Coverage:**
-- v2.1 requirements: 28 total
-- Mapped to phases: 28
-- Unmapped: 0
+- v2.2 requirements: 13 total
+- Mapped to phases: 0
+- Unmapped: 13 ⚠️
 
 ---
 *Requirements defined: 2026-02-25*
-*Last updated: 2026-02-25 after roadmap creation (phases 6-8 assigned)*
+*Last updated: 2026-03-02 after v2.2 milestone definition*
