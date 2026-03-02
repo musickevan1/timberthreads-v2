@@ -22,6 +22,9 @@ import v2CommonAreaSectional from '../assets/images/v2-common-area-sectional.jpg
 import v2DiningWorkArea from '../assets/images/v2-dining-work-area.jpg';
 import v2WorkspaceBrightWindows from '../assets/images/v2-workspace-bright-windows.jpg';
 import v2BedroomTwinBeds from '../assets/images/v2-bedroom-twin-beds.jpg';
+import v2OutdoorGrounds from '../assets/images/v2-outdoor-grounds.jpg';
+import v2EntranceGate from '../assets/images/v2-entrance-gate.jpg';
+import v2ExteriorDriveway from '../assets/images/v2-exterior-driveway.jpg';
 
 // ============================================================
 // TypeScript types
@@ -48,46 +51,73 @@ export const galleryImages: GalleryImage[] = [
   // --- Property: Arrival and shared spaces ---
   {
     id: 'property-1',
+    image: v2EntranceGate,
+    alt: 'Timber & Threads entrance gate with hand-painted quilt barn sign, flanked by stone pillars and winter trees',
+    caption: 'Welcome to Timber & Threads — the quilt barn sign marks the entrance to your creative getaway',
+    category: 'property',
+    order: 1,
+    cropPosition: '50% 50%',
+  },
+  {
+    id: 'property-2',
+    image: v2OutdoorGrounds,
+    alt: 'Spacious retreat grounds with mature oak trees, gravel driveway, and open blue sky on a sunny day',
+    caption: 'Acres of peaceful Ozarks grounds with towering oaks and wide-open sky',
+    category: 'property',
+    order: 2,
+    cropPosition: '50% 40%',
+  },
+  {
+    id: 'property-3',
+    image: v2ExteriorDriveway,
+    alt: 'Gravel driveway winding through the retreat property on a warm summer day',
+    caption: 'The driveway leads you through the property to the retreat building',
+    category: 'property',
+    order: 3,
+    cropPosition: '50% 50%',
+  },
+  {
+    id: 'property-4',
     image: heroFrontView,
     alt: 'Front view of the Timber & Threads Retreat building surrounded by Ozark trees',
     caption: 'The retreat nestled among the trees on a private Missouri Ozarks island',
     category: 'property',
-    order: 1,
+    order: 4,
     cropPosition: '50% 45%',
   },
   {
-    id: 'property-2',
+    id: 'property-5',
     image: entranceDriveway,
     alt: 'Scenic grounds with mature oak trees, gravel driveway, and lush green lawn',
     caption: 'The peaceful retreat grounds — mature trees, open lawn, and a winding path to the island',
     category: 'property',
-    order: 2,
+    order: 5,
   },
   {
-    id: 'property-3',
+    id: 'property-6',
     image: v2CommonAreaSectional,
     alt: 'Cozy common area with large sectional sofa, handmade quilts on walls, and a vintage tool chest accent piece',
     caption: 'Relax in the spacious common area — quilts and comfort everywhere you look',
     category: 'property',
-    order: 3,
+    order: 6,
     cropPosition: '50% 60%',
   },
   {
-    id: 'property-4',
+    id: 'property-7',
     image: commonArea,
     alt: 'Cozy common area with comfortable seating and rustic wood decor',
     caption: 'Relax and connect with fellow crafters in the welcoming common area',
     category: 'property',
-    order: 4,
+    order: 7,
     cropPosition: '50% 55%',
   },
   {
-    id: 'property-5',
+    id: 'property-8',
     image: v2DiningWorkArea,
     alt: 'Bright dining and work area with tables arranged for group activities, quilts on display, and natural light streaming through windows',
     caption: 'Gather around the tables for meals, crafting, or conversation',
     category: 'property',
-    order: 5,
+    order: 8,
     cropPosition: '50% 55%',
   },
 
@@ -184,10 +214,10 @@ export const galleryImages: GalleryImage[] = [
   },
 ];
 
-// TODO: Future outdoor photos to add when available:
-// - Dock on the lake (category: 'property')
-// - Picnic table area (category: 'property')
-// - Fire pit area (category: 'property')
+// NOTE: 58 DSLR photos in v2-gallery/jpg/ are underexposed/dark
+// and need professional color grading before use.
+// Best candidates once edited: IMG_4220 (bathroom), IMG_4230 (kitchen),
+// IMG_4246 (bedroom with blue/white quilt wall art)
 
 // ============================================================
 // Filtered, sorted category exports
