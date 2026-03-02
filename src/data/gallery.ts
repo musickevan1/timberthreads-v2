@@ -9,9 +9,10 @@ import heroFrontView from '../assets/images/hero-front-view-cropped.jpg';
 import entranceDriveway from '../assets/images/entrance-driveway-summer.jpg';
 import workspace from '../assets/images/workspace.jpeg';
 import commonArea from '../assets/images/common-area.jpeg';
-import quiltDisplay1 from '../assets/images/quilt-display-1.jpeg';
-import quiltDisplay2 from '../assets/images/quilt-display-2.jpeg';
+import quiltDisplay1 from '../assets/images/quilt-display-1-cropped.jpg';
+import quiltDisplay2 from '../assets/images/quilt-display-2-cropped.jpg';
 import quiltDisplay3 from '../assets/images/quilt-display-3.jpeg';
+import quiltTreePattern from '../assets/images/quilt-tree-pattern.png';
 import quiltWorkspace from '../assets/images/quilt-workspace.jpeg';
 
 // Import v2 gallery images
@@ -27,7 +28,7 @@ import v2BedroomTwinBeds from '../assets/images/v2-bedroom-twin-beds.jpg';
 // TypeScript types
 // ============================================================
 
-export type GalleryCategoryName = 'property' | 'bedrooms' | 'workspaces';
+export type GalleryCategoryName = 'property' | 'bedrooms' | 'workspaces' | 'quilts';
 
 export interface GalleryImage {
   id: string;
@@ -156,29 +157,39 @@ export const galleryImages: GalleryImage[] = [
     order: 4,
     cropPosition: '50% 55%',
   },
+
+  // --- Quilts: Handmade creations ---
   {
-    id: 'workspaces-5',
+    id: 'quilts-1',
     image: quiltDisplay1,
-    alt: 'Colorful handmade quilt displayed on a wooden wall inside the retreat',
-    caption: 'Hand-stitched quilts created by retreat guests on display throughout the space',
-    category: 'workspaces',
-    order: 5,
+    alt: 'Colorful handmade quilt with traditional star pattern in warm autumn tones',
+    caption: 'A traditional star-pattern quilt in warm autumn tones — handcrafted at the retreat',
+    category: 'quilts',
+    order: 1,
   },
   {
-    id: 'workspaces-6',
+    id: 'quilts-2',
     image: quiltDisplay2,
-    alt: 'Vibrant patchwork quilt with traditional Missouri star pattern',
-    caption: 'Traditional star-pattern quilt celebrating Missouri crafting heritage',
-    category: 'workspaces',
-    order: 6,
+    alt: 'Quilted tree design with geometric leaf canopy in teal, olive, orange, and pink',
+    caption: 'A geometric tree quilt — bold colors and precise piecing create a striking design',
+    category: 'quilts',
+    order: 2,
   },
   {
-    id: 'workspaces-7',
+    id: 'quilts-3',
+    image: quiltTreePattern,
+    alt: 'Colorful quilted tree pattern with geometric leaf design in teal, olive, and rust',
+    caption: 'Another view of the tree-pattern quilt — intricate geometric leaf work',
+    category: 'quilts',
+    order: 3,
+  },
+  {
+    id: 'quilts-4',
     image: quiltDisplay3,
-    alt: 'Detail shot of intricate hand-quilted stitching on a nature-themed quilt',
-    caption: 'Intricate hand-stitching — the details that make each quilt a treasure',
-    category: 'workspaces',
-    order: 7,
+    alt: 'Cheerful quilted fabric panels with flower vase designs in pink, blue, and green',
+    caption: 'Playful flower vase panels — vibrant colors and whimsical applique',
+    category: 'quilts',
+    order: 4,
   },
 ];
 
@@ -201,4 +212,8 @@ export const bedroomImages: GalleryImage[] = galleryImages
 
 export const workspaceImages: GalleryImage[] = galleryImages
   .filter((img) => img.category === 'workspaces')
+  .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+export const quiltImages: GalleryImage[] = galleryImages
+  .filter((img) => img.category === 'quilts')
   .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
