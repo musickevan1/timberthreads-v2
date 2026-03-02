@@ -55,6 +55,18 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-serif);
 }
 
+/* Focus indicators: visible for keyboard users, hidden for mouse clicks */
+:focus-visible {
+  outline: 3px solid var(--color-brand);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+/* Remove default focus outline on non-keyboard focus */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
 h1 {
   font-weight: 500;
 }
