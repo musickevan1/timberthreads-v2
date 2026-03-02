@@ -48,9 +48,9 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### SEO & Deploy
 
-- [ ] **SEDO-01**: Deploy to Vercel on timberandthreadsretreat.com domain
-- [ ] **SEDO-02**: robots.txt and sitemap.xml generated
-- [ ] **SEDO-03**: Open Graph meta tags for social sharing preview
+- [x] **SEDO-01**: Deploy to Vercel on timberandthreadsretreat.com domain
+- [x] **SEDO-02**: robots.txt and sitemap.xml generated
+- [x] **SEDO-03**: Open Graph meta tags for social sharing preview
 - [x] **SEDO-04**: Semantic HTML structure with proper heading hierarchy
 
 ## v2.0 Validated Requirements
@@ -168,9 +168,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | A11Y-04 | Phase 8 | Complete |
 | A11Y-05 | Phase 8 | Complete |
 | A11Y-06 | Phase 8 | Complete |
-| SEDO-01 | Phase 8 | Pending |
-| SEDO-02 | Phase 8 | Pending |
-| SEDO-03 | Phase 8 | Pending |
+| SEDO-01 | Phase 8 | Complete |
+| SEDO-02 | Phase 8 | Complete |
+| SEDO-03 | Phase 8 | Complete |
 | SEDO-04 | Phase 8 | Complete |
 
 **Coverage:**

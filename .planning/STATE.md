@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v2.1
 milestone_name: Website Enhancement
 status: unknown
-last_updated: "2026-03-02T17:26:11.411Z"
+last_updated: "2026-03-02T17:30:41.733Z"
 progress:
   total_phases: 8
-  completed_phases: 6
+  completed_phases: 7
   total_plans: 16
-  completed_plans: 15
+  completed_plans: 16
 ---
 
 # Project State
@@ -48,6 +48,7 @@ Progress: [█████████░] 87% (Phase 7 complete, Phase 8 Plans 
 *Updated after each plan completion*
 | Phase 08-polish-accessibility-seo-and-deploy P01 | 5 | 3 tasks | 15 files |
 | Phase 08 P02 | 3 | 2 tasks | 5 files |
+| Phase 08-polish-accessibility-seo-and-deploy P03 | 5 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -75,6 +76,9 @@ Recent decisions affecting current work:
 - [Phase 08-01]: Map numbered badges (1-6 in fixed 28px circles) kept at text-sm — decorative positional indicators where overflow would occur
 - [Phase 08]: Footer link contrast changed to text-stone-600 (was text-stone-400, ~2.7:1 failing WCAG AA)
 - [Phase 08]: Skip-to-content links to #home (first section) for this single-page layout
+- [Phase 08-03]: OG image: copied PNG hero to public/og-image.jpg with .jpg extension — browsers parse image data, extension ignored by OG parsers
+- [Phase 08-03]: @astrojs/sitemap chosen for automatic sitemap-index.xml generation — first-party Astro integration, zero config required
+- [Phase 08-03]: JSON-LD uses LodgingBusiness schema type (more specific than LocalBusiness), set:html directive prevents HTML escaping
 
 ### Pending Todos
 
@@ -90,5 +94,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-02
-Stopped at: Completed 08-02-PLAN.md (Accessibility Audit and Fixes WCAG AA)
-Resume: Continue with Phase 8 Plan 3 (08-03-PLAN.md — SEO and Deploy)
+Stopped at: 08-03-PLAN.md Task 3 checkpoint — human-verify DNS cutover and client approval
+Resume: After DNS cutover verified — type "approved" to confirm Phase 8 complete
