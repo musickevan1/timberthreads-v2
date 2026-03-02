@@ -22,6 +22,8 @@ import v2WorkspaceBrightWindows from '../assets/images/v2-workspace-bright-windo
 import v2BedroomTwinBeds from '../assets/images/v2-bedroom-twin-beds.jpg';
 import v2OutdoorGrounds from '../assets/images/v2-outdoor-grounds.jpg';
 import v2Bathroom from '../assets/images/v2-bathroom.jpg';
+import v2BathroomShower from '../assets/images/v2-bathroom-shower.jpg';
+import v2BedroomGroupQuilts from '../assets/images/v2-bedroom-group-quilts.jpg';
 
 // ============================================================
 // TypeScript types
@@ -90,6 +92,14 @@ export const galleryImages: GalleryImage[] = [
     category: 'property',
     order: 5,
   },
+  {
+    id: 'property-6',
+    image: v2BathroomShower,
+    alt: 'Walk-in shower with mounted dispensers, fresh towels, and hooks for personal items',
+    caption: 'Spacious walk-in showers stocked with toiletries',
+    category: 'property',
+    order: 6,
+  },
 
   // --- Bedrooms: Settle in ---
   {
@@ -118,6 +128,15 @@ export const galleryImages: GalleryImage[] = [
     category: 'bedrooms',
     order: 3,
     cropPosition: '50% 60%',
+  },
+  {
+    id: 'bedrooms-4',
+    image: v2BedroomGroupQuilts,
+    alt: 'Large group bedroom with four beds, each topped with a unique handmade quilt, and quilt art lining the walls',
+    caption: 'The group bedroom — four beds dressed in one-of-a-kind quilts with art on every wall',
+    category: 'bedrooms',
+    order: 4,
+    cropPosition: '50% 50%',
   },
 
   // --- Workspaces: Create ---
