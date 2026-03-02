@@ -1,9 +1,9 @@
 ---
 import { Image } from 'astro:assets';
-import v2CommonAreaSectional from '../assets/images/v2-common-area-sectional.jpg';
 import quiltDisplay1 from '../assets/images/quilt-display-1.jpeg';
-import quiltDisplay2 from '../assets/images/quilt-display-2.jpeg';
-import quiltDisplay3 from '../assets/images/quilt-display-3.jpeg';
+import quiltTreePattern from '../assets/images/quilt-tree-pattern.png';
+import v2QuiltingWorkspace from '../assets/images/v2-quilting-workspace.jpg';
+import v2WorkspaceBrightWindows from '../assets/images/v2-workspace-bright-windows.jpg';
 ---
 
 <section id="about" class="py-16 md:py-24 bg-white">
@@ -25,48 +25,60 @@ import quiltDisplay3 from '../assets/images/quilt-display-3.jpeg';
         </p>
       </div>
 
-      <!-- Right column: standard 2x2 image grid -->
+      <!-- Right column: 2x2 image grid — links to gallery -->
       <div class="grid grid-cols-2 gap-4">
-        <!-- Top-left -->
-        <div class="relative aspect-square rounded-lg overflow-hidden">
-          <Image
-            src={v2CommonAreaSectional}
-            alt="Inviting common area with sectional sofa and handmade quilts on the walls"
-            widths={[400, 800]}
-            sizes="(max-width: 768px) 50vw, 25vw"
-            class="object-cover w-full h-full"
-          />
-        </div>
-        <!-- Top-right -->
-        <div class="relative aspect-square rounded-lg overflow-hidden">
+        <!-- Top-left: Quilt display (star pattern) -->
+        <a href="#gallery" class="group relative aspect-square rounded-lg overflow-hidden block">
           <Image
             src={quiltDisplay1}
-            alt="Quilt display"
+            alt="Colorful handmade quilt with traditional star pattern"
             widths={[400, 800]}
             sizes="(max-width: 768px) 50vw, 25vw"
-            class="object-cover w-full h-full"
+            class="object-cover w-full h-full object-[50%_65%]"
           />
-        </div>
-        <!-- Bottom-left -->
-        <div class="relative aspect-square rounded-lg overflow-hidden">
+          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
+            <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white text-base font-medium">View Gallery</span>
+          </div>
+        </a>
+        <!-- Top-right: Workshop -->
+        <a href="#gallery" class="group relative aspect-square rounded-lg overflow-hidden block">
           <Image
-            src={quiltDisplay2}
-            alt="Quilt display"
+            src={v2QuiltingWorkspace}
+            alt="Quilting workspace with large cutting mat table and quilts on the wall"
             widths={[400, 800]}
             sizes="(max-width: 768px) 50vw, 25vw"
-            class="object-cover w-full h-full"
+            class="object-cover w-full h-full object-[50%_40%]"
           />
-        </div>
-        <!-- Bottom-right -->
-        <div class="relative aspect-square rounded-lg overflow-hidden">
+          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
+            <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white text-base font-medium">View Gallery</span>
+          </div>
+        </a>
+        <!-- Bottom-left: Crafting area -->
+        <a href="#gallery" class="group relative aspect-square rounded-lg overflow-hidden block">
           <Image
-            src={quiltDisplay3}
-            alt="Quilt display"
+            src={v2WorkspaceBrightWindows}
+            alt="Spacious crafting area with tables, chairs, and bright windows"
             widths={[400, 800]}
             sizes="(max-width: 768px) 50vw, 25vw"
-            class="object-cover w-full h-full"
+            class="object-cover w-full h-full object-[50%_45%]"
           />
-        </div>
+          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
+            <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white text-base font-medium">View Gallery</span>
+          </div>
+        </a>
+        <!-- Bottom-right: Quilt display (nature/flowers) -->
+        <a href="#gallery" class="group relative aspect-square rounded-lg overflow-hidden block">
+          <Image
+            src={quiltTreePattern}
+            alt="Colorful quilted tree pattern with geometric leaf design"
+            widths={[400, 800]}
+            sizes="(max-width: 768px) 50vw, 25vw"
+            class="object-cover w-full h-full object-[50%_30%]"
+          />
+          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
+            <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white text-base font-medium">View Gallery</span>
+          </div>
+        </a>
       </div>
     </div>
 

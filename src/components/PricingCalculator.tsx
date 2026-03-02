@@ -32,7 +32,7 @@ function SliderInput({
   return (
     <div class="mb-6">
       <div class="flex justify-between items-baseline mb-2">
-        <label for={id} class="text-sm font-medium text-stone-700">
+        <label for={id} class="text-base font-medium text-stone-700">
           {label}
         </label>
         <span class="text-2xl font-bold text-stone-800">{value}</span>
@@ -52,7 +52,7 @@ function SliderInput({
         style={trackStyle}
         class="w-full h-2 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-brand [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-sm [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-brand [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
       />
-      <p class="text-xs text-stone-400 mt-1">{constraintMessage}</p>
+      <p class="text-base text-stone-400 mt-1">{constraintMessage}</p>
     </div>
   );
 }
@@ -109,8 +109,8 @@ export default function PricingCalculator() {
         {/* Meals toggle */}
         <div class="flex items-center justify-between mt-4">
           <div>
-            <p class="text-sm font-medium text-stone-700">Include Meals</p>
-            <p class="text-xs text-stone-500">+${isFlatRate ? '12.50' : '15'}/night per person{isFlatRate ? ' (2 meals & snacks)' : ''}</p>
+            <p class="text-base font-medium text-stone-700">Include Meals</p>
+            <p class="text-base text-stone-500">+${isFlatRate ? '12.50' : '15'}/night per person{isFlatRate ? ' (2 meals & snacks)' : ''}</p>
           </div>
           <button
             type="button"
@@ -141,27 +141,27 @@ export default function PricingCalculator() {
           {/* Flat rate note */}
           {isFlatRate && (
             <div class="bg-amber-50 border border-amber-200 rounded-lg px-4 py-2 mb-4">
-              <p class="text-sm text-amber-800 font-medium">Groups of 10-12: flat rate of $600/night</p>
+              <p class="text-base text-amber-800 font-medium">Groups of 10-12: flat rate of $600/night</p>
             </div>
           )}
 
           {/* Accommodation line item */}
           <div class="flex justify-between items-start text-stone-700">
-            <span class="text-sm leading-snug pr-4">
+            <span class="text-base leading-snug pr-4">
               {isFlatRate
                 ? `Accommodation: $600/night \u00d7 ${nights} night${nights !== 1 ? 's' : ''}`
                 : `Accommodation: ${groupSize} guests \u00d7 $60/night \u00d7 ${nights} night${nights !== 1 ? 's' : ''}`}
             </span>
-            <span class="text-sm font-semibold whitespace-nowrap">{formatCurrency(accommodationCost)}</span>
+            <span class="text-base font-semibold whitespace-nowrap">{formatCurrency(accommodationCost)}</span>
           </div>
 
           {/* Meals line item */}
           {includeMeals && (
             <div class="flex justify-between items-start text-stone-700">
-              <span class="text-sm leading-snug pr-4">
+              <span class="text-base leading-snug pr-4">
                 Meals: {groupSize} guests &times; ${isFlatRate ? '12.50' : '15'}/night &times; {nights} night{nights !== 1 ? 's' : ''}
               </span>
-              <span class="text-sm font-semibold whitespace-nowrap">{formatCurrency(foodCost)}</span>
+              <span class="text-base font-semibold whitespace-nowrap">{formatCurrency(foodCost)}</span>
             </div>
           )}
 
@@ -175,7 +175,7 @@ export default function PricingCalculator() {
         </div>
 
         {/* Disclaimer */}
-        <p class="text-xs text-stone-400 mt-6 pt-4 border-t border-stone-100">
+        <p class="text-base text-stone-400 mt-6 pt-4 border-t border-stone-100">
           This is an estimate. Final pricing confirmed upon booking.
         </p>
       </div>

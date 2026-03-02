@@ -33,11 +33,12 @@ const { title, images } = Astro.props;
           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
           loading="lazy"
           decoding="async"
+          style={img.cropPosition ? `object-position: ${img.cropPosition}` : undefined}
           class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
         <!-- Hover overlay -->
         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
-          <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white text-sm font-medium">
+          <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white text-base font-medium">
             View
           </span>
         </div>
