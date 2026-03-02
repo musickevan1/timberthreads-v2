@@ -4,11 +4,9 @@
 
 import type { ImageMetadata } from 'astro';
 
-// Import existing gallery images
+// Import gallery images
 import heroFrontView from '../assets/images/hero-front-view-cropped.jpg';
-import entranceDriveway from '../assets/images/entrance-driveway-summer.jpg';
 import workspace from '../assets/images/workspace.jpeg';
-import commonArea from '../assets/images/common-area.jpeg';
 import quiltDisplay1 from '../assets/images/quilt-display-1-cropped.jpg';
 import quiltDisplay2 from '../assets/images/quilt-display-2-cropped.jpg';
 import quiltDisplay3 from '../assets/images/quilt-display-3.jpeg';
@@ -23,8 +21,7 @@ import v2DiningWorkArea from '../assets/images/v2-dining-work-area.jpg';
 import v2WorkspaceBrightWindows from '../assets/images/v2-workspace-bright-windows.jpg';
 import v2BedroomTwinBeds from '../assets/images/v2-bedroom-twin-beds.jpg';
 import v2OutdoorGrounds from '../assets/images/v2-outdoor-grounds.jpg';
-import v2EntranceGate from '../assets/images/v2-entrance-gate.jpg';
-import v2ExteriorDriveway from '../assets/images/v2-exterior-driveway.jpg';
+import v2Bathroom from '../assets/images/v2-bathroom.jpg';
 
 // ============================================================
 // TypeScript types
@@ -48,15 +45,15 @@ export interface GalleryImage {
 // ============================================================
 
 export const galleryImages: GalleryImage[] = [
-  // --- Property: Arrival and shared spaces ---
+  // --- Property: Building, grounds, and shared spaces ---
   {
     id: 'property-1',
-    image: v2EntranceGate,
-    alt: 'Timber & Threads entrance gate with hand-painted quilt barn sign, flanked by stone pillars and winter trees',
-    caption: 'Welcome to Timber & Threads — the quilt barn sign marks the entrance to your creative getaway',
+    image: heroFrontView,
+    alt: 'Front view of the Timber & Threads Retreat building surrounded by Ozark trees',
+    caption: 'The retreat nestled among the trees on a private Missouri Ozarks island',
     category: 'property',
     order: 1,
-    cropPosition: '50% 50%',
+    cropPosition: '50% 45%',
   },
   {
     id: 'property-2',
@@ -69,56 +66,29 @@ export const galleryImages: GalleryImage[] = [
   },
   {
     id: 'property-3',
-    image: v2ExteriorDriveway,
-    alt: 'Gravel driveway winding through the retreat property on a warm summer day',
-    caption: 'The driveway leads you through the property to the retreat building',
-    category: 'property',
-    order: 3,
-    cropPosition: '50% 50%',
-  },
-  {
-    id: 'property-4',
-    image: heroFrontView,
-    alt: 'Front view of the Timber & Threads Retreat building surrounded by Ozark trees',
-    caption: 'The retreat nestled among the trees on a private Missouri Ozarks island',
-    category: 'property',
-    order: 4,
-    cropPosition: '50% 45%',
-  },
-  {
-    id: 'property-5',
-    image: entranceDriveway,
-    alt: 'Scenic grounds with mature oak trees, gravel driveway, and lush green lawn',
-    caption: 'The peaceful retreat grounds — mature trees, open lawn, and a winding path to the island',
-    category: 'property',
-    order: 5,
-  },
-  {
-    id: 'property-6',
     image: v2CommonAreaSectional,
     alt: 'Cozy common area with large sectional sofa, handmade quilts on walls, and a vintage tool chest accent piece',
     caption: 'Relax in the spacious common area — quilts and comfort everywhere you look',
     category: 'property',
-    order: 6,
+    order: 3,
     cropPosition: '50% 60%',
   },
   {
-    id: 'property-7',
-    image: commonArea,
-    alt: 'Cozy common area with comfortable seating and rustic wood decor',
-    caption: 'Relax and connect with fellow crafters in the welcoming common area',
-    category: 'property',
-    order: 7,
-    cropPosition: '50% 55%',
-  },
-  {
-    id: 'property-8',
+    id: 'property-4',
     image: v2DiningWorkArea,
     alt: 'Bright dining and work area with tables arranged for group activities, quilts on display, and natural light streaming through windows',
     caption: 'Gather around the tables for meals, crafting, or conversation',
     category: 'property',
-    order: 8,
+    order: 4,
     cropPosition: '50% 55%',
+  },
+  {
+    id: 'property-5',
+    image: v2Bathroom,
+    alt: 'Clean modern bathroom with white vanity, walk-in shower, and fresh towels',
+    caption: 'Private bathrooms with walk-in showers and all the essentials',
+    category: 'property',
+    order: 5,
   },
 
   // --- Bedrooms: Settle in ---
