@@ -1,309 +1,268 @@
 # Technology Stack
 
-**Project:** Timber & Threads Website Rebuild
+**Project:** Timber & Threads — v2.2 Client Preview Polish
 **Domain:** Content/business website for quilting retreat center
-**Researched:** 2026-02-16
+**Researched:** 2026-03-02
 **Confidence:** HIGH
 
-## Recommended Stack
+---
 
-### Core Framework
+## Context: Additive Research
 
-| Technology | Version | Purpose | Why |
-|------------|---------|---------|-----|
-| **Astro** | 5.17.2 | Static site framework | Industry-leading performance for content sites. Zero JS by default, ~85% browser support for View Transitions API gives SPA-like feel. Perfect for rural Missouri audience on slow connections. Static-first with optional server endpoints. |
-| **TypeScript** | Latest (via Astro) | Type safety | Astro includes built-in TypeScript support. Use `astro/tsconfigs/strict` for comprehensive type checking. Catches bugs at dev time, not production. |
-| **Node.js** | 18.x+ | Runtime | Required for build tooling and server endpoints. Vercel supports 18.x, 20.x, 22.x. |
+This document adds v2.2-specific stack additions to the existing validated stack (Astro 5 + Tailwind v4 + Preact + PhotoSwipe + Resend + Vercel + Cloudinary). Do not re-research the base stack. Focus is on what is NEW for these four features:
 
-### Styling
+1. Calculator estimates pre-filling the contact form
+2. Google Maps visual driving route display
+3. Mobile viewport optimization tooling
+4. Playwright-based viewport testing
 
-| Technology | Version | Purpose | Why |
-|------------|---------|---------|-----|
-| **Tailwind CSS** | 4.x | Utility-first CSS | Use native Vite plugin (`@tailwindcss/vite`), not deprecated `@astrojs/tailwind`. v4 is 5x faster builds, 100x faster incremental. Single `@import "tailwindcss"` line—zero config needed. Standard for Astro ecosystem. |
-| **Prettier** | Latest + `prettier-plugin-astro` | Code formatting | Official Astro plugin ensures .astro files format correctly. If using Tailwind plugin, it must be last in plugins array. |
+---
 
-### Image Optimization
+## New Stack Additions
 
-| Technology | Version | Purpose | Why |
-|------------|---------|---------|-----|
-| **Astro `<Image />` component** | Built-in | Local image optimization | Built into Astro. Automatic dimension inference, prevents CLS, Sharp-powered transforms at build time. Free, zero config. |
-| **astro-cloudinary** | 1.3.5 | CDN-hosted images | For gallery images on Cloudinary CDN. `CldImage` component with responsive sizing, lazy loading, automatic format optimization (AVIF/WebP). `cldAssetsLoader` for content collections if you want programmatic access to Cloudinary folders. |
+### Feature 1: Calculator-to-Contact Pre-fill
 
-### Email Delivery
+**Verdict: No new libraries needed. Pure vanilla JS + URL search params.**
 
-| Technology | Version | Purpose | Why |
-|------------|---------|---------|-----|
-| **Resend** | 6.9.2 | Contact form email delivery | Modern API-first service. Works on Vercel serverless/edge (Nodemailer doesn't work on edge). Simpler setup than Nodemailer—no SMTP config, better error messages, built-in analytics. Free tier: 100 emails/day, 3k/month. Budget-friendly. |
+The Preact calculator island (`PricingCalculator.tsx`) runs client-side. The contact form (`Contact.astro`) uses `id="message"` on its textarea. The pattern:
 
-### Deployment
+1. The calculator's "Get a Quote" button calls `window.location.href = '/?estimate=...'` (or uses `window.location.hash` to jump to `#contact` after setting params)
+2. A `<script>` tag in `Contact.astro` reads `URLSearchParams` on load and pre-fills `messageInput.value`
+3. `.scrollIntoView({ behavior: 'smooth' })` scrolls to the contact section
 
-| Technology | Version | Purpose | Why |
-|------------|---------|---------|-----|
-| **Vercel** | N/A | Static hosting + serverless functions | Zero-config for static Astro. Add `@astrojs/vercel` adapter only if using server endpoints (contact form). Git-based deploys, automatic HTTPS, edge network, generous free tier. |
-| **@astrojs/vercel** | Latest | Server endpoint adapter | Enables contact form API route to run serverless. Only needed for `output: 'server'` with `export const prerender = false` on API routes. Not needed if purely static. |
+This is standard browser APIs available in all evergreen browsers — no library required.
 
-### Development Tools
+**Implementation pattern (to guide build phase):**
 
-| Tool | Purpose | Notes |
-|------|---------|-------|
-| **@astrojs/check** | TypeScript type checking | Run `astro check --watch` during dev. Catches .astro and .ts type errors. Use `--minimumSeverity warning` in CI. |
-| **eslint-plugin-astro** | Linting for .astro files | Examines code logic and structure. Pair with Prettier for formatting. |
-| **prettier-plugin-astro** | Format .astro files | Official plugin. Required for Prettier to understand Astro syntax. |
-
-## Supporting Libraries
-
-| Library | Version | Purpose | When to Use |
-|---------|---------|---------|-------------|
-| **@astrojs/check** | Latest | Type checking CLI | Always. Add to `package.json` scripts: `"check": "astro check"`. Run in CI before deploy. |
-| **astro-cloudinary** | 1.3.5 | Cloudinary integration | For gallery section. Set `CLOUDINARY_CLOUD_NAME` env var. Use `CldImage` for individual images. |
-| **resend** | 6.9.2 | Email API client | Contact form only. Set `RESEND_API_KEY` env var. Call from server endpoint (not client). |
-
-## Installation
-
-```bash
-# Initialize Astro project (if not already done)
-npm create astro@latest
-
-# Core dependencies (Astro includes TypeScript by default)
-npm install astro
-
-# Styling
-npx astro add tailwind
-# This installs Tailwind v4 with @tailwindcss/vite plugin
-
-# Images - Cloudinary (for gallery)
-npm install astro-cloudinary
-
-# Email delivery
-npm install resend
-
-# Deployment - Vercel adapter (for server endpoints)
-npx astro add vercel
-# Only run this if using contact form server endpoint
-
-# Dev dependencies - Code quality
-npm install -D @astrojs/check prettier prettier-plugin-astro eslint eslint-plugin-astro
-```
-
-## Configuration Files
-
-### astro.config.mjs
-
-```javascript
-import { defineConfig } from 'astro/config';
-import vercel from '@astrojs/vercel/serverless';
-
-export default defineConfig({
-  output: 'server', // Required for contact form API endpoint
-  adapter: vercel(), // Only if using server endpoints
-  // Most pages will be static via prerender: true
-  // API routes use prerender: false
-});
-```
-
-**Alternative for pure static (no contact form):**
-```javascript
-import { defineConfig } from 'astro/config';
-
-export default defineConfig({
-  // No adapter needed - deploys as static to Vercel
-});
-```
-
-### tsconfig.json
-
-```json
-{
-  "extends": "astro/tsconfigs/strict"
+```typescript
+// In PricingCalculator.tsx — "Get a Quote" button click handler
+function handleGetQuote() {
+  const summary = buildEstimateSummary(groupSize, nights, includeMeals, total);
+  const params = new URLSearchParams({ estimate: summary });
+  window.location.href = `/#contact?${params.toString()}`;
+  // Hash + query combined: browser navigates to #contact anchor,
+  // the Contact.astro script reads ?estimate= on DOMContentLoaded
 }
 ```
 
-### .prettierrc
+```javascript
+// In Contact.astro <script> — read pre-fill on page load
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const estimate = params.get('estimate');
+  if (estimate && messageInput) {
+    messageInput.value = decodeURIComponent(estimate);
+    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+  }
+});
+```
+
+**Note on Astro islands:** The Preact island and the Contact Astro script are separate execution contexts. Communication via URL params (navigate + read) is the correct approach — do not try to import the Preact component into the Astro script or vice versa. The island can also dispatch a `CustomEvent` on the `window` if same-page navigation is preferred, but URL params are simpler and survive page refreshes.
+
+---
+
+### Feature 2: Google Maps Visual Driving Route
+
+**Verdict: Use Google Maps Embed API in `directions` mode. No new libraries. Requires API key (existing billing account OK).**
+
+The existing `Map.astro` already uses a Maps Embed API iframe for the location pin view. Adding a route display means switching the embed URL to `directions` mode.
+
+**Approach: Replace or supplement the existing embed with a directions-mode URL.**
+
+```
+https://www.google.com/maps/embed/v1/directions
+  ?key=YOUR_MAPS_EMBED_API_KEY
+  &origin=Clinton+MO
+  &destination=306+NW+300+Rd+Clinton+MO+64735
+  &mode=driving
+```
+
+- **Cost:** Maps Embed API is free with unlimited usage (verified March 2026). Billing account required but no charges incurred.
+- **API key:** A Maps Embed API key is already likely provisioned for the existing embed. If not, create a separate key restricted to Maps Embed API and the production domain.
+- **Route display:** The iframe renders a visual blue route line on the map between origin and destination — exactly what the client wants.
+
+**Design decision for Map.astro:**
+
+Two options:
+1. **Replace** the current pin embed with a directions embed (simpler — one iframe, shows route)
+2. **Tab toggle** between "Location" (pin view) and "Directions" (route view) (more complex, adds JS)
+
+Recommendation: Replace the pin embed with the directions embed. Destination is the property address; origin defaults to `Clinton+MO` or leave blank to let Google show a "from your location" prompt. A static directions embed with a sensible default origin (e.g., Kansas City, MO — the nearest major city) is more useful than a bare pin, and aligns with the project goal of "visual driving route."
+
+The lazy-load intersection observer already in `Map.astro` works unchanged with the new URL.
+
+**Environment variable:**
+
+```bash
+# .env (and Vercel dashboard)
+PUBLIC_GOOGLE_MAPS_EMBED_KEY=AIza...
+```
+
+Use `PUBLIC_` prefix because the key is embedded in client-side iframe src. Restrict the key to Maps Embed API + production domain in Google Cloud Console.
+
+---
+
+### Feature 3: Mobile Viewport Optimization Tooling
+
+**Verdict: No new libraries. Browser DevTools + Tailwind responsive utilities + Lighthouse.**
+
+The existing stack handles mobile optimization through:
+
+- **Tailwind responsive prefixes** (`sm:`, `md:`, `lg:`) — already in use throughout the project
+- **Chrome DevTools Device Mode** — built into Chrome, covers standard viewports (320px, 375px, 425px, 768px, 1024px+)
+- **Astro's built-in Lighthouse integration** — `astro preview` then run Lighthouse for 90+ mobile score (already validated)
+
+For v2.2 polish work, there is no tooling gap. The mobile issues (header text visibility, section optimization) are CSS/Tailwind fixes, not framework problems.
+
+**Standard test viewports for this project:**
+
+| Breakpoint | Width | Represents |
+|------------|-------|------------|
+| Mobile S | 320px | Older/small phones |
+| Mobile M | 375px | iPhone SE, older iPhones |
+| Mobile L | 425px | Large modern phones |
+| Tablet | 768px | Tailwind `md:` breakpoint |
+| Desktop | 1280px | Standard laptop |
+
+The Tailwind `sm:` breakpoint is 640px and `md:` is 768px. Test at 375px and 768px to catch most mobile/tablet issues.
+
+---
+
+### Feature 4: Playwright Viewport Testing
+
+**Verdict: Add `@playwright/test` as dev dependency. No other new packages.**
+
+| Library | Version | Purpose |
+|---------|---------|---------|
+| `@playwright/test` | 1.58.2 | E2E + viewport testing framework |
+
+**Why Playwright over alternatives:**
+
+- **vs Cypress:** Playwright tests multiple browser engines (Chromium, WebKit, Firefox) from one config. Built-in device emulation with real device profiles. No cloud account required.
+- **vs Vitest browser mode:** Playwright is the documented Astro recommendation for E2E tests. Vitest is for unit/component tests.
+- **vs manual testing:** Playwright can run against `astro build && astro preview` output — the exact production artifact — in CI.
+
+**Configuration for this project:**
+
+```typescript
+// playwright.config.ts
+import { defineConfig, devices } from '@playwright/test';
+
+export default defineConfig({
+  testDir: './tests',
+  webServer: {
+    command: 'npm run preview',
+    url: 'http://localhost:4321/',
+    timeout: 120_000,
+    reuseExistingServer: !process.env.CI,
+  },
+  use: {
+    baseURL: 'http://localhost:4321/',
+  },
+  projects: [
+    // Desktop
+    { name: 'Desktop Chrome', use: { ...devices['Desktop Chrome'] } },
+    // Mobile
+    { name: 'Mobile Chrome', use: { ...devices['Pixel 5'] } },       // 393x851
+    { name: 'Mobile Safari', use: { ...devices['iPhone 13'] } },     // 390x844
+  ],
+});
+```
+
+**Test scope for v2.2:**
+
+The Playwright tests should verify viewport-specific behavior, not full E2E flows. Recommended test assertions:
+
+1. Mobile header shows "Timber & Threads" text at 390px width
+2. Calculator "Get a Quote" button is visible and tappable (44px touch target) at mobile width
+3. Contact form message field is pre-filled when landing with `?estimate=` param
+4. Map section renders an iframe on scroll (lazy-load intersection observer fires)
+5. No horizontal scroll overflow at 375px width (layout integrity check)
+
+**Build step requirement:** Playwright's `webServer` command uses `npm run preview`, which requires `npm run build` first. Add a combined script:
 
 ```json
 {
-  "plugins": ["prettier-plugin-astro"],
-  "overrides": [
-    {
-      "files": "*.astro",
-      "options": {
-        "parser": "astro"
-      }
-    }
-  ]
+  "scripts": {
+    "test:e2e": "astro build && playwright test"
+  }
 }
 ```
 
-### .env
+---
+
+## Summary: What to Install
 
 ```bash
-# Cloudinary (for image gallery)
-CLOUDINARY_CLOUD_NAME=your_cloud_name
+# Only new dev dependency for v2.2
+npm install -D @playwright/test
 
-# Resend (for contact form)
-RESEND_API_KEY=re_xxxxxxxxxxxxx
-
-# In Vercel dashboard, set these as Environment Variables
-# Do NOT commit .env to git
+# Install browser binaries (run once after install)
+npx playwright install --with-deps chromium webkit
 ```
 
-## Alternatives Considered
+No new runtime dependencies. All other v2.2 features use existing browser APIs, existing Google Maps Embed infrastructure, and existing Tailwind utilities.
 
-| Category | Recommended | Alternative | Why Not Alternative |
-|----------|-------------|-------------|---------------------|
-| Framework | **Astro 5.17** | Next.js 14 | Next.js is over-engineered for static content. React overhead unnecessary. Astro is 40%+ faster load times for content sites. You're already migrating away from Next.js for performance. |
-| Styling | **Tailwind v4** | Regular CSS / CSS Modules | Tailwind accelerates dev speed, has excellent mobile-first utilities. v4's zero-config approach is simpler than v3. Pure CSS is slower to write, harder to maintain consistency. |
-| Email | **Resend** | Nodemailer | Nodemailer doesn't work on Vercel edge functions, requires SMTP config (more complex), worse DX (unhelpful errors), no built-in analytics. Resend is modern, serverless-friendly. |
-| Images (CDN) | **astro-cloudinary** | Cloudinary SDK directly | astro-cloudinary wraps Cloudinary with Astro-specific components (`CldImage`), handles responsive images automatically, integrates with Astro's image optimization patterns. |
-| Deployment | **Vercel** | Netlify | Both work well. Vercel has tighter Astro integration, better DX for serverless functions, faster cold starts. Netlify is viable alternative if you prefer their ecosystem. |
-| TypeScript strictness | **strict** | strictest | `strictest` adds extra noise for marginal benefit in a content site. `strict` catches 95% of bugs with less friction. |
+---
 
-## What NOT to Use
+## What NOT to Add
 
 | Avoid | Why | Use Instead |
 |-------|-----|-------------|
-| **@astrojs/tailwind** | Deprecated as of Astro v5 + Tailwind v4. No longer maintained. | Use Tailwind's native Vite plugin via `npx astro add tailwind` |
-| **Nodemailer on Vercel** | Doesn't work on edge functions. SMTP config complexity. Poor error messages. | **Resend** - serverless-friendly, better DX, free tier |
-| **output: 'hybrid'** | Removed in Astro v5. No longer supported. | `output: 'server'` with `export const prerender = true` on static pages (same effect) |
-| **UI frameworks (React/Vue/Svelte)** | Unnecessary JS overhead for static content. Defeats Astro's zero-JS philosophy. | Use plain Astro components. Add `<script>` tags for interactivity if needed. |
-| **Third-party image CDNs without Astro integration** | Manual responsive image handling, no lazy loading, no Astro optimization pipeline. | **astro-cloudinary** for CDN images, or Astro's `<Image />` for local images |
-| **Hybrid rendering for this project** | Single-page site doesn't need per-route granularity. Simpler to use server output with prerender on static pages. | `output: 'server'` + `export const prerender = true` on pages |
+| Google Maps JavaScript API (full) | Requires JS bundle, billing monitoring, complex initialization. Overkill for a visual route display. | Maps Embed API iframe in directions mode — free, zero JS, same visual result |
+| Google Directions API / Routes API | Server-side API returning JSON routing data. Not needed — we're displaying a map, not calculating routes programmatically. | Maps Embed API handles the visual route display |
+| `@googlemaps/js-api-loader` | NPM package for Maps JavaScript API. Unnecessary added weight. | Direct iframe embed |
+| State management library (Zustand, Jotai) | Not needed for passing estimate data from calculator to form. | URL search params — simpler, no dependency, works across component boundaries |
+| Preact signals | Complex for a one-time data handoff between calculator and contact form. | URL params pattern |
+| Cypress | Heavier install, slower, Electron-based, no multi-browser from config. | `@playwright/test` |
+| `playwright` (full package) | Includes `playwright-core` + all browser downloads. For test-only use, `@playwright/test` is sufficient and includes what you need. | `@playwright/test` |
+| Mobile-first CSS frameworks (Bootstrap, Bulma) | Conflicts with Tailwind, unnecessary overhead. | Existing Tailwind responsive utilities |
 
-## Stack Patterns by Use Case
+---
 
-### If purely static site (no contact form):
-```javascript
-// astro.config.mjs
-export default defineConfig({
-  // No adapter, no output config
-});
-```
-- Deploy to Vercel with zero config
-- No `@astrojs/vercel` needed
-- All content pre-rendered at build time
+## Integration Points
 
-### If static + contact form API endpoint:
-```javascript
-// astro.config.mjs
-import vercel from '@astrojs/vercel/serverless';
+| Feature | Touches | How |
+|---------|---------|-----|
+| Calculator pre-fill | `PricingCalculator.tsx` (add "Get a Quote" button + navigate), `Contact.astro` (add URLSearchParams reader in `<script>`) | Vanilla JS / browser navigation |
+| Maps route display | `Map.astro` (swap iframe `data-src` URL to directions mode) | Embed URL change only |
+| Mobile optimization | `Nav.astro` (show text title at mobile), any section with overflow/spacing issues | Tailwind responsive utilities |
+| Playwright tests | New `tests/` directory + `playwright.config.ts` at project root | Dev tooling, no production impact |
 
-export default defineConfig({
-  output: 'server',
-  adapter: vercel(),
-});
-```
-
-```javascript
-// src/pages/index.astro
-export const prerender = true; // Static page
-```
-
-```javascript
-// src/pages/api/contact.ts
-export const prerender = false; // Server endpoint
-export async function POST({ request }) { /* ... */ }
-```
-
-- Most pages static (fast)
-- API endpoint runs serverless on-demand
-- Best of both worlds
-
-### If using Cloudinary for ALL images:
-- Use `astro-cloudinary` for everything
-- Remove Astro's `<Image />` component
-- All images served from Cloudinary CDN
-- Centralized image management in Cloudinary dashboard
-
-### If using local images + Cloudinary gallery:
-- Local images (hero, logos): Astro `<Image />`
-- Gallery images: `astro-cloudinary` with `CldImage`
-- Best performance (local images optimized at build, gallery lazy-loaded from CDN)
-
-## Performance Optimizations Built Into This Stack
-
-1. **Zero JavaScript by default** - Astro ships zero JS unless explicitly added
-2. **View Transitions API** - SPA-like navigation with native browser API (85%+ browser support)
-3. **Image optimization** - Sharp transforms at build (local) + Cloudinary CDN (gallery)
-4. **Lazy loading** - Use `loading="lazy"` on iframes (Google Maps, Calendar). Use `client:visible` for any interactive components.
-5. **Edge deployment** - Vercel's global edge network serves static assets from nearest location
-6. **Build-time rendering** - HTML generated at build time, not server request time
+---
 
 ## Version Compatibility
 
-| Package | Compatible With | Notes |
-|---------|-----------------|-------|
-| Astro 5.17.2 | Tailwind CSS 4.x | Use `@tailwindcss/vite` plugin, not `@astrojs/tailwind` |
-| Astro 5.17.2 | Node 18.x, 20.x, 22.x | Vercel supports all three. 18.x is LTS. |
-| astro-cloudinary 1.3.5 | Astro 5.x | Actively maintained by Cloudinary community |
-| @astrojs/vercel | Astro 5.x | Official adapter, version-locked to Astro |
-| Resend 6.9.2 | Any Node runtime | Works in serverless and edge environments |
+| Package | Version | Compatible With | Notes |
+|---------|---------|-----------------|-------|
+| `@playwright/test` | 1.58.2 | Node 18.x+ | Works with Astro's `preview` command on port 4321 |
+| Maps Embed API | N/A (Google-hosted) | All browsers | iframe, no npm package, unlimited free usage |
+| URLSearchParams | Browser built-in | All evergreen browsers, IE11+ | No polyfill needed for target audience |
 
-## Environment Variables Strategy
+---
 
-### Development (.env file)
-```bash
-CLOUDINARY_CLOUD_NAME=demo
-RESEND_API_KEY=re_test_xxxxxxxx
-```
+## Alternatives Considered
 
-### Production (Vercel Dashboard)
-- Set `CLOUDINARY_CLOUD_NAME` (no `PUBLIC_` prefix - server-only)
-- Set `RESEND_API_KEY` (no `PUBLIC_` prefix - server-only, sensitive)
-- Vercel auto-injects system vars like `VERCEL_URL`
+| Feature | Recommended | Alternative | Why Not |
+|---------|-------------|-------------|---------|
+| Calculator → form data handoff | URL search params | `localStorage` | localStorage persists across sessions (stale data risk); URL params are ephemeral, inspectable, bookmarkable |
+| Calculator → form data handoff | URL search params | `CustomEvent` on `window` | Custom events work only if both components are live simultaneously. Page navigation (scroll to section on different layout state) breaks the event approach. URL params survive the navigation. |
+| Map route | Maps Embed API (directions mode) | Leaflet.js + OpenStreetMap | Leaflet adds ~140KB JS + tile requests. Embed API is zero JS, already trusted by users, shows Google's route quality. |
+| Viewport testing | Playwright | BrowserStack | BrowserStack costs money. Playwright is free, runs locally and in CI, sufficient for this project's needs. |
 
-### Important Rules
-- **PUBLIC_** prefix = exposed to client (avoid for API keys)
-- No prefix = server-only (safe for secrets)
-- `.env` files never committed to git (add to `.gitignore`)
+---
 
 ## Sources
 
-**Astro Core:**
-- [Astro 5.17.2 Release](https://github.com/withastro/astro/releases) - Latest stable version (verified Feb 2026)
-- [Astro Documentation](https://docs.astro.build/en/getting-started/) - Official getting started guide
-- [Astro TypeScript Guide](https://docs.astro.build/en/guides/typescript/) - TypeScript configuration
-
-**Styling:**
-- [Tailwind CSS v4.0](https://tailwindcss.com/blog/tailwindcss-v4) - Version 4 announcement and features
-- [Astro Styling Guide](https://docs.astro.build/en/guides/styling/) - Official Tailwind integration docs
-- [Astro + Tailwind Integration](https://docs.astro.build/en/guides/integrations-guide/tailwind/) - Deprecated integration notice
-
-**Images:**
-- [Astro Images Guide](https://docs.astro.build/en/guides/images/) - Built-in Image component
-- [Astro Cloudinary](https://astro.cloudinary.dev/) - Official documentation
-- [Cloudinary + Astro Guide](https://cloudinary.com/guides/front-end-development/integrating-cloudinary-with-astro) - Integration guide
-
-**Email:**
-- [Resend npm package](https://www.npmjs.com/package/resend) - Version 6.9.2 verified
-- [Resend vs Nodemailer Comparison](https://devdiwan.medium.com/goodbye-nodemailer-why-i-switched-to-resend-for-sending-emails-in-node-js-55e5a0dba899) - Developer experience comparison
-- [Astro Contact Form with Resend](https://contentisland.net/en/blog/astro-contact-form-server-actions-resend/) - Implementation guide
-
-**Deployment:**
-- [Astro on Vercel](https://docs.astro.build/en/guides/deploy/vercel/) - Official deployment guide
-- [Vercel Adapter](https://docs.astro.build/en/guides/integrations-guide/vercel/) - @astrojs/vercel documentation
-- [Astro Environment Variables](https://docs.astro.build/en/guides/environment-variables/) - .env configuration
-
-**Server Endpoints:**
-- [Astro Endpoints](https://docs.astro.build/en/guides/endpoints/) - API routes documentation
-- [Astro On-Demand Rendering](https://docs.astro.build/en/guides/on-demand-rendering/) - Server vs static output
-- [Astro Build Forms with API Routes](https://docs.astro.build/en/recipes/build-forms-api/) - Form handling pattern
-
-**Performance:**
-- [Astro View Transitions](https://docs.astro.build/en/guides/view-transitions/) - SPA-like navigation
-- [Astro Performance Optimization](https://eastondev.com/blog/en/posts/dev/20251203-astro-image-optimization-guide/) - Image optimization techniques
-
-**Development Tools:**
-- [Astro Check CLI](https://docs.astro.build/en/reference/cli-reference/) - Type checking command
-- [ESLint Plugin Astro](https://ota-meshi.github.io/eslint-plugin-astro/user-guide/) - Linting configuration
-- [Prettier Plugin Astro](https://github.com/withastro/prettier-plugin-astro) - Code formatting
+- [Google Maps Embed API — Usage and Billing](https://developers.google.com/maps/documentation/embed/usage-and-billing) — Confirmed free/unlimited (verified March 2026)
+- [Google Maps Embed API — Directions Mode](https://developers.google.com/maps/documentation/embed/embedding-map) — URL format and parameters (verified March 2026)
+- [Playwright — Emulation](https://playwright.dev/docs/emulation) — Device profiles including Pixel 5, iPhone 13 (verified March 2026)
+- [Playwright — Installation](https://playwright.dev/docs/intro) — @playwright/test 1.58.2 (verified via npm March 2026)
+- [Astro — Testing Guide](https://docs.astro.build/en/guides/testing/) — webServer config for Playwright + Astro (official docs)
+- [URLSearchParams — MDN](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams) — Browser built-in, no polyfill needed
+- [Element.scrollIntoView — MDN](https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView) — Browser built-in scroll behavior
 
 ---
 
-**Confidence Level:** HIGH
-
-All recommendations verified with official documentation (Astro, Tailwind, Cloudinary, Resend, Vercel), npm package versions confirmed via search (Feb 2026), and community best practices cross-referenced across multiple sources. This stack is production-ready and optimized for the specific requirements: performance-first, budget-conscious, rural audience, static content with single server endpoint.
-
----
-
-*Stack research for: Timber & Threads Website Rebuild (Astro-based content/business site)*
-*Researched: 2026-02-16*
+*Stack research for: Timber & Threads v2.2 polish milestone (calculator flow, Maps route, mobile viewport, Playwright)*
+*Researched: 2026-03-02*

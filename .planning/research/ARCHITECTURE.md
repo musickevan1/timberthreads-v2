@@ -1,646 +1,745 @@
-# Architecture Research: Astro Single-Page Scrolling Site
+# Architecture Research: v2.2 Feature Integration
 
-**Domain:** Content website (single-page scrolling)
-**Researched:** 2026-02-16
+**Domain:** Astro static site — incremental feature additions to existing single-page site
+**Researched:** 2026-03-02
 **Confidence:** HIGH
 
-## Standard Astro Architecture
+> This document supersedes the 2026-02-16 initial architecture research and focuses on
+> how the four v2.2 milestone features integrate with the existing codebase. The prior
+> research documented foundation patterns; this documents integration patterns.
 
-### System Overview
+---
+
+## Existing Architecture Snapshot
+
+Before describing new features, the current system that changes must integrate with:
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                   Browser (Client Layer)                     │
-├─────────────────────────────────────────────────────────────┤
-│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐        │
-│  │ Static  │  │ React   │  │ Contact │  │ Lazy    │        │
-│  │ HTML    │  │ Island  │  │ Form    │  │ Iframes │        │
-│  │ Sections│  │(Gallery)│  │ Island  │  │         │        │
-│  └────┬────┘  └────┬────┘  └────┬────┘  └────┬────┘        │
-│       │            │ (hydrated)  │ (hydrated)  │            │
-│       │            └─────────────┴─────────────┘            │
-│       │              ↓ Interaction (POST)                   │
-├───────┴──────────────┴──────────────────────────────────────┤
-│                   Vercel Edge Network                        │
-├─────────────────────────────────────────────────────────────┤
-│  ┌──────────────────────┐    ┌──────────────────────────┐   │
-│  │  Static HTML Page    │    │  Server API Endpoint     │   │
-│  │  (prebuilt)          │    │  (SSR - on-demand)       │   │
-│  └──────────────────────┘    │  POST /api/contact.json  │   │
-│                               │  → Nodemailer → Email    │   │
-│                               └──────────────────────────┘   │
-├─────────────────────────────────────────────────────────────┤
-│                   External Services                          │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐                   │
-│  │Cloudinary│  │ Google   │  │ SMTP     │                   │
-│  │  (CDN)   │  │ Maps/Cal │  │ Provider │                   │
-│  └──────────┘  └──────────┘  └──────────┘                   │
-└─────────────────────────────────────────────────────────────┘
+src/
+├── pages/
+│   ├── index.astro                   # Single page — composes all sections
+│   └── api/contact.ts                # Vercel serverless — POST handler (Resend)
+├── layouts/
+│   └── BaseLayout.astro              # HTML shell, meta, structured data
+├── components/
+│   ├── Nav.astro                     # Fixed header, hamburger, scroll-spy
+│   ├── Hero.astro                    # Static section
+│   ├── About.astro                   # Static section
+│   ├── Workshops.astro               # Static section
+│   ├── Accommodations.astro          # Static section (has CTA → #pricing-calculator)
+│   ├── Calendar.astro                # Lazy iframe (IntersectionObserver)
+│   ├── PricingSection.astro          # Static wrapper + mounts PricingCalculator island
+│   ├── PricingCalculator.tsx         # Preact island (client:load) — isolated state
+│   ├── Gallery.astro                 # Static, PhotoSwipe lightbox
+│   ├── GalleryCategory.astro         # Static, renders image grid
+│   ├── Contact.astro                 # Static HTML + inline <script> for form+validation
+│   ├── Map.astro                     # Lazy iframe (IntersectionObserver)
+│   └── Footer.astro                  # Static section
+├── scripts/
+│   └── scroll-spy.js                 # Global: highlights active nav link on scroll
+├── data/
+│   └── gallery.ts                    # Static gallery image data, ESM imports
+└── assets/
+    └── images/                       # Build-time optimized images
 ```
 
-### Component Responsibilities
+**Key constraints from existing architecture:**
+- `output: 'static'` — no SSR at page request time, only the `/api/contact` endpoint uses Vercel Functions
+- Preact is already installed (`@astrojs/preact`, `preact` in package.json)
+- `PricingCalculator.tsx` uses `client:load` and has **isolated internal state** (no external bindings)
+- `Contact.astro` form logic lives in an **inline `<script>`** tag — vanilla JS, DOM-only, no framework
+- `Map.astro` uses a lazy-loaded iframe — **no Google Maps API key currently in use**
+- `Nav.astro` brand text uses `hidden sm:block` — **invisible on mobile by design** (to fix in v2.2)
 
-| Component | Responsibility | Typical Implementation |
-|-----------|----------------|------------------------|
-| **Static Sections** | Render non-interactive content (About, Services, etc.) | `.astro` components with no client JS |
-| **React Islands** | Provide interactivity where needed (gallery, form) | React components with `client:visible` or `client:load` |
-| **Layout** | Wrap page with common structure (meta, fonts, scripts) | Base layout `.astro` with `<slot />` |
-| **Server Endpoint** | Handle form submission, send email | API route in `pages/api/` exporting POST function |
-| **Lazy Loaders** | Defer iframe/embed loading until visible | Custom script or `client:visible` directive |
+---
 
-## Recommended Project Structure
+## Feature 1: Calculator State → Contact Form Pre-fill
+
+### The Problem
+
+`PricingCalculator.tsx` is a self-contained Preact island. `Contact.astro` has a plain `<textarea id="message">` filled by vanilla JS. These two live in separate parts of the DOM and don't share a runtime.
+
+**The island boundary:** When Astro renders `PricingCalculator.tsx` with `client:load`, it boots a fresh Preact runtime scoped to that component tree. `Contact.astro`'s inline `<script>` runs in browser scope. They share only the DOM and the global `window` object.
+
+### Recommended Pattern: Custom DOM Events
+
+**Approach:** PricingCalculator dispatches a `CustomEvent` on `window` when the "Get a Quote" button is clicked. Contact.astro's inline script listens for that event and populates the textarea.
+
+**Why this over nanostores:**
+
+nanostores (`nanostores` + `@nanostores/preact`) is the Astro-recommended solution for cross-island communication and is the right choice when multiple islands need to synchronize reactive state. For this use case, it is overkill:
+
+- The communication is one-directional: calculator → contact form
+- It fires once per user action (button click), not continuously
+- The target is not a hydrated island — it's a plain `<textarea>` managed by vanilla JS
+- Adding nanostores would add a dependency (~1KB) and require refactoring Contact.astro into a Preact island to consume the store with `useStore`
+- Custom events work across framework boundaries with zero dependencies
+
+**Confidence:** HIGH — Astro's own docs list custom browser events as a supported cross-island communication method when nanostores is not needed.
+
+### Implementation Pattern
+
+**In `PricingCalculator.tsx` — add "Get a Quote" button:**
+
+```tsx
+// Inside the breakdown panel, below the total line
+function handleGetQuote() {
+  const summary = buildQuoteSummary(groupSize, nights, includeMeals, total);
+
+  // 1. Dispatch event with quote data
+  window.dispatchEvent(
+    new CustomEvent('calculator:quote-requested', {
+      detail: { summary, total, groupSize, nights, includeMeals }
+    })
+  );
+
+  // 2. Scroll to contact section
+  document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+}
+
+function buildQuoteSummary(groupSize, nights, includeMeals, total) {
+  const isFlatRate = groupSize > 10;
+  const lines = [
+    `Group size: ${groupSize} people`,
+    `Nights: ${nights}`,
+    `Meals included: ${includeMeals ? 'Yes' : 'No'}`,
+    `Rate type: ${isFlatRate ? `$600/night flat rate` : `$60/night per person`}`,
+    `Estimated total: ${formatCurrency(total)}`,
+    '',
+    'Please let me know your available dates and any questions.',
+  ];
+  return lines.join('\n');
+}
+
+// In JSX:
+<button
+  type="button"
+  onClick={handleGetQuote}
+  class="w-full mt-4 px-6 py-3 bg-brand text-white rounded-lg font-medium hover:bg-brand-dark transition-colors"
+>
+  Get a Quote
+</button>
+```
+
+**In `Contact.astro` inline `<script>` — listen for event:**
+
+```javascript
+// Add inside the existing <script> tag, near the top with other DOM refs
+window.addEventListener('calculator:quote-requested', (event) => {
+  const { summary } = event.detail;
+
+  // Pre-fill the message textarea
+  messageInput.value = summary;
+
+  // Clear any previous error state on message field
+  messageError.classList.add('hidden');
+});
+```
+
+**Data flow:**
+
+```
+User adjusts calculator sliders
+    ↓
+Clicks "Get a Quote" button (in PricingCalculator.tsx)
+    ↓
+buildQuoteSummary() formats text from current state
+    ↓
+window.dispatchEvent(CustomEvent 'calculator:quote-requested')
+    ↓
+Contact.astro inline script listener fires
+    ↓
+messageInput.value = summary  (DOM mutation)
+    ↓
+page.scrollIntoView({ behavior: 'smooth' }) → #contact section
+    ↓
+User sees contact form with pre-filled message
+```
+
+### Files Modified
+
+| File | Change Type | What Changes |
+|------|-------------|--------------|
+| `src/components/PricingCalculator.tsx` | Modified | Add "Get a Quote" button, `handleGetQuote()`, `buildQuoteSummary()` |
+| `src/components/Contact.astro` | Modified | Add `window.addEventListener('calculator:quote-requested', ...)` in existing `<script>` |
+
+**No new files required.**
+
+### Per-Person Breakdown Under Total
+
+The existing breakdown panel in `PricingCalculator.tsx` shows accommodation and meals line items. The v2.2 requirement adds a per-person price breakdown under the total estimate.
+
+Add inside the breakdown panel, after the `Estimated Total` line but before the disclaimer:
+
+```tsx
+{/* Per-person breakdown — only meaningful for standard rate (≤10 people) */}
+{!isFlatRate && (
+  <div class="text-sm text-stone-500 mt-1 text-right">
+    {formatCurrency(Math.round(total / groupSize))} per person total
+    {includeMeals && ` (${formatCurrency(75)} × ${nights} nights)`}
+    {!includeMeals && ` ($60 × ${nights} nights)`}
+  </div>
+)}
+{isFlatRate && includeMeals && (
+  <div class="text-sm text-stone-500 mt-1 text-right">
+    Accommodation: $600 flat + {formatCurrency(Math.round(foodCost / groupSize))} meals per person
+  </div>
+)}
+```
+
+---
+
+## Feature 2: Google Maps Route Visualization
+
+### Current State
+
+`Map.astro` renders a lazy-loaded Google Maps embed using the `maps/embed` URL:
+
+```
+https://www.google.com/maps/embed?pb=!1m18...
+```
+
+This is the "legacy" embed URL from the Google Maps share dialog — it requires **no API key** and shows a location pin. It does **not** support directions mode.
+
+### Options Analysis
+
+**Option A: Maps Embed API — Directions Mode (RECOMMENDED)**
+
+The Maps Embed API supports a `directions` mode that shows a visual route between two points:
+
+```
+https://www.google.com/maps/embed/v1/directions
+  ?key=YOUR_API_KEY
+  &origin=ADDRESS_OR_COORDS
+  &destination=306+NW+300+Rd,+Clinton,+MO+64735
+  &mode=driving
+```
+
+- **Requires:** Google Cloud API key with Maps Embed API enabled
+- **Cost:** Maps Embed API is free with unlimited requests (confirmed: Google March 2025 billing changes did not affect Embed API)
+- **Display:** Shows an interactive map with the route highlighted in blue, just like Google Maps directions
+- **Maintenance:** URL is stable — no SDK to version, no JS to load
+- **Integration:** Drop-in replacement for existing iframe `data-src` value
+
+**Option B: Static Map Image with Path Drawing**
+
+The Maps Static API generates a PNG/JPEG image with a custom path drawn:
+
+```
+https://maps.googleapis.com/maps/api/staticmap
+  ?key=YOUR_API_KEY
+  &size=600x400
+  &path=color:0x0070f3ff|weight:5|ENC:{polyline}
+  &markers=306+NW+300+Rd,Clinton,MO
+```
+
+- **Requires:** API key + separately geocoded route polyline (from Directions API, which has usage limits)
+- **Cost:** Static API = $2/1000 requests after 10K/month free threshold. For a low-traffic site, free.
+- **Display:** Non-interactive image — no scrolling, no zoom, no street view
+- **Trade-off:** Faster initial load than iframe, but no user interaction. Getting the correct polyline for this rural address requires calling the Directions API separately.
+
+**Option C: Keep Existing Embed + Add Visual Route Overlay Image**
+
+Keep the existing location embed and add a static screenshot or image of the route above it.
+
+- **Cost:** Zero — no API needed
+- **Trade-off:** Manual maintenance (screenshot goes stale if roads change), no interactivity, feels low-quality
+
+### Recommendation: Option A (Maps Embed Directions Mode)
+
+Use the Maps Embed API with `v1/directions` mode. It's free, interactive, requires one API key (no billing risk for this traffic level), and produces a polished map that shows the actual driving route highlighted in blue.
+
+**Approach:** The existing `Map.astro` lazy-load infrastructure (IntersectionObserver swapping `data-src` → `src`) stays unchanged. Only the iframe URL changes.
+
+**New iframe URL:**
+
+```
+https://www.google.com/maps/embed/v1/directions
+  ?key=GOOGLE_MAPS_API_KEY
+  &origin=Highway+7+Clinton+MO
+  &destination=306+NW+300+Rd+Clinton+MO+64735
+  &mode=driving
+```
+
+Using "Highway 7 Clinton MO" as origin gives guests a familiar landmark to orient the route from — the directions text already references "From Highway 7."
+
+**API Key Setup (one-time, ~5 minutes):**
+
+1. Google Cloud Console → Create project or use existing
+2. Enable "Maps Embed API" (NOT Maps JavaScript API, NOT Directions API)
+3. Create API key → restrict to `timberandthreadsretreat.com` HTTP referrer
+4. Add to Vercel environment variables as `PUBLIC_GOOGLE_MAPS_KEY`
+
+**Note on environment variables in static Astro:** The API key appears in the iframe URL which is rendered at build time from the Astro component's frontmatter. Use `import.meta.env.PUBLIC_GOOGLE_MAPS_KEY` — the `PUBLIC_` prefix is required for Astro to expose the variable to client-side (and build-time) rendering. Since the URL is embedded in HTML, the key is visible in source — this is expected for Maps Embed API keys; the referrer restriction is the security control.
+
+### Files Modified
+
+| File | Change Type | What Changes |
+|------|-------------|--------------|
+| `src/components/Map.astro` | Modified | Change `data-src` URL from legacy embed to `v1/directions` URL |
+| `.env` (local) | New entry | `PUBLIC_GOOGLE_MAPS_KEY=your_key_here` |
+| Vercel dashboard | Config | Add `PUBLIC_GOOGLE_MAPS_KEY` environment variable |
+
+**No new files required.**
+
+**Map.astro frontmatter change:**
+
+```astro
+---
+import { Image } from 'astro:assets';
+import entranceDriveway from '../assets/images/entrance-driveway-summer.jpg';
+
+const mapsKey = import.meta.env.PUBLIC_GOOGLE_MAPS_KEY;
+const mapsDirectionsUrl = `https://www.google.com/maps/embed/v1/directions?key=${mapsKey}&origin=Highway+7+Clinton+MO&destination=306+NW+300+Rd+Clinton+MO+64735&mode=driving`;
+---
+```
+
+Then update the iframe's `data-src`:
+
+```astro
+<iframe
+  id="maps-iframe"
+  data-src={mapsDirectionsUrl}
+  ...
+```
+
+---
+
+## Feature 3: Mobile Header Text Title
+
+### Current State
+
+In `Nav.astro`, the brand text "Timber & Threads" uses `hidden sm:block` — invisible on all screens narrower than 640px (Tailwind's `sm` breakpoint):
+
+```astro
+<span class="font-serif text-2xl text-stone-800 group-hover:text-brand transition-colors hidden sm:block">
+  Timber &amp; Threads
+</span>
+<div class="w-0 h-1 bg-brand group-hover:w-full transition-all duration-300 hidden sm:block"></div>
+```
+
+The mobile header currently shows only the logo image and the hamburger button.
+
+### Fix
+
+Remove `hidden sm:block` from the brand name span. The animated underline div can remain hidden on mobile (it's a hover decoration, not content).
+
+**Concern:** Will the text fit in the mobile header between logo and hamburger?
+
+The nav is `h-20` (80px tall) and uses `flex items-center justify-between`. The brand link is `flex items-center gap-2 shrink-0`. On a 375px wide iPhone SE:
+- Logo: 32px wide
+- Gap: 8px
+- Text "Timber & Threads" at `text-2xl` (24px / 1.5rem): approximately 180-200px
+- Hamburger button: 44px
+- Total: ~32 + 8 + 190 + 44 = ~274px + padding
+
+With `px-4` (16px × 2), available space = 375 - 32 = 343px. The text fits, but tight on very small screens (320px wide).
+
+**Recommendation:** Scale down the font size on mobile. Use `text-xl sm:text-2xl` instead of `text-2xl`:
+
+```astro
+<span class="font-serif text-xl sm:text-2xl text-stone-800 group-hover:text-brand transition-colors">
+  Timber &amp; Threads
+</span>
+```
+
+Keep `hidden sm:block` on the animated underline div — that decoration does not need to show on mobile.
+
+### Files Modified
+
+| File | Change Type | What Changes |
+|------|-------------|--------------|
+| `src/components/Nav.astro` | Modified | Remove `hidden sm:block` from brand span, adjust font size |
+
+**No new files required.**
+
+---
+
+## Feature 4: Playwright Test Setup
+
+### Current State
+
+No Playwright or testing infrastructure exists. `package.json` has no test scripts. No `playwright.config.ts`.
+
+### Setup Pattern for Astro Static Site
+
+Playwright integrates with Astro's `npm run preview` command to test against the built static output — the closest approximation to production.
+
+**Why preview (not dev):**
+- `astro dev` uses Vite's dev server with HMR, module transform, and no optimization
+- `astro preview` serves the actual built `dist/` — same as Vercel production
+- Testing against preview catches build-time issues (image optimization, Preact island hydration, URL routing)
+
+**Playwright `webServer` configuration:** The `command` field can chain shell commands. For static Astro, the correct pattern is:
+
+```typescript
+webServer: {
+  command: 'npm run build && npm run preview',
+  url: 'http://localhost:4321/',
+  reuseExistingServer: !process.env.CI,
+  timeout: 120 * 1000,  // build takes time
+}
+```
+
+`reuseExistingServer: !process.env.CI` means: reuse an already-running preview server locally (faster iteration), but always rebuild fresh in CI.
+
+### Files to Create
 
 ```
 timberandthreads-v2/
-├── src/
-│   ├── pages/                    # Routes (only pages/ is required)
-│   │   ├── index.astro           # Single scrolling homepage
-│   │   └── api/                  # Server endpoints (SSR mode)
-│   │       └── contact.json.ts   # POST handler for contact form
-│   │
-│   ├── layouts/                  # Page templates
-│   │   └── BaseLayout.astro      # Common wrapper (head, fonts, analytics)
-│   │
-│   ├── components/               # Reusable UI components
-│   │   ├── sections/             # Page sections (About, Services, etc.)
-│   │   │   ├── Hero.astro
-│   │   │   ├── About.astro
-│   │   │   ├── Services.astro
-│   │   │   ├── Gallery.astro     # Wrapper for React island
-│   │   │   ├── Video.astro
-│   │   │   ├── Contact.astro     # Wrapper for React form island
-│   │   │   └── Footer.astro
-│   │   │
-│   │   ├── islands/              # Interactive React components
-│   │   │   ├── GalleryIsland.tsx # Image lightbox gallery
-│   │   │   └── ContactForm.tsx   # Form with validation
-│   │   │
-│   │   ├── ui/                   # Small reusable UI elements
-│   │   │   ├── Button.astro
-│   │   │   ├── Card.astro
-│   │   │   └── LazyIframe.astro  # Intersection Observer wrapper
-│   │   │
-│   │   └── common/               # Shared components
-│   │       ├── Header.astro
-│   │       └── Navigation.astro
-│   │
-│   ├── styles/                   # Global CSS
-│   │   └── global.css            # Tailwind imports + custom globals
-│   │
-│   ├── lib/                      # Utilities and helpers
-│   │   ├── email.ts              # Nodemailer transporter setup
-│   │   ├── validation.ts         # Shared validation (server + client)
-│   │   └── cloudinary.ts         # Image URL helpers (if needed)
-│   │
-│   └── types/                    # TypeScript definitions
-│       └── index.ts              # Shared types (form data, etc.)
-│
-├── public/                       # Static assets (served as-is)
-│   ├── fonts/                    # Custom web fonts
-│   ├── favicon.ico
-│   └── robots.txt
-│
-├── astro.config.mjs              # Astro + integrations config
-├── tailwind.config.mjs           # Tailwind customization
-├── tsconfig.json                 # TypeScript settings
-└── .env                          # Environment variables (SMTP, etc.)
+├── playwright.config.ts              # NEW — Playwright configuration
+├── tests/
+│   └── viewport.spec.ts              # NEW — desktop/mobile viewport tests
+└── package.json                      # MODIFIED — add test scripts and devDependencies
 ```
 
-### Structure Rationale
+### `playwright.config.ts`
 
-- **`components/sections/`**: Organizes homepage sections as discrete, composable units. Each section is self-contained and can be reordered in `index.astro`.
-- **`components/islands/`**: Isolates React components requiring client-side interactivity. Clear naming (`*Island.tsx`) signals hydration boundary.
-- **`components/ui/`**: Small, reusable primitives (buttons, cards, lazy loaders) avoid duplication and maintain consistency.
-- **`lib/`**: Business logic separate from UI. Server-only code (Nodemailer) and shared utilities (validation) live here.
-- **`pages/api/`**: Server endpoints for dynamic functionality (form handling). Only runs in SSR mode, not prebuilt.
-
-## Architectural Patterns
-
-### Pattern 1: Hybrid Static + SSR Deployment
-
-**What:** Deploy mostly static HTML with selective server-side rendering for API endpoints.
-
-**When to use:** Single-page scrolling site with one dynamic feature (contact form).
-
-**Trade-offs:**
-- **Pro:** Fast initial load (static HTML), only server-renders form endpoint.
-- **Pro:** Cheaper hosting (fewer serverless invocations).
-- **Con:** Requires SSR adapter even for single endpoint (no mixed static + server routes in Astro).
-
-**Configuration:**
 ```typescript
-// astro.config.mjs
-import { defineConfig } from 'astro/config';
-import react from '@astrojs/react';
-import tailwind from '@astrojs/tailwind';
-import vercel from '@astrojs/vercel/serverless';
+import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
-  output: 'server',  // Required for API endpoints
-  adapter: vercel({
-    webAnalytics: { enabled: true },
-    imageService: true,  // Vercel Image Optimization
-  }),
-  integrations: [
-    react(),
-    tailwind(),
+  testDir: './tests',
+  fullyParallel: true,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? 1 : undefined,
+  reporter: 'html',
+
+  use: {
+    baseURL: 'http://localhost:4321',
+    trace: 'on-first-retry',
+  },
+
+  projects: [
+    {
+      name: 'desktop-chrome',
+      use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      name: 'mobile-chrome',
+      use: { ...devices['Pixel 5'] },
+    },
+    {
+      name: 'mobile-safari',
+      use: { ...devices['iPhone 12'] },
+    },
   ],
-});
-```
 
-**Note:** Even though homepage is static HTML, `output: 'server'` enables `/api/contact.json` endpoint. Astro prerenders pages by default in SSR mode unless they have server logic.
-
-### Pattern 2: Islands Architecture for Selective Hydration
-
-**What:** Render entire page as static HTML, hydrate only interactive components (gallery, form).
-
-**When to use:** Page has few interactive regions among mostly static content.
-
-**Trade-offs:**
-- **Pro:** Minimal JavaScript shipped to client (10-50KB vs 200KB+ for SPA).
-- **Pro:** Fast First Contentful Paint and Time to Interactive.
-- **Con:** React components can't share state without coordination (use URL params or events).
-
-**Example:**
-```astro
----
-// src/components/sections/Gallery.astro
-import GalleryIsland from '../islands/GalleryIsland.tsx';
-
-// Static data (could come from CMS, file, etc.)
-const images = [
-  { src: 'https://res.cloudinary.com/...', alt: 'Project 1' },
-  { src: 'https://res.cloudinary.com/...', alt: 'Project 2' },
-];
----
-
-<section id="gallery" class="py-16">
-  <h2 class="text-3xl font-bold mb-8">Our Work</h2>
-
-  <!-- Only this component hydrates on client -->
-  <GalleryIsland client:visible images={images} />
-</section>
-```
-
-**Client directives:**
-- `client:load` — Hydrate immediately on page load (hero interactions)
-- `client:visible` — Hydrate when scrolled into view (below-fold sections)
-- `client:idle` — Hydrate when browser idle (non-critical)
-
-**Best choice for this project:** `client:visible` for gallery and contact form (both below fold).
-
-### Pattern 3: Lazy-Loaded Embeds with Intersection Observer
-
-**What:** Defer loading of heavy iframes (Google Maps, Calendar) until user scrolls near them.
-
-**When to use:** Third-party embeds that block page load (maps, YouTube, etc.).
-
-**Trade-offs:**
-- **Pro:** Faster initial page load (doesn't fetch iframe content upfront).
-- **Pro:** Saves bandwidth if user never scrolls to section.
-- **Con:** Slight delay when user reaches section (acceptable for below-fold content).
-
-**Example:**
-```astro
----
-// src/components/ui/LazyIframe.astro
-export interface Props {
-  src: string;
-  title: string;
-  aspectRatio?: string;
-}
-
-const { src, title, aspectRatio = '16/9' } = Astro.props;
-const id = `iframe-${Math.random().toString(36).slice(2)}`;
----
-
-<div
-  class="lazy-iframe-container"
-  data-src={src}
-  style={`aspect-ratio: ${aspectRatio}`}
-  id={id}
->
-  <div class="loading-placeholder bg-gray-200 animate-pulse w-full h-full"></div>
-</div>
-
-<script define:vars={{ id, src, title }}>
-  const container = document.getElementById(id);
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const iframe = document.createElement('iframe');
-        iframe.src = src;
-        iframe.title = title;
-        iframe.className = 'w-full h-full';
-        iframe.loading = 'lazy';
-
-        // Clear placeholder and append iframe
-        while (container.firstChild) {
-          container.removeChild(container.firstChild);
-        }
-        container.appendChild(iframe);
-
-        observer.unobserve(container);
-      }
-    });
-  }, { rootMargin: '100px' }); // Start loading 100px before visible
-
-  observer.observe(container);
-</script>
-```
-
-**Usage:**
-```astro
-<LazyIframe
-  src="https://www.google.com/maps/embed?pb=..."
-  title="Our Location"
-  aspectRatio="4/3"
-/>
-```
-
-### Pattern 4: Server Endpoint for Form Handling
-
-**What:** Create API route that receives form POST, validates, sends email via Nodemailer.
-
-**When to use:** Contact forms, newsletter signups, any server-side data processing.
-
-**Trade-offs:**
-- **Pro:** Secure (email credentials never exposed to client).
-- **Pro:** Works without JavaScript enabled (progressive enhancement).
-- **Con:** Requires SSR mode (serverless function on Vercel).
-
-**Example:**
-```typescript
-// src/pages/api/contact.json.ts
-import type { APIRoute } from 'astro';
-import { sendContactEmail } from '../../lib/email';
-import { validateContactForm } from '../../lib/validation';
-
-export const POST: APIRoute = async ({ request }) => {
-  try {
-    const data = await request.json();
-
-    // Validate input
-    const validation = validateContactForm(data);
-    if (!validation.success) {
-      return new Response(JSON.stringify({
-        error: 'Invalid form data',
-        details: validation.errors
-      }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
-
-    // Send email
-    await sendContactEmail({
-      name: data.name,
-      email: data.email,
-      message: data.message,
-    });
-
-    return new Response(JSON.stringify({
-      success: true,
-      message: 'Message sent successfully'
-    }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' }
-    });
-
-  } catch (error) {
-    console.error('Contact form error:', error);
-
-    return new Response(JSON.stringify({
-      error: 'Failed to send message',
-      message: 'Please try again later'
-    }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    });
-  }
-};
-```
-
-```typescript
-// src/lib/email.ts
-import nodemailer from 'nodemailer';
-
-const transporter = nodemailer.createTransport({
-  host: import.meta.env.SMTP_HOST,
-  port: parseInt(import.meta.env.SMTP_PORT),
-  secure: import.meta.env.SMTP_SECURE === 'true',
-  auth: {
-    user: import.meta.env.SMTP_USER,
-    pass: import.meta.env.SMTP_PASS,
+  webServer: {
+    command: 'npm run build && npm run preview',
+    url: 'http://localhost:4321/',
+    reuseExistingServer: !process.env.CI,
+    timeout: 120 * 1000,
   },
 });
-
-export async function sendContactEmail(data: {
-  name: string;
-  email: string;
-  message: string;
-}) {
-  await transporter.sendMail({
-    from: import.meta.env.SMTP_FROM,
-    to: import.meta.env.CONTACT_EMAIL,
-    replyTo: data.email,
-    subject: `Contact Form: ${data.name}`,
-    text: data.message,
-    html: `
-      <h2>New Contact Form Submission</h2>
-      <p><strong>From:</strong> ${data.name} (${data.email})</p>
-      <p><strong>Message:</strong></p>
-      <p>${data.message.replace(/\n/g, '<br>')}</p>
-    `,
-  });
-}
 ```
 
-### Pattern 5: Component Composition for Section-Based Layout
+### `tests/viewport.spec.ts` — What to Test
 
-**What:** Break homepage into discrete section components, compose in `index.astro`.
+The v2.2 goal is viewport verification across desktop and mobile. Focus tests on visual correctness checks rather than unit logic:
 
-**When to use:** Single-page scrolling sites with multiple distinct sections.
-
-**Trade-offs:**
-- **Pro:** Easy to reorder, enable/disable sections.
-- **Pro:** Each section is independently testable and maintainable.
-- **Con:** More files to manage (acceptable at ~10 sections).
-
-**Example:**
-```astro
----
-// src/pages/index.astro
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Hero from '../components/sections/Hero.astro';
-import About from '../components/sections/About.astro';
-import Services from '../components/sections/Services.astro';
-import Gallery from '../components/sections/Gallery.astro';
-import Video from '../components/sections/Video.astro';
-import Contact from '../components/sections/Contact.astro';
-import Footer from '../components/sections/Footer.astro';
----
-
-<BaseLayout title="Timber & Threads - Custom Woodwork">
-  <Hero />
-  <About />
-  <Services />
-  <Gallery />
-  <Video />
-  <Contact />
-  <Footer />
-</BaseLayout>
-```
-
-Each section component is self-contained with its own styles (Tailwind classes) and content. Reordering is as simple as moving lines.
-
-## Data Flow
-
-### Page Load Flow
-
-```
-User requests /
-    ↓
-Vercel serves prebuilt static HTML (index.html)
-    ↓
-Browser parses HTML, requests assets (CSS, fonts, images)
-    ↓
-Cloudinary CDN delivers optimized images (WebP/AVIF)
-    ↓
-Tailwind CSS renders layout
-    ↓
-React islands hydrate when visible (Intersection Observer)
-    ↓
-Lazy iframes load when scrolled into view
-```
-
-### Form Submission Flow
-
-```
-User fills contact form → clicks submit
-    ↓
-React component validates input (client-side)
-    ↓
-POST fetch to /api/contact.json
-    ↓
-Vercel invokes serverless function
-    ↓
-Validation runs (server-side)
-    ↓
-Nodemailer sends email via SMTP
-    ↓
-Response: { success: true } or { error: "..." }
-    ↓
-React component shows success/error message
-```
-
-### Key Data Flows
-
-1. **Static Content:** Astro components render to HTML at build time. No runtime data fetching needed.
-2. **Image URLs:** Hardcoded Cloudinary URLs in component props. No API calls required.
-3. **Form Data:** User input → Client validation → Server endpoint → SMTP → Email delivery.
-4. **Interactive State:** Isolated within React islands. Gallery selection state doesn't leak outside component.
-
-## Anti-Patterns to Avoid
-
-### Anti-Pattern 1: Using `output: 'static'` with API Endpoints
-
-**What people do:** Try to use static output mode but add `/api/contact.json` endpoint.
-
-**Why it's wrong:** Static mode prerenders everything at build time. API endpoints only work in `output: 'server'` or `output: 'hybrid'` mode.
-
-**Do this instead:** Use `output: 'server'` mode. Astro still prerenders pages that don't need server logic, so homepage remains static HTML.
-
-**Detection:** Build fails with error: "Endpoints only supported in SSR mode."
-
-### Anti-Pattern 2: Hydrating Entire Page as SPA
-
-**What people do:** Wrap entire homepage in a React component with `client:load`.
-
-**Why it's wrong:** Ships massive JavaScript bundle (~200KB+), defeats Astro's performance benefits. Slow Time to Interactive.
-
-**Do this instead:** Use Astro components for static sections, hydrate only interactive islands (gallery, form).
-
-**Detection:** Lighthouse performance score <90, large JavaScript bundle in DevTools Network tab.
-
-### Anti-Pattern 3: Inline Styles Instead of Tailwind
-
-**What people do:** Add `<style>` blocks in every component instead of using Tailwind utilities.
-
-**Why it's wrong:** Duplicates CSS, harder to maintain consistency, loses Tailwind's optimization (PurgeCSS).
-
-**Do this instead:** Use Tailwind utility classes. Extract complex patterns to `@apply` directives in `global.css` only if heavily repeated.
-
-**Example:**
-```astro
-<!-- BAD -->
-<div style="padding: 2rem; background: #f3f4f6; border-radius: 0.5rem;">
-
-<!-- GOOD -->
-<div class="p-8 bg-gray-100 rounded-lg">
-```
-
-### Anti-Pattern 4: Loading All Images Eagerly
-
-**What people do:** Use `loading="eager"` or omit `loading` attribute on all images.
-
-**Why it's wrong:** Downloads 20+ images on initial page load, blocks rendering, poor Lighthouse LCP score.
-
-**Do this instead:**
-- Hero image: `loading="eager"` + `fetchpriority="high"`
-- Below-fold images: `loading="lazy"` (default in Astro)
-- Gallery thumbnails: `loading="lazy"`
-
-**Example:**
-```astro
-<!-- Hero image (above fold) -->
-<img
-  src="https://res.cloudinary.com/.../hero.jpg"
-  loading="eager"
-  fetchpriority="high"
-  alt="Hero"
-/>
-
-<!-- Gallery images (below fold) -->
-<img
-  src="https://res.cloudinary.com/.../project-1.jpg"
-  loading="lazy"
-  alt="Project 1"
-/>
-```
-
-### Anti-Pattern 5: Putting Business Logic in Components
-
-**What people do:** Embed Nodemailer setup, validation logic directly in `.astro` or `.tsx` files.
-
-**Why it's wrong:** Hard to test, can't reuse logic, mixes concerns (UI + business logic).
-
-**Do this instead:** Extract to `src/lib/` utilities. Import and call from components/endpoints.
-
-**Example:**
 ```typescript
-// BAD: src/pages/api/contact.json.ts
-export const POST = async ({ request }) => {
-  const transporter = nodemailer.createTransport({ /* ... */ });
-  // 50 lines of validation and email logic...
-};
+import { test, expect } from '@playwright/test';
 
-// GOOD: src/pages/api/contact.json.ts
-import { sendContactEmail } from '../../lib/email';
-import { validateContactForm } from '../../lib/validation';
+test.describe('Page loads and renders', () => {
+  test('homepage has correct title', async ({ page }) => {
+    await page.goto('/');
+    await expect(page).toHaveTitle(/Timber & Threads Retreat/);
+  });
+});
 
-export const POST = async ({ request }) => {
-  const data = await request.json();
-  const validation = validateContactForm(data);
-  if (!validation.success) return errorResponse(validation.errors);
+test.describe('Mobile header', () => {
+  test('shows brand text on mobile', async ({ page }) => {
+    await page.goto('/');
+    // The brand name should be visible (not hidden) on mobile
+    const brandText = page.locator('nav').getByText('Timber & Threads');
+    await expect(brandText).toBeVisible();
+  });
+});
 
-  await sendContactEmail(data);
-  return successResponse();
-};
+test.describe('Pricing calculator', () => {
+  test('calculator renders and shows estimate', async ({ page }) => {
+    await page.goto('/');
+    await page.locator('#pricing-calculator').scrollIntoViewIfNeeded();
+    // Sliders should be interactive
+    await expect(page.locator('#group-size')).toBeVisible();
+    await expect(page.locator('#nights')).toBeVisible();
+  });
+
+  test('"Get a Quote" pre-fills contact form message', async ({ page }) => {
+    await page.goto('/');
+    await page.locator('#pricing-calculator').scrollIntoViewIfNeeded();
+    // Click "Get a Quote"
+    await page.getByRole('button', { name: /get a quote/i }).click();
+    // Contact form message should be populated
+    const messageField = page.locator('#message');
+    await expect(messageField).not.toHaveValue('');
+  });
+});
+
+test.describe('Map section', () => {
+  test('map iframe renders in location section', async ({ page }) => {
+    await page.goto('/');
+    await page.locator('#location').scrollIntoViewIfNeeded();
+    // Iframe should be present (lazy-loaded, may not have src yet — check presence)
+    await expect(page.locator('#maps-iframe')).toBeVisible();
+  });
+});
+
+test.describe('No horizontal overflow on mobile', () => {
+  test('page does not overflow viewport width', async ({ page }) => {
+    await page.goto('/');
+    const bodyWidth = await page.evaluate(() => document.body.scrollWidth);
+    const viewportWidth = page.viewportSize()?.width ?? 375;
+    expect(bodyWidth).toBeLessThanOrEqual(viewportWidth);
+  });
+});
 ```
 
-## Integration Points
+### `package.json` changes
 
-### External Services
+Add to `scripts`:
 
-| Service | Integration Pattern | Notes |
-|---------|---------------------|-------|
-| **Cloudinary** | Direct URL references in `<img src="...">` | No API calls needed. Use Cloudinary's URL transformation params for responsive images. |
-| **Google Maps** | `<LazyIframe>` wrapper with Intersection Observer | Defer loading until scrolled into view. Use embed URL from Google Maps share. |
-| **Google Calendar** | `<LazyIframe>` wrapper with Intersection Observer | Same lazy-load pattern as Maps. Public calendar embed URL. |
-| **SMTP (Nodemailer)** | Server endpoint with transporter from `.env` | Credentials in environment variables. Never expose to client. |
-| **Vercel Analytics** | `webAnalytics: { enabled: true }` in Vercel adapter | Automatic script injection. No manual setup. |
+```json
+"test": "playwright test",
+"test:ui": "playwright test --ui"
+```
 
-### Internal Boundaries
+Add to `devDependencies` (after `npm install -D @playwright/test`):
 
-| Boundary | Communication | Notes |
-|----------|---------------|-------|
-| **Astro Section ↔ React Island** | Props (one-way data flow) | Astro passes data as props. React can't communicate back except via events or URL. |
-| **React Island ↔ Server Endpoint** | `fetch()` POST request | Form submits JSON to `/api/contact.json`, receives JSON response. |
-| **Layout ↔ Page** | `<slot />` content projection | BaseLayout wraps page content. No data passed, just structure. |
-| **Component ↔ Utility** | Import/export functions | UI components import validation, email helpers from `lib/`. |
+```json
+"@playwright/test": "^1.50.0"
+```
 
-## Scaling Considerations
+After installing, run `npx playwright install --with-deps chromium` to download browser binaries.
 
-| Scale | Architecture Adjustments |
-|-------|--------------------------|
-| **0-10K visits/month** | Current architecture is perfect. Static HTML + single serverless endpoint. Cost: ~$0/month (Vercel free tier). |
-| **10K-100K visits/month** | No changes needed. Add caching headers to API endpoint (`Cache-Control: no-store` for form). Consider Vercel Analytics upgrade for better insights. Cost: $0-20/month. |
-| **100K+ visits/month** | Consider replacing Nodemailer with transactional email API (Resend, SendGrid) for better deliverability. Add rate limiting to contact endpoint (prevent spam). Use Vercel Edge Functions instead of serverless for faster response. Cost: $20-100/month. |
+---
 
-### Scaling Priorities
+## System Overview — v2.2 State
 
-1. **First bottleneck:** Contact form spam. **Fix:** Add Cloudflare Turnstile or hCaptcha (free, privacy-focused).
-2. **Second bottleneck:** Image bandwidth. **Fix:** Already solved with Cloudinary CDN. Ensure `f_auto,q_auto` in all image URLs.
-3. **Third bottleneck:** Server endpoint cold starts. **Fix:** Upgrade to Vercel Pro for faster cold start regions, or migrate to Edge Functions.
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                        Browser (Client Layer)                        │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  ┌──────────────────────────────────────────────────────────────┐    │
+│  │  Nav.astro  [MODIFIED: brand text now visible on mobile]     │    │
+│  └──────────────────────────────────────────────────────────────┘    │
+│                                                                      │
+│  ┌─────────────────────────┐    ┌──────────────────────────────┐    │
+│  │  PricingCalculator.tsx  │    │  Contact.astro               │    │
+│  │  Preact island          │    │  (inline <script>)           │    │
+│  │  [MODIFIED: +GetQuote   │───▶│  [MODIFIED: +event listener  │    │
+│  │   button + per-person   │    │   pre-fills #message]        │    │
+│  │   breakdown]            │    │                              │    │
+│  └─────────────────────────┘    └──────────────────────────────┘    │
+│         CustomEvent: 'calculator:quote-requested'                    │
+│                                                                      │
+│  ┌──────────────────────────────────────────────────────────────┐    │
+│  │  Map.astro  [MODIFIED: directions mode iframe URL]           │    │
+│  └──────────────────────────────────────────────────────────────┘    │
+│                                                                      │
+├─────────────────────────────────────────────────────────────────────┤
+│                         Vercel Edge                                  │
+│  ┌──────────────────────┐    ┌────────────────────────────────────┐ │
+│  │  Static HTML (dist/) │    │  /api/contact  (serverless fn)     │ │
+│  └──────────────────────┘    └────────────────────────────────────┘ │
+├─────────────────────────────────────────────────────────────────────┤
+│                       External Services                              │
+│  ┌──────────────┐   ┌──────────────────┐   ┌──────────────────┐    │
+│  │  Google Maps │   │  Google Calendar  │   │  Resend (email)  │    │
+│  │  Embed API   │   │  Embed            │   │                  │    │
+│  │  [NEW: key + │   │  (unchanged)      │   │  (unchanged)     │    │
+│  │   directions]│   │                  │   │                  │    │
+│  └──────────────┘   └──────────────────┘   └──────────────────┘    │
+├─────────────────────────────────────────────────────────────────────┤
+│                        CI / Testing                                  │
+│  ┌────────────────────────────────────────────────────────────────┐ │
+│  │  Playwright  [NEW]                                             │ │
+│  │  npm run build → npm run preview → tests/viewport.spec.ts     │ │
+│  │  Projects: Desktop Chrome | Pixel 5 | iPhone 12               │ │
+│  └────────────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────────┘
+```
 
-**Note:** For a single-page scrolling site with ~10 sections, scaling is unlikely to be a problem. Static HTML scales infinitely on CDN.
+---
 
-## Build Order Recommendations
+## Component Responsibilities — v2.2 Changes
 
-Based on component dependencies, recommended build order:
+| Component | Before | After v2.2 |
+|-----------|--------|------------|
+| `Nav.astro` | Brand text hidden on mobile | Brand text visible on mobile (font size adjusted) |
+| `PricingCalculator.tsx` | Shows estimate only | Shows estimate + per-person breakdown + "Get a Quote" button |
+| `Contact.astro` | Receives user-typed messages | Also accepts pre-filled messages from calculator via CustomEvent |
+| `Map.astro` | Shows location pin only | Shows driving route from Hwy 7 to property |
 
-1. **Phase 1: Foundation**
-   - `BaseLayout.astro` (wrapper for all pages)
-   - `global.css` (Tailwind imports)
-   - `index.astro` (empty shell)
+---
 
-2. **Phase 2: Static Sections**
-   - `Hero.astro` (simplest section, no dependencies)
-   - `About.astro`
-   - `Services.astro`
-   - `Footer.astro`
+## Data Flow Changes
 
-3. **Phase 3: Media Sections**
-   - `Video.astro` (HTML5 video, no islands)
-   - `LazyIframe.astro` utility
-   - Add lazy-loaded embeds (Maps, Calendar)
+### Calculator-to-Contact Pre-fill Flow
 
-4. **Phase 4: Interactive Islands**
-   - `GalleryIsland.tsx` (React component + lightbox)
-   - `Gallery.astro` (wrapper with `client:visible`)
+```
+User interacts with calculator sliders
+    ↓ (Preact state updates, re-render)
+Current state: { groupSize, nights, includeMeals, total }
+    ↓
+User clicks "Get a Quote"
+    ↓
+handleGetQuote() called in PricingCalculator.tsx
+    ↓
+buildQuoteSummary() formats multi-line string from current state
+    ↓
+window.dispatchEvent(CustomEvent('calculator:quote-requested', { detail: { summary } }))
+    ↓ (crosses framework boundary via DOM event bus)
+Contact.astro inline <script> listener fires
+    ↓
+messageInput.value = event.detail.summary
+    ↓
+document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })
+    ↓
+User sees contact form with pre-filled message about their group
+```
 
-5. **Phase 5: Form + Server Endpoint**
-   - `lib/validation.ts` (shared validation)
-   - `lib/email.ts` (Nodemailer setup)
-   - `api/contact.json.ts` (server endpoint)
-   - `ContactForm.tsx` (React island)
-   - `Contact.astro` (wrapper)
+### Map Directions Flow
 
-6. **Phase 6: Polish**
-   - Smooth scroll behavior
-   - Section anchor links in navigation
-   - Loading states, error handling
-   - Accessibility audit (ARIA labels, focus management)
+```
+User scrolls to #location section
+    ↓
+IntersectionObserver (rootMargin: '200px') fires
+    ↓
+iframe.dataset.src → iframe.src (URL swap)
+    ↓
+Browser fetches Google Maps Embed API with directions mode URL
+    ↓
+Google renders interactive route map: Hwy 7 → 306 NW 300 Rd, Clinton MO
+    ↓ (unchanged from here)
+Map is interactive, user can zoom/pan
+```
 
-**Dependency rationale:**
-- Static sections before islands (validate build process works)
-- Media sections before islands (simpler, test lazy loading pattern)
-- Gallery before form (gallery is read-only, simpler state management)
-- Form endpoint last (requires SSR mode, most complex integration)
+---
+
+## Integration Points — New vs Existing
+
+### New Components
+
+None — all v2.2 changes modify existing components.
+
+### Modified Components
+
+| Component | Integration Point | Communication Pattern |
+|-----------|-------------------|----------------------|
+| `PricingCalculator.tsx` → `Contact.astro` | "Get a Quote" button click | `window.dispatchEvent(CustomEvent)` |
+| `Map.astro` → Google Maps | iframe `data-src` URL | HTTP GET at scroll time |
+| `Nav.astro` | CSS class change only | None (static HTML) |
+
+### New Infrastructure
+
+| Item | Purpose | Touches |
+|------|---------|---------|
+| `playwright.config.ts` | Playwright config | Testing only |
+| `tests/viewport.spec.ts` | Viewport tests | Testing only |
+| `PUBLIC_GOOGLE_MAPS_KEY` env var | Maps Embed API auth | `Map.astro` frontmatter |
+
+---
+
+## Build Order Recommendation
+
+These four features have minimal interdependencies. The recommended order reduces risk:
+
+**Step 1: Mobile header text (5 min, zero risk)**
+- Remove `hidden sm:block` from Nav.astro brand span
+- Adjust font size for mobile fit
+- Verify: no overflow, hamburger still functional
+- No other components affected
+
+**Step 2: Calculator per-person breakdown (15 min, contained)**
+- Add per-person math inside `PricingCalculator.tsx` breakdown panel
+- Self-contained change — only modifies display logic, no external effects
+- Verify: math is correct at all slider positions
+
+**Step 3: Calculator → Contact pre-fill (30 min, two-file change)**
+- Add `handleGetQuote()` and "Get a Quote" button to `PricingCalculator.tsx`
+- Add `window.addEventListener` to `Contact.astro` inline script
+- Verify: button scrolls to contact, message textarea populates with correct text
+- Verify: user can still edit the pre-filled message
+
+**Step 4: Map directions (20 min + one-time API key setup)**
+- Create Google Cloud project, enable Maps Embed API, create key with referrer restriction
+- Add `PUBLIC_GOOGLE_MAPS_KEY` to `.env` and Vercel dashboard
+- Update `Map.astro` `data-src` to use `v1/directions` URL
+- Verify: map shows route (not just pin)
+
+**Step 5: Playwright setup (45 min, new infrastructure)**
+- `npm install -D @playwright/test`
+- Create `playwright.config.ts`
+- Create `tests/viewport.spec.ts`
+- Run `npx playwright install --with-deps chromium`
+- Run `npm test` — first run builds the site, tests execute
+- Verify: all projects (Desktop Chrome, Pixel 5, iPhone 12) pass
+
+**Rationale for this order:**
+- Steps 1-3 are purely frontend changes with no external dependencies
+- Step 4 requires an API key — the external dependency should not block frontend progress
+- Step 5 (Playwright) goes last because it tests all the other features; running it before they're done is wasteful
+
+---
+
+## Anti-Patterns Specific to These Features
+
+### Anti-Pattern 1: Using nanostores for This One-Directional Calculator Flow
+
+**What people do:** Add `nanostores` + `@nanostores/preact`, convert Contact.astro into a Preact island to consume the store.
+
+**Why it's wrong:** The target of the communication (`<textarea id="message">`) is a plain DOM element managed by vanilla JS. Converting Contact.astro to a Preact island would require rewriting the existing form handling logic (validation, submit, success/error states) in Preact, adding complexity for zero user-visible benefit.
+
+**Do this instead:** CustomEvent from PricingCalculator.tsx, `window.addEventListener` in Contact.astro's existing inline script.
+
+### Anti-Pattern 2: Loading Maps JavaScript API for Route Display
+
+**What people do:** Add the Google Maps JavaScript API script (`<script src="https://maps.googleapis.com/maps/api/js?key=...">`) and use the JS SDK to draw a route on a map.
+
+**Why it's wrong:** The Maps JS API is ~400KB, requires async initialization, and turns the map into a hydrated JavaScript component — all to show a static driving route that changes maybe once a decade. The Maps Embed API iframe achieves the same visual result with zero JavaScript.
+
+**Do this instead:** Use the Maps Embed API `v1/directions` iframe. Same visual output, no JavaScript bundle, no SDK to maintain.
+
+### Anti-Pattern 3: Testing Against `astro dev` Instead of `astro preview`
+
+**What people do:** Set Playwright's `webServer.command` to `npm run dev` for faster startup.
+
+**Why it's wrong:** `astro dev` doesn't run the build pipeline — images aren't optimized, Preact islands may hydrate differently, and Vercel Functions aren't simulated. Tests pass against dev but fail in production.
+
+**Do this instead:** `command: 'npm run build && npm run preview'`. The build takes ~30 seconds but tests validate the actual production output.
+
+### Anti-Pattern 4: Hardcoding the API Key in Map.astro
+
+**What people do:** Inline the Maps API key directly in the iframe `data-src` string as a literal.
+
+**Why it's wrong:** The key ends up committed to git history, making rotation harder and potentially exposing it if the repo is ever made public.
+
+**Do this instead:** Use `import.meta.env.PUBLIC_GOOGLE_MAPS_KEY`. The key is still visible in rendered HTML (unavoidable for client-side APIs), but it's not in version control. Apply referrer restrictions in Google Cloud Console as the primary security control.
+
+---
 
 ## Sources
 
-### Astro Official Documentation (HIGH confidence)
-- [Project Structure](https://docs.astro.build/en/basics/project-structure/)
-- [Islands Architecture](https://docs.astro.build/en/concepts/islands/)
-- [React Integration](https://docs.astro.build/en/guides/integrations-guide/react/)
-- [Server Endpoints](https://docs.astro.build/en/guides/endpoints/)
-- [Vercel Adapter](https://docs.astro.build/en/guides/integrations-guide/vercel/)
-- [Build Forms with API Routes](https://docs.astro.build/en/recipes/build-forms-api/)
+### Cross-Island Communication (HIGH confidence)
+- [Astro Docs — Share state between islands](https://docs.astro.build/en/recipes/sharing-state-islands/) — recommends nanostores for reactive state sharing, lists custom events as alternative for simpler cases
+- [Astro Docs — Client-Side Scripts](https://docs.astro.build/en/guides/client-side-scripts/) — confirms inline `<script>` tags run in browser scope, can listen to DOM events
+- [LogRocket — Islands Architecture Coordination](https://blog.logrocket.com/how-to-solve-coordination-problems-in-islands-architecture/) — covers event bus pattern as dependency-free cross-island coordination
 
-### Community Best Practices (MEDIUM confidence)
-- [Astro Islands Architecture Explained - Strapi](https://strapi.io/blog/astro-islands-architecture-explained-complete-guide)
-- [Best Practices for File Organization in Astro.js](https://tillitsdone.com/blogs/astro-js-file-organization-guide/)
-- [How To Make Reusable Components with Astro](https://www.kristiannielsen.com/blog/how-to-make-reusable-components-with-astro/)
-- [Understanding Astro Islands Architecture - LogRocket](https://blog.logrocket.com/understanding-astro-islands-architecture/)
+### Google Maps Embed API (HIGH confidence)
+- [Google Developers — Embed a map](https://developers.google.com/maps/documentation/embed/embedding-map) — confirms `v1/directions` mode, required parameters, API key requirement
+- [Google Developers — Maps Embed API Usage and Billing](https://developers.google.com/maps/documentation/embed/usage-and-billing) — confirms free with unlimited requests
+- [Google Developers — March 2025 billing changes](https://developers.google.com/maps/billing-and-pricing/march-2025) — confirms Embed API not affected by 2025 restructure
 
-### Integration Guides (MEDIUM confidence)
-- [Astro Cloudinary Integration](https://astro.cloudinary.dev/guides/image-optimization)
-- [How to send e-mail with Astro and Nodemailer](https://giannistolou.gr/blog/how-to-send-email-with-astro-and-nodemailer)
-- [Astro Lazy Loading with Intersection Observer](https://lukealexdavis.co.uk/morsels/morsel-28/)
+### Playwright with Astro (HIGH confidence)
+- [Astro Docs — Testing](https://docs.astro.build/en/guides/testing/) — official Playwright setup with `npm run preview` pattern
+- [Playwright Docs — webServer](https://playwright.dev/docs/test-webserver) — `command`, `reuseExistingServer`, chaining build+preview
+- [Playwright Docs — Emulation](https://playwright.dev/docs/emulation) — `devices['Pixel 5']`, `devices['iPhone 12']` presets
 
 ---
-*Architecture research for: Timber & Threads Astro website rebuild*
-*Researched: 2026-02-16*
+
+*Architecture research for: Timber & Threads v2.2 feature integration*
+*Researched: 2026-03-02*

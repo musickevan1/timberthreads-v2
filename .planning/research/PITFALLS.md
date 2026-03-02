@@ -1,226 +1,322 @@
 # Pitfalls Research
 
-**Domain:** Astro Content Website (Next.js Migration)
-**Researched:** 2026-02-16
+**Domain:** Astro Static Site — Client Preview Polish Features
+**Researched:** 2026-03-02
 **Confidence:** HIGH
+**Scope:** v2.2 milestone — calculator-to-contact pre-fill, Google Maps route, mobile viewport polish, Playwright viewport verification
+
+---
 
 ## Critical Pitfalls
 
-### Pitfall 1: Over-Hydration Destroys Performance Gains
+### Pitfall 1: Calculator State Cannot Cross the Island Boundary Directly
 
 **What goes wrong:**
-Developers apply `client:load` to every interactive component by default, forcing immediate JavaScript loading across the page. This defeats Astro's core advantage—ships zero JavaScript by default—and degrades performance to that of a traditional SSR framework or worse. One documented case saw a Lighthouse score of only 70 despite using static rendering, caused by applying `client:load` to both navigation and comments components.
+The PricingCalculator (Preact island) and the Contact form (vanilla JS in Contact.astro) run in completely separate JavaScript contexts. You cannot pass a callback, ref, or reactive variable from one to the other. Attempts to use React/Preact context, component props, or shared module-level variables between them will silently fail — the calculator updates its local state but the contact form never sees the change.
 
 **Why it happens:**
-React/Next.js trains developers to think "interactive by default." The mental model of "everything needs JavaScript" carries over during migration. `client:load` "just works" immediately during development, so developers don't question whether a better directive exists.
+Astro's islands architecture intentionally isolates each island. Server-rendered `.astro` components cannot subscribe to client-side state changes at all. Module-level `let` variables in Preact are scoped to the island's bundle, not the global page scope. Developers coming from React/Next.js expect a shared store to just work, but Astro has no global React context.
 
 **How to avoid:**
-- Default to **no directive** (static HTML only)
-- Use `client:visible` for below-fold content (comments, carousels, footer widgets)
-- Use `client:idle` for secondary features (newsletter signup, share buttons)
-- Reserve `client:load` ONLY for critical first-screen interactions (navigation, search)
-- Documented improvement: Switching comments from `client:load` to `client:visible` and newsletter from `client:load` to `client:idle` reduced first-screen JavaScript from 150KB to 45KB, improving LCP from 3.2s to 1.6s and Lighthouse score from 72 to 94
+Use the browser's native global scope as the communication layer — two proven approaches:
+
+**Option A: Custom DOM event (recommended for this project)**
+The calculator island dispatches a `CustomEvent` on `window` when the user clicks "Get a Quote". The contact section's vanilla script listens for that event and pre-fills the message textarea. No additional dependencies. Works because both scripts run in the same browser tab.
+
+```ts
+// In PricingCalculator.tsx — dispatch on button click
+window.dispatchEvent(new CustomEvent('calculator:quote-request', {
+  detail: { groupSize, nights, includeMeals, total }
+}));
+
+// In Contact.astro <script> — listen and pre-fill
+window.addEventListener('calculator:quote-request', (e) => {
+  const { groupSize, nights, total } = e.detail;
+  const textarea = document.getElementById('message') as HTMLTextAreaElement;
+  if (textarea) {
+    textarea.value = `Group size: ${groupSize} guests, ${nights} nights. Estimated total: $${total}.`;
+  }
+  document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+});
+```
+
+**Option B: Nano Stores (`@nanostores/preact`)**
+Add `nanostores` as a shared store. Both the Preact island and a vanilla script (using `@nanostores/atom`) can read/write. Adds ~1KB but provides a reactive subscription pattern. Avoid if the custom event approach covers the use case — Nano Stores are most useful when multiple islands need real-time sync.
 
 **Warning signs:**
-- Lighthouse performance score below 90 on static content pages
-- JavaScript bundle sizes over 50KB for content-focused pages
-- Slow FCP/LCP on fast connections (if slow on fast networks, rural 3G will be unusable)
-- DevTools network tab shows multiple framework chunks loading immediately
+- Calculator button click produces no effect in the contact section
+- Console shows no errors (the failure is silent — event was fired but nobody was listening)
+- Testing only within the Preact component and missing the cross-boundary test
 
 **Phase to address:**
-Phase 1 (Foundation) - Establish directive strategy before building features. Document which directive to use for each component type. Review during Phase 2 (Gallery) when adding React island for admin.
+v2.2 — Calculator-to-Contact flow phase. The "Get a Quote" button implementation must use one of the two approaches above, not prop-drilling or module imports.
 
 ---
 
-### Pitfall 2: Images in public/ Folder Bypass All Optimization
+### Pitfall 2: The Contact Textarea Gets Pre-Filled But Validation Rejects It
 
 **What goes wrong:**
-Images placed in `public/` directory are served as-is without any optimization—no compression, no format conversion (WebP/AVIF), no responsive sizes, no lazy loading. For a quilting retreat site with heavy photo galleries on slow rural connections, unoptimized images are catastrophic. A single 3MB JPEG can take 30+ seconds to load on slow 3G.
+The contact form has client-side validation that fires on `blur` and `submit`. The textarea's `value` is programmatically set from the calculator state, but the existing validation checks `messageInput.value.trim()` — this works correctly for direct DOM writes. However, if the pre-fill logic sets the `value` attribute instead of `.value` property, or if the form's input event listeners require user interaction to mark the field as "touched," the form may show a validation error when the user submits even though the textarea is pre-filled.
 
 **Why it happens:**
-Next.js developers are familiar with `public/` for static assets and continue this pattern. Astro's documentation clearly states "images in public/ are never optimized" but this warning is easy to miss during migration rush. The site works locally on fast WiFi, masking the severity of the problem.
+There is a difference between the DOM property `.value` (reflects current content) and the HTML attribute `value` (reflects initial content). Libraries and some manual implementations set the attribute, which doesn't update the live DOM property. Additionally, the existing form validates `messageInput.value.trim()` directly, which reads the property — so pre-filling with `.value =` works, but `setAttribute('value', ...)` does not update what the validator sees.
 
 **How to avoid:**
-- Place ALL optimizable images in `src/` directory (enables Astro's Image component optimization)
-- Use Cloudinary CDN for gallery images (already in project context)
-- Never use `<img>` tags—always use `<Image>` or `<Picture>` component
-- For Cloudinary integration: Use Astro Cloudinary or custom Image Service to deliver directly from Cloudinary's CDN (avoids double optimization where Astro downloads from Cloudinary, re-optimizes, then serves)
-- Set explicit `width` and `height` attributes to minimize CLS (Cumulative Layout Shift)
-- Test on throttled 3G connection (Chrome DevTools Network tab)
+Always set `element.value = '...'` (DOM property assignment) rather than `element.setAttribute('value', '...')` when pre-filling. Test the full flow: click "Get a Quote," scroll to form, and immediately submit without typing — validation should pass.
 
 **Warning signs:**
-- Image file sizes over 200KB in production
-- PageSpeed Insights reports "Serve images in next-gen formats"
-- CLS (Cumulative Layout Shift) score above 0.1
-- Images without width/height causing layout jumps
-- Slow load times on throttled network testing
+- Textarea appears to have content visually but validation still fires
+- `messageInput.value` returns empty string despite visible text in field
+- Test: `document.getElementById('message').value` in DevTools returns `''`
 
 **Phase to address:**
-Phase 1 (Foundation) - Set up image optimization architecture. Phase 2 (Gallery) - Critical for gallery feature with Cloudinary integration. Test thoroughly on 3G throttle before deployment.
+v2.2 — Calculator-to-Contact phase. Verify during human review by clicking "Get a Quote," submitting the pre-filled form without modification, and confirming the email arrives.
 
 ---
 
-### Pitfall 3: Passing Functions/Complex Props to Islands Breaks Client Hydration
+### Pitfall 3: Scroll Offset from Fixed Nav Hides the Form Heading
 
 **What goes wrong:**
-Attempting to pass functions, class instances, or complex objects as props from Astro components to React islands fails silently or throws serialization errors. Astro cannot pass functions from server to client in a way that makes them executable. This commonly breaks when migrating Next.js patterns where passing event handlers as props is standard.
+`scrollIntoView({ behavior: 'smooth' })` or `window.scrollTo(...)` on the `#contact` anchor scrolls the top of the section to the top of the viewport. The fixed navigation header (80px tall on this site) overlaps the section heading, making it appear as if the page scrolled incorrectly. Users see the first 80px of the contact section hidden behind the nav bar.
 
 **Why it happens:**
-Server-side rendering in Astro happens at build time (or request time for SSR), not in the browser. Props must be JSON-serializable to cross the server/client boundary. React/Next.js allows passing functions freely because everything runs in the same JavaScript context.
+`scrollIntoView` targets the top edge of the element relative to the viewport's 0,0 origin, not accounting for any fixed overlay elements. The site's nav is `fixed top-0 h-20` (80px), which sits above the scrolled-to content.
 
 **How to avoid:**
-- Pass only JSON-serializable data: strings, numbers, arrays, plain objects
-- Define event handlers INSIDE the React island component
-- For shared state between islands, use Nano Stores (not props)
-- Cannot pass React Context between islands (each island is isolated)
-- Cannot pass Astro components as children to React islands (use named slots for complex composition)
-- Use `experimentalReactChildren` flag if passing children, but note runtime cost
+Use `scroll-margin-top` CSS on the target element, or use a manual scroll calculation:
+
+```css
+/* On section#contact in Contact.astro */
+scroll-margin-top: 80px; /* matches nav height */
+```
+
+Or via JavaScript scroll offset:
+
+```js
+const section = document.getElementById('contact');
+const navHeight = 80;
+const top = section.getBoundingClientRect().top + window.scrollY - navHeight;
+window.scrollTo({ top, behavior: 'smooth' });
+```
+
+The CSS `scroll-margin-top` approach is simpler and should be checked first — it may already be set from prior phases. If sections already have `scroll-margin-top: 80px` applied globally, no additional work is needed.
 
 **Warning signs:**
-- Console errors about serialization during build or hydration
-- Props showing as `undefined` in client component despite being set in Astro
-- "Invalid hook call" errors when using React hooks in islands
-- Components working in development but breaking in production build
+- Clicking "Get a Quote" scrolls to contact section but the "Get in Touch" heading is hidden behind the navbar
+- `#contact` anchor in the nav also misbehaves (points to section but heading is cut off)
+- Chrome DevTools: inspect the section and check for `scroll-margin-top` in computed styles
 
 **Phase to address:**
-Phase 2 (Gallery) - When implementing React admin island. Document prop patterns clearly. Phase planning should include explicit decision about state management approach (Nano Stores vs. isolated island state).
+v2.2 — Calculator-to-Contact phase. Check `scroll-margin-top` on all section anchors during implementation. If not set globally, add it to `Contact.astro` specifically.
 
 ---
 
-### Pitfall 4: Build-Time API Calls Without Caching Destroy Build Speed
+### Pitfall 4: Google Maps Directions Mode Requires an API Key — Not Zero-Setup
 
 **What goes wrong:**
-Making API calls to fetch data during static site generation (SSG) without caching causes every page to trigger redundant network requests. For content collections or gallery data, this multiplies build times from seconds to minutes. One documented case showed API calls increasing build time from milliseconds to seconds PER PAGE, scaling to 30+ minute builds for large sites.
+The current Maps embed uses a no-API-key iframe URL (the standard Google Maps share URL). The Maps Embed API's directions mode — which shows a visual driving route — requires an API key. Developers assume they can use the same share-link approach and are surprised when the directions iframe returns an error page instead of a map.
 
 **Why it happens:**
-Astro calls the component render function for each page/route during build. If data fetching happens in component code without caching, each page makes its own request. Coming from Next.js `getStaticProps` (which has built-in caching), developers don't realize Astro handles this differently.
+Google Maps has two distinct embed approaches:
+1. **Share link embed** (current site): `google.com/maps/embed?pb=...` — no API key, no billing, just location pin. Free, unlimited.
+2. **Maps Embed API directions mode**: `google.com/maps/embed/v1/directions?key=API_KEY&origin=...&destination=...` — API key required, but the Embed API itself is free with unlimited usage (no per-request cost).
+
+The confusion arises because both produce iframes, but they have completely different URL structures and requirements.
 
 **How to avoid:**
-- Cache API responses during build (use build-time caching libraries or manual Map-based caching)
-- Fetch data ONCE at the top level, pass down as props
-- Use Content Collections for markdown/MDX content (built-in caching)
-- For external APIs (like Cloudinary for gallery), fetch list once and cache
-- Consider `concurrency` settings in Vite config, but test (higher isn't always better—optimal is often 4 on 12-core systems)
-- Disable HTML compression during builds (CDNs handle this better; build-time compression adds overhead)
-- Set `--max-old-space-size=8192` for Node memory (prevents garbage collection pauses)
+- Get a Google Cloud project and enable the Maps Embed API (takes ~5 minutes, no billing required for the Embed API itself)
+- Restrict the API key to "HTTP referrers" scoped to the production domain (`timberandthreadsretreat.com/*`)
+- Use the directions mode URL:
+  ```
+  https://www.google.com/maps/embed/v1/directions
+    ?key=YOUR_KEY
+    &origin=Clinton+MO
+    &destination=306+NW+300+Rd,+Clinton,+MO+64735
+    &mode=driving
+  ```
+- Store the key in `.env` as `PUBLIC_GOOGLE_MAPS_KEY` and reference it in the Astro template (public env vars are safe to embed in client-visible HTML since the key is restricted by domain)
+- Add the key to Vercel environment variables for production
 
 **Warning signs:**
-- Build times over 30 seconds for small sites (<100 pages)
-- Network requests visible during build for every page
-- Build times increasing linearly with page count
-- API rate limits being hit during builds
+- Replacing the existing embed src with a directions URL but forgetting the API key produces a "This page can't load Google Maps correctly" error in the iframe
+- Key works locally but fails in production because it's not added to Vercel environment variables
+- Key set without domain restriction exposes it to quota abuse
 
 **Phase to address:**
-Phase 1 (Foundation) - Establish data fetching patterns. Phase 2 (Gallery) - Critical when integrating Cloudinary gallery data. Monitor build times; investigate if exceeds 60 seconds.
+v2.2 — Maps route phase. Create the API key before writing code. Document the key restriction settings in a comment in Map.astro.
 
 ---
 
-### Pitfall 5: Dynamic Tailwind Classes Get Purged in Production
+### Pitfall 5: Replacing the Current Map Embed Breaks the Existing Lazy-Load Observer
 
 **What goes wrong:**
-Dynamically constructed Tailwind class names (e.g., `bg-${color}-500` or conditional classes built from variables) are not detected by Tailwind's JIT compiler and get purged from production builds. Styles work in development but vanish in production, causing broken layouts and invisible elements.
+Map.astro currently uses an Intersection Observer to lazy-load the iframe: the `src` is stored in `data-src` and only set when the element scrolls into view. Replacing or modifying the embed src without understanding this pattern causes the map to either load immediately on page load (defeating the lazy-load optimization) or never load at all (if the data-src swap is broken).
 
 **Why it happens:**
-Tailwind v3+ uses Just-In-Time compilation, only generating CSS for classes it detects in source files through static analysis. It cannot detect classes built dynamically at runtime because the scanner only analyzes source code strings.
+The lazy-load script reads `iframe.dataset.src` and sets `iframe.src` on intersection. If you directly set the `src` attribute in the HTML (even to the new directions URL), the observer's `if (src) iframe.src = src` branch still works correctly — but if you accidentally leave `src` populated AND `data-src` populated, the iframe loads immediately AND the observer fires a duplicate load.
 
 **How to avoid:**
-- Never use string interpolation for Tailwind classes (`bg-${color}-500` will break)
-- Use complete class names: `color === 'blue' ? 'bg-blue-500' : 'bg-red-500'`
-- Add dynamic classes to `safelist` in `tailwind.config.js` if truly needed
-- Ensure `content` paths in `tailwind.config.js` include ALL file types: `.astro`, `.jsx`, `.tsx`, `.md`, `.mdx`
-- Be aware that aggressive CSS purging might miss SSR-rendered pages not in initial scan
-- Test production builds thoroughly—development mode doesn't purge
+Keep the existing lazy-load pattern. Only change the `data-src` value to the new directions URL:
+
+```html
+<!-- Keep data-src, leave src empty -->
+<iframe
+  id="maps-iframe"
+  data-src="https://www.google.com/maps/embed/v1/directions?key=...&origin=...&destination=..."
+  src=""
+  ...
+/>
+```
+
+Do not add a non-empty `src` attribute when using the lazy-load pattern. The existing observer script needs zero changes.
 
 **Warning signs:**
-- Styles present in dev but missing in production build
-- Empty or unstyled elements in production deployment
-- Production CSS bundle unusually small compared to development
-- Console warnings about missing classes in production
+- Map loads immediately on page load (check Network tab — maps requests visible on initial load, not on scroll)
+- Lighthouse mobile score drops after the map change
+- Observer script errors in console: `iframe.dataset.src` is undefined
 
 **Phase to address:**
-Phase 1 (Foundation) - Configure Tailwind correctly before building features. Verify in production build early. Every phase should test production builds to catch purge issues.
+v2.2 — Maps route phase. Read the existing lazy-load script before modifying `Map.astro`. Verify map still lazy-loads after the change.
 
 ---
 
-### Pitfall 6: Vercel Edge Runtime Incompatibilities Break Deployment
+### Pitfall 6: Mobile Viewport Fixes Break Desktop Layout
 
 **What goes wrong:**
-Deploying to Vercel with edge runtime enabled causes failures for libraries using Node.js built-in modules (`url`, `fs`, `crypto`, etc.) or exceeding the 1MB edge function size limit. Contact form using Nodemailer (needs Node.js APIs) will fail on edge runtime.
+When fixing mobile-specific layout issues (spacing, font sizes, hidden elements), developers apply classes or styles without viewport prefix specificity. The fix works on mobile but shifts or hides elements on desktop. Common patterns:
+- Adding `overflow-x: hidden` on `body` or a parent to fix horizontal scroll on mobile — this clips `position: sticky` and `position: fixed` elements on desktop, causing the nav to stop sticking.
+- Changing a padding or margin without the `sm:` prefix, shrinking the desktop layout.
+- Setting `min-height: 100vh` to fix a short section on mobile — on iOS Safari with the dynamic browser chrome, `100vh` equals the maximum viewport height (with chrome collapsed), causing content overflow when the chrome is visible.
 
 **Why it happens:**
-Edge runtime is a subset of Node.js with restrictions (no native Node APIs, strict size limits). Many libraries assume full Node.js environment. Astro's Vercel adapter defaults can enable edge middleware, breaking compatibility.
+Mobile-first Tailwind means unprefixed classes apply to all viewports. Developers testing only in DevTools device emulation miss real device behavior (especially iOS Safari's dynamic viewport chrome). The `overflow-x: hidden` fix is particularly insidious because it appears to solve the mobile scroll issue but breaks sticky positioning globally.
 
 **How to avoid:**
-- For contact form with Nodemailer: Use serverless mode, NOT edge runtime
-- Configure `@astrojs/vercel` adapter explicitly: `output: 'server'` or `output: 'hybrid'` with `edgeMiddleware: false`
-- If using edge functions, check library compatibility (Nodemailer won't work)
-- Edge functions limited to 1MB—if bundle exceeds, switch to serverless
-- For API routes requiring Node.js: Place in `/api` and ensure serverless mode
-- Test deployment on Vercel preview before production release
+- Never use `overflow: hidden` on `body` or any ancestor of a `position: sticky` element — this is the #1 cause of sticky nav breaking after mobile fixes.
+- Use `overflow-x: hidden` on a non-ancestor wrapper element if needed, not on `body`.
+- Use `min-h-svh` (small viewport height, `100svh`) instead of `min-h-screen` (`100vh`) for full-height mobile sections — `svh` accounts for the browser chrome.
+- Apply ALL mobile-only fixes with explicit breakpoint prefixes: check each class added or removed for viewport scope.
+- Test desktop (1280px) after every mobile fix in the browser, not just DevTools.
 
 **Warning signs:**
-- Build succeeds but functions fail at runtime on Vercel
-- "Cannot find module" errors for Node built-in modules
-- "Edge function size exceeded" errors during deployment
-- Nodemailer or other Node-native libraries throwing errors in production
+- Fixed nav disappears or stops sticking after a mobile padding fix
+- Horizontal scrollbar appears on desktop after overflow fix
+- Sections that were full-height are now too short or too tall on desktop
+- DevTools emulation looks correct but real iOS device shows different behavior
 
 **Phase to address:**
-Phase 3 (Contact Form) - Critical before implementing Nodemailer endpoint. Verify adapter configuration supports serverless functions before writing contact form logic.
+v2.2 — Mobile viewport optimization phase. After each mobile fix, manually verify desktop at 1280px. Run Playwright desktop viewport test to catch regressions.
 
 ---
 
-### Pitfall 7: Large Component Lists Trigger Astro Rendering Performance Cliff
+### Pitfall 7: The Mobile Header Text Fix Uses `hidden` Instead of `block` and Breaks at Wrong Breakpoint
 
 **What goes wrong:**
-Rendering thousands of components in a single page (e.g., large photo galleries with individual components per image) hits Astro's known performance limitation. Memory allocation for RenderTemplateResult instances causes 10x+ slowdown compared to other frameworks. Rendering 15,000 components can take 650ms in Astro vs 100ms in legacy PHP.
+The nav brand text currently uses `hidden sm:block` — invisible below 640px, visible at 640px and above. The fix to show the text in mobile adds `block` without removing `hidden`, or applies it at the wrong breakpoint. Specifically, if the mobile menu is also using the brand text as a heading, having it visible in both the main nav and the mobile menu overlay creates visual duplication or layout issues.
 
 **Why it happens:**
-Astro's rendering pipeline creates excessive intermediate objects (RenderTemplateResult, HTMLString instances) for each component and attribute. With thousands of items, this allocates 20-25MB of memory per request, overwhelming garbage collection. Streaming adds additional overhead (disabling streaming can cut time from 750ms to 350ms).
+The existing code is:
+```html
+<span class="font-serif text-2xl text-stone-800 ... hidden sm:block">Timber &amp; Threads</span>
+```
+Removing `hidden` makes it visible everywhere. But the mobile menu is a full-screen overlay and doesn't show the main nav header at all when open. The issue is specifically in the compact header (hamburger visible, logo visible, but no text) — the text should appear when the header is in compact mode but there's enough horizontal space.
+
+The question is: should the text be visible at ALL mobile widths, or only at specific widths (sm: 375px–639px range)?
 
 **How to avoid:**
-- For large galleries: Render static HTML list, hydrate a SINGLE interactive island for sorting/filtering/pagination
-- Don't map over large arrays creating client islands (anti-pattern documented in multiple sources)
-- Use static rendering for list items, JavaScript only for controls
-- Consider pagination or virtual scrolling for very large sets
-- If absolutely need many components: Disable streaming (`output.streaming: false` in config) to improve by ~50%
-- For this project's gallery admin: Limit initial render to reasonable batch size (e.g., 50 images), load more on demand
+The fix is simply to remove `hidden` from the brand text span, keeping `sm:block` (which becomes redundant but harmless). The brand text will then show on all widths. If the logo + text combination is too wide on very narrow phones (320px), add explicit truncation or reduce font size on mobile:
+```html
+<span class="font-serif text-lg sm:text-2xl text-stone-800 ...">Timber &amp; Threads</span>
+```
+
+Do NOT restructure the nav layout — the hamburger button already hides the desktop nav links on mobile, so the header row has space for logo + text + hamburger.
 
 **Warning signs:**
-- Pages with many repeated components taking >500ms to render
-- High memory usage during builds
-- Build times increasing non-linearly with content volume
-- Gallery pages slow even on fast connections
+- Brand text appears in both the sticky header AND the mobile overlay menu (visual duplication)
+- At 320px width, brand text + logo overflows and pushes the hamburger button off-screen
+- Text is visible at sm: but still hidden on mobile after the fix (wrong class removed)
 
 **Phase to address:**
-Phase 2 (Gallery) - Design gallery architecture to avoid this pitfall. Use static thumbnails with single interactive island for admin controls, not individual islands per image.
+v2.2 — Mobile header fix. Simple change but test at 320px, 375px, and 640px widths explicitly.
 
 ---
 
-### Pitfall 8: Google Maps iframe Blocks Main Thread, Destroys Mobile Performance
+### Pitfall 8: Playwright Screenshot Tests Are Flaky in CI Due to Font Rendering
 
 **What goes wrong:**
-Embedding Google Maps via iframe immediately injects JavaScript files, stylesheets, and makes 100+ HTTP requests, blocking page rendering. On slow rural 3G connections, this can add 5-10 seconds to page load and tank Lighthouse scores.
+Playwright's `toHaveScreenshot()` generates pixel-perfect baseline images on the machine where they're first run. When those baselines are generated on macOS (with sub-pixel antialiasing) and then compared in CI on Linux (without sub-pixel antialiasing), the screenshots never match. Tests fail 100% of the time in CI despite the page looking identical visually.
 
 **Why it happens:**
-Default iframe embeds load immediately, regardless of whether user scrolls to the map. Google Maps is notoriously heavy (hundreds of KB of JavaScript). Most developers copy embed code directly from Google Maps without optimization.
+Font rendering is OS-dependent. macOS uses sub-pixel antialiasing; most Linux distributions do not. Even identical font files render different pixel values at the subpixel level. Playwright's screenshot diff has a default threshold of 0.2 (20% pixel difference tolerance), but font antialiasing differences can exceed this threshold even for identical layouts.
 
 **How to avoid:**
-- Use lazy loading: `loading="lazy"` attribute on iframe (native browser support)
-- Better: Use Intersection Observer to only load map when container is visible
-- Best: Replace iframe with static map image initially, swap to interactive map on user click
-- Google's official recommendation: Wait for user action (click) to initialize map
-- Static map placeholder loads instantly (single image), interactive map only on demand
-- For quilting retreat site: Location map likely below-fold—perfect candidate for lazy loading or click-to-activate pattern
+For this project, avoid `toHaveScreenshot()` pixel comparisons entirely — they are overkill for layout verification and introduce fragile OS dependencies. Instead:
+
+**Use assertion-based viewport tests (HIGH confidence, zero flakiness):**
+```ts
+// playwright.config.ts
+use: {
+  baseURL: 'http://localhost:4321',
+}
+
+// tests/viewport.spec.ts
+test('mobile nav shows hamburger not desktop links', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto('/');
+  await expect(page.getByRole('button', { name: /open navigation/i })).toBeVisible();
+  await expect(page.locator('ul.hidden.md\\:flex')).toBeHidden();
+});
+
+test('desktop nav shows links not hamburger', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.goto('/');
+  await expect(page.getByRole('button', { name: /open navigation/i })).toBeHidden();
+  await expect(page.locator('a[href="#contact"]').first()).toBeVisible();
+});
+```
+
+If screenshot tests are truly needed, run them exclusively in a Playwright Docker container that matches CI's Linux environment, and generate baselines in that same container.
 
 **Warning signs:**
-- PageSpeed Insights warning about "Reduce impact of third-party code"
-- Large number of requests (100+) for simple map embed
-- High "Total Blocking Time" metric
-- Map loads immediately even if below fold
-- Poor mobile performance scores
+- Tests pass locally but fail in CI with "screenshot diff exceeded threshold"
+- Pixel differences are small (1-3px) and concentrated in text rendering
+- `--update-snapshots` fixes tests locally but CI fails again after the next commit
 
 **Phase to address:**
-Phase 4 (Location/Directions) - Implement lazy-loading or placeholder pattern from the start. Test on 3G throttle.
+v2.2 — Playwright testing phase. Start with assertion-based tests. If screenshot tests are added later, document that baselines must be generated in the CI environment (Linux), not locally (macOS).
+
+---
+
+### Pitfall 9: Playwright Tests Against `npm run dev` Are Non-Deterministic
+
+**What goes wrong:**
+Running Playwright tests against the Vite dev server (`npm run dev`) introduces timing non-determinism. The dev server serves unoptimized files, applies hot-module replacement, and may be compiling components while tests run. Tests that rely on specific element visibility timing fail intermittently because the dev server can be slower than the test's default timeout on first load.
+
+**Why it happens:**
+Vite's dev server builds on-demand — the first request for a page triggers component compilation. If a test navigates to a page before compilation finishes, it may see a partially rendered state. `client:load` Preact islands have additional hydration latency in dev mode that doesn't exist in production.
+
+**How to avoid:**
+Run Playwright tests against the production build served locally:
+
+```ts
+// playwright.config.ts
+webServer: {
+  command: 'npm run build && npx serve dist',
+  url: 'http://localhost:3000',
+  reuseExistingServer: !process.env.CI,
+  timeout: 120 * 1000, // build can take 30-60s
+}
+```
+
+This ensures tests run against the same artifact that ships to Vercel. Build once, run all tests against the output.
+
+**Warning signs:**
+- Tests pass on the second run but fail on the first (dev server compilation lag)
+- Tests fail with timeout waiting for elements that are definitely in the DOM
+- Calculator island renders correctly in browser but test can't find it
+
+**Phase to address:**
+v2.2 — Playwright setup. Configure `webServer` in `playwright.config.ts` to build before testing, not to use the dev server.
 
 ---
 
@@ -230,26 +326,26 @@ Shortcuts that seem reasonable but create long-term problems.
 
 | Shortcut | Immediate Benefit | Long-term Cost | When Acceptable |
 |----------|-------------------|----------------|-----------------|
-| Using `public/` for images | No configuration needed, works immediately | Zero optimization, massive file sizes, slow rural loading | Never for content images; only for brand assets you control optimization for |
-| `client:load` on everything | Components work immediately, no thinking required | Huge JavaScript bundles, negates Astro benefits, slow mobile | Never; always choose appropriate directive |
-| Skipping build time testing | Faster development iteration | Production surprises (purged Tailwind, broken hydration) | Early prototyping only; test builds before every phase completion |
-| Inline API calls without caching | Simple, straightforward code | Exponential build times, API rate limits | Only for single-page sites or truly dynamic data |
-| Default Vercel adapter config | Zero configuration needed | Edge runtime breaks Node.js libraries (Nodemailer) | Static-only sites with no server functions |
-| Skipping 3G throttle testing | Fast local testing | Unusable site for target rural audience | Never for this project—rural users are primary audience |
-| Embedding full Google Maps iframe | Copy-paste embed code, works | Blocks main thread, 100+ requests, terrible mobile perf | Never; always use lazy loading or placeholder |
+| Using `window.postMessage` for calculator-to-contact instead of CustomEvent | Familiar API | Requires origin matching, more complex than needed for same-page communication | Never for same-page same-origin communication |
+| Hard-coding the Google Maps API key in the template string | No env setup needed | Key visible in git history, no domain restriction, quota abuse risk | Never — always use environment variable |
+| Pixel-perfect screenshot baselines on macOS for CI on Linux | Visual regression coverage | 100% CI failure rate due to font rendering differences | Never without Docker normalization |
+| Testing only in Chrome DevTools device emulation | Fast, no additional config | Misses real iOS Safari viewport chrome behavior, `position:sticky` edge cases | OK for development speed, not for final verification |
+| Using `overflow-x: hidden` on `body` to fix mobile scroll | Fixes the immediate scrollbar | Breaks `position: sticky` and `position: fixed` elements globally | Never — scope overflow to specific elements |
+| Using `toHaveScreenshot()` for all layout tests | Catches visual regressions | OS-dependent baselines, flaky in CI, high maintenance cost | Only when visual fidelity is the explicit requirement |
 
 ## Integration Gotchas
 
-Common mistakes when connecting to external services.
+Common mistakes when connecting features to external services or other components.
 
 | Integration | Common Mistake | Correct Approach |
 |-------------|----------------|------------------|
-| Cloudinary | Loading URLs through Astro Image component (double optimization) | Use Astro Cloudinary or custom Image Service to deliver directly from Cloudinary CDN |
-| Cloudinary | Using dynamic crop modes (`thumb`) with responsive sizing | Crop in first stage (before transformations), then allow responsive sizing on cropped result |
-| Nodemailer (contact form) | Deploying to edge runtime | Configure Vercel adapter for serverless mode; add rate limiting and honeypot spam prevention |
-| Nodemailer | Missing TLS encryption and DKIM/SPF | Enable TLS, configure DKIM/SPF, validate inputs, implement rate limiting by IP |
-| Google Maps | Direct iframe embed without lazy loading | Use `loading="lazy"` attribute or Intersection Observer, or static image placeholder with click-to-load |
-| Tailwind CSS | Missing `.astro` files in `content` config | Include all file types: `['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}']` |
+| Calculator → Contact pre-fill | Setting `setAttribute('value', ...)` instead of `.value = ...` | Always use DOM property assignment: `element.value = '...'` |
+| Calculator → Contact scroll | Using `scrollIntoView()` without `scroll-margin-top` | Set `scroll-margin-top: 80px` on `#contact` section (matches nav height) |
+| Maps Embed directions mode | Using share URL (`maps/embed?pb=...`) instead of API endpoint | Use `maps/embed/v1/directions?key=...` with explicit API key |
+| Maps API key | Unrestricted key committed to git | Restrict by HTTP referrer to production domain; store in `.env` / Vercel env vars |
+| Maps lazy-load + directions URL | Directly populating `src` attribute, bypassing observer | Keep existing `data-src` pattern; only change the URL value, not the pattern |
+| Playwright + dev server | Running `playwright test` against `npm run dev` | Configure `webServer` to build and serve the production dist |
+| Playwright viewports | Generating screenshot baselines on macOS | Generate on Linux (CI) or avoid pixel-diff tests entirely |
 
 ## Performance Traps
 
@@ -257,13 +353,9 @@ Patterns that work at small scale but fail as usage grows.
 
 | Trap | Symptoms | Prevention | When It Breaks |
 |------|----------|------------|----------------|
-| Unoptimized images in gallery | Slow loading on fast WiFi becomes unusable on 3G | Use Cloudinary with auto-format, auto-quality, responsive sizes; test on 3G throttle | First rural user on 4G |
-| Building client islands per array item | Works fine with 10 items, grinds to halt with 100+ | Static list rendering + single island for controls (sort/filter/pagination) | >50 interactive components |
-| API calls without build caching | 5-second builds acceptable early on | Cache API responses, fetch once and pass down | >20 pages with API dependencies |
-| Immediate iframe embeds (Maps, YouTube) | Desktop WiFi shows no issues | Lazy load or click-to-activate pattern | First mobile or slow connection user |
-| Unthrottled contact form | Works fine during development | Implement rate limiting (5 submissions per IP per hour), honeypot fields, CAPTCHA | First spam bot discovers form |
-| Dynamic Tailwind classes | Dev mode shows styles correctly | Use complete class names or safelist; test production builds | Production deployment |
-| Streaming with many components | Fine with small pages | Disable streaming for component-heavy pages | >1000 components on single page |
+| Synchronous scroll + pre-fill in the same click handler | Works fast locally, races on slow devices | Debounce or chain with `requestAnimationFrame` | First time on slow 3G Android |
+| Maps directions iframe loading immediately (not lazy) | Adds 100+ HTTP requests on page load | Keep/verify lazy-load pattern from Map.astro | First mobile user on 3G |
+| Running full Playwright suite on every commit | Slow CI pipeline | Scope tests to specific viewports; skip screenshot tests unless layout changed | When suite grows beyond ~20 tests |
 
 ## Security Mistakes
 
@@ -271,43 +363,35 @@ Domain-specific security issues beyond general web security.
 
 | Mistake | Risk | Prevention |
 |---------|------|------------|
-| No rate limiting on contact form | Email bombing, SMTP quota exhaustion, spam complaints | Implement 5 submissions/hour per IP, exponential backoff, monitor abuse |
-| Missing input validation in Nodemailer | Email header injection, open relay exploitation | Strict validation/sanitization of all inputs, text-only emails, validate email format |
-| Exposing SMTP credentials | Credentials leak in client bundle or Git | Use environment variables, never commit .env files, use Vercel environment secrets |
-| No CAPTCHA or honeypot | Form spam floods inbox, damages sender reputation | Add honeypot field (hidden input bots fill), consider Friendly Captcha for UX-friendly bot prevention |
-| Allowing arbitrary file uploads (future gallery admin) | Malicious file execution, storage exhaustion | Validate file types, scan for malware, use Cloudinary's moderation features, size limits |
-| Missing CORS configuration for API routes | CSRF attacks on contact form | Configure CORS properly, validate Origin header, use CSRF tokens for state-changing operations |
+| Google Maps API key without HTTP referrer restriction | Key scraped from page source and used for quota abuse, unexpected billing | Set API key restriction to `https://timberandthreadsretreat.com/*` and `http://localhost:4321/*` |
+| Maps API key committed to git | Key permanently exposed in git history even after removal | Store in `.env` (gitignored), use Vercel environment variables for production |
+| Pre-filled calculator data in contact form includes user-manipulable estimates | No security risk (estimates are client-side only, no server trust) | Treat the pre-fill as a convenience hint, not authoritative data — always confirm pricing with customer |
 
 ## UX Pitfalls
 
-Common user experience mistakes in this domain.
+Common user experience mistakes specific to these v2.2 features.
 
 | Pitfall | User Impact | Better Approach |
 |---------|-------------|-----------------|
-| Loading 50+ full-resolution gallery images at once | 3G users wait 2+ minutes, page appears broken | Lazy load below-fold images, use low-quality image placeholders (LQIP), paginate or virtual scroll |
-| No visual feedback during contact form submission | User clicks "Send" multiple times, generates duplicate emails | Show loading spinner, disable button, display success/error message clearly |
-| Flash of unstyled content (FOUC) during hydration | Jarring visual shift when React islands load | Use CSS to style static state identically to hydrated state, minimize CLS |
-| Gallery images without dimensions | Page jumps as images load (terrible CLS) | Always set explicit width/height, use aspect-ratio CSS, reserve space before load |
-| Video autoplaying on mobile 3G | Consumes data allowance, slow load blocks page | Use poster image placeholder, require click to play, consider video facade pattern |
-| No offline state messaging | Users on spotty rural connections see broken images, confused | Implement service worker for offline detection, show friendly message, cache critical assets |
-| Tiny clickable areas on mobile | Difficult to tap gallery controls or links on small screens | Minimum 44x44px touch targets, increase button padding for mobile |
+| "Get a Quote" scrolls to contact form but form is blank | Confusing — why did I get sent to an empty form? | Always pre-fill textarea with estimate summary before scrolling |
+| Pre-fill overwrites message user already typed | Frustrating data loss — user was mid-compose | Check if textarea has existing content before pre-filling; only pre-fill if empty |
+| Maps shows a route but the origin is wrong (city center, not highway turnoff) | Wrong directions confuse guests on rural roads | Use specific `origin` that matches the written directions (Highway 7 / NW 221 Road intersection) |
+| Mobile header shows brand text but overflows at narrow widths | Text pushed off-screen or behind hamburger button | Test at 320px (narrowest common width); reduce font size or add truncation if needed |
+| Calculator "Get a Quote" button looks like a submit button | User thinks it sends the form | Label clearly: "Get a Quote — Pre-fill Contact Form" or use a different visual treatment (secondary style) |
 
 ## "Looks Done But Isn't" Checklist
 
 Things that appear complete but are missing critical pieces.
 
-- [ ] **Gallery images:** Often missing width/height attributes (verify: check for CLS in Lighthouse, inspect img tags)
-- [ ] **Contact form:** Often missing rate limiting (verify: attempt 10 rapid submissions, check server-side limits)
-- [ ] **Contact form:** Often missing honeypot spam prevention (verify: hidden field exists, server rejects if filled)
-- [ ] **React islands:** Often missing proper client directive (verify: not using client:load by default, check bundle size)
-- [ ] **Images in src/:** Often missing lazy loading (verify: check loading="lazy" or client:visible for below-fold)
-- [ ] **Cloudinary integration:** Often using Astro Image instead of direct delivery (verify: check if images coming from Cloudinary CDN, not reprocessed)
-- [ ] **Production build:** Often not tested on 3G throttle (verify: Chrome DevTools Network → Slow 3G, test all pages)
-- [ ] **Tailwind production:** Often missing dynamic classes (verify: check safelist config, test all conditional styles in build)
-- [ ] **Google Maps:** Often blocking main thread (verify: check loading="lazy" or Intersection Observer, test mobile Lighthouse)
-- [ ] **Vercel deployment:** Often using wrong runtime (verify: serverless for Nodemailer, check adapter config)
-- [ ] **API routes:** Often missing CORS and CSRF (verify: test cross-origin requests, check CSRF token implementation)
-- [ ] **Build times:** Often unmonitored until too late (verify: document build time after each phase, investigate if >60s)
+- [ ] **Calculator-to-Contact button:** Often missing the actual pre-fill — verify by clicking the button and confirming the textarea has content before the user types anything.
+- [ ] **Contact form pre-fill:** Often missing validation pass-through — verify by clicking "Get a Quote," then immediately submitting without adding more text. Confirm the form submits (not rejected).
+- [ ] **Scroll offset:** Often missing `scroll-margin-top` — verify by clicking "Get a Quote" and confirming the section heading is fully visible below the nav bar, not hidden behind it.
+- [ ] **Maps directions URL:** Often missing the API key in Vercel env — verify by deploying to Vercel preview and confirming the map loads (not "This page can't load Google Maps correctly").
+- [ ] **Maps lazy-load:** Often broken by URL change — verify by checking the Network tab on fresh load; maps requests should NOT appear until the user scrolls to the location section.
+- [ ] **Mobile header text:** Often missing at 320px width — verify at the narrowest common viewport; text and hamburger should not overlap.
+- [ ] **Mobile overflow fix:** Often breaks sticky nav — verify desktop at 1280px after any overflow-x change; nav should still stick on scroll.
+- [ ] **Playwright tests:** Often only run locally — verify they pass in CI (GitHub Actions or equivalent) before signing off; font rendering in CI may differ from local.
+- [ ] **API key restriction:** Often created but not restricted — verify in Google Cloud Console that the key has HTTP referrer restrictions set to the production domain.
 
 ## Recovery Strategies
 
@@ -315,76 +399,68 @@ When pitfalls occur despite prevention, how to recover.
 
 | Pitfall | Recovery Cost | Recovery Steps |
 |---------|---------------|----------------|
-| Over-hydration (client:load everywhere) | LOW | Audit components, change directives to client:visible/idle, test performance improvement |
-| Images in public/ folder | MEDIUM | Move to src/, refactor Image components, re-optimize through Cloudinary, test thoroughly |
-| Broken client hydration (function props) | LOW | Refactor to pass data only, move handlers into island, use Nano Stores for shared state |
-| Slow builds from API calls | MEDIUM | Implement caching layer, refactor to fetch-once pattern, monitor build times |
-| Tailwind classes purged | LOW | Fix dynamic classes or add to safelist, rebuild and redeploy, add to testing checklist |
-| Vercel edge runtime failure | LOW | Update adapter config to serverless, redeploy, verify functions work |
-| Large component rendering cliff | HIGH | Architectural refactor to static list + single island, potentially redesign feature |
-| Google Maps blocking performance | LOW | Add lazy loading or placeholder pattern, redeploy, verify Lighthouse improvement |
-| Contact form spam | LOW | Add rate limiting, honeypot, CAPTCHA, monitor inbox |
-| Unoptimized images in production | MEDIUM | Audit all images, implement Cloudinary transformations, test on 3G |
+| Calculator pre-fill not crossing island boundary | LOW | Switch to CustomEvent pattern; add window listener in Contact.astro script |
+| Pre-fill sets attribute not property, validation rejects | LOW | Change `setAttribute` to `.value =` assignment; retest full form submit flow |
+| Scroll lands behind nav | LOW | Add `scroll-margin-top: 80px` to `#contact` section; no JS changes needed |
+| Maps directions URL missing API key | LOW | Create key in Google Cloud Console (5 minutes); add to `.env` and Vercel; redeploy |
+| Maps lazy-load broken by src change | LOW | Restore `data-src` pattern; clear `src` attribute; verify observer fires on scroll |
+| Mobile fix broke desktop sticky nav | MEDIUM | Identify which `overflow` rule caused it; scope it to a non-ancestor element; retest |
+| Playwright screenshot tests fail in CI | LOW | Delete screenshot baselines; switch to assertion-based tests; no pixel diffs |
+| Playwright running against dev server | LOW | Add `webServer` config to `playwright.config.ts` to build before testing |
+| Google Maps API key exposed in git | MEDIUM | Rotate the key immediately in Google Cloud Console; add new key to Vercel env; force-push scrub if necessary |
 
 ## Pitfall-to-Phase Mapping
 
-How roadmap phases should address these pitfalls.
+How v2.2 roadmap phases should address these pitfalls.
 
 | Pitfall | Prevention Phase | Verification |
 |---------|------------------|--------------|
-| Over-hydration | Phase 1 (Foundation) | Document directive strategy; review in Phase 2 when adding React island |
-| Images in public/ | Phase 1 (Foundation) | All images in src/ or Cloudinary; verify with build audit |
-| Function props to islands | Phase 2 (Gallery) | Test React admin island hydration; check console for serialization errors |
-| Slow builds from API calls | Phase 1 (Foundation), Phase 2 (Gallery) | Monitor build times; investigate if >60s; verify caching working |
-| Tailwind purging | Phase 1 (Foundation) | Test production build; verify no missing styles; add to phase completion checklist |
-| Vercel edge runtime | Phase 3 (Contact Form) | Verify adapter config before implementing Nodemailer; test preview deployment |
-| Large component lists | Phase 2 (Gallery) | Design architecture to avoid; static list + single island pattern |
-| Google Maps blocking | Phase 4 (Location) | Implement lazy loading from start; test mobile Lighthouse score |
-| Form spam | Phase 3 (Contact Form) | Rate limiting, honeypot, input validation implemented before first deploy |
-| Unoptimized Cloudinary | Phase 2 (Gallery) | Verify direct CDN delivery (not double optimization); test image sizes |
-| Missing 3G testing | Every phase | Test on Slow 3G throttle before phase sign-off; document load times |
-| Build testing skipped | Every phase | Test production build before completion; verify Tailwind, hydration, images |
+| Calculator state can't cross island boundary | Calculator-to-Contact phase | Click "Get a Quote" → confirm textarea pre-fills immediately |
+| Pre-fill uses attribute not property | Calculator-to-Contact phase | Submit pre-filled form without edits → confirm delivery |
+| Scroll offset hides heading behind nav | Calculator-to-Contact phase | Visual check: heading visible below nav after scroll |
+| Maps directions requires API key | Maps route phase | Map loads in Vercel preview with route visible |
+| Existing lazy-load broken by URL change | Maps route phase | Network tab: no maps requests on initial load |
+| Mobile fix breaks desktop sticky nav | Mobile viewport phase | Desktop 1280px: nav sticks after mobile fixes applied |
+| Mobile header text overflow at 320px | Mobile header phase | Manual test at 320px width |
+| Playwright screenshot baselines flaky in CI | Playwright setup | CI pass rate 100% on first run (no flaky failures) |
+| Playwright against dev server | Playwright setup | Tests configured to use production build via webServer config |
 
 ## Sources
 
 ### Official Documentation
-- [Astro Docs: Migrating from Next.js](https://docs.astro.build/en/guides/migrate-to-astro/from-nextjs/)
-- [Astro Docs: Islands Architecture](https://docs.astro.build/en/concepts/islands/)
-- [Astro Docs: Images](https://docs.astro.build/en/guides/images/)
-- [Astro Docs: Front-end Frameworks](https://docs.astro.build/en/guides/framework-components/)
-- [Astro Docs: Vercel Adapter](https://docs.astro.build/en/guides/integrations-guide/vercel/)
-- [Astro Docs: Content Collections](https://docs.astro.build/en/guides/content-collections/)
-
-### Performance & Optimization
-- [Complete Guide to Astro Performance Optimization](https://eastondev.com/blog/en/posts/dev/20251202-astro-performance-optimization/)
-- [Astro Build Speed Optimization Guide](https://www.bitdoze.com/astro-ssg-build-optimization/)
-- [Web Performance Optimization with Astro Deep Dive](https://www.blackholesoftware.com/blog/astro-performance-optimization-deep-dive/)
-- [2026 Web Performance Standards](https://www.inmotionhosting.com/blog/web-performance-benchmarks/)
-- [Mobile Optimization: Avoid 4G Latency](https://www.globaldots.com/resources/blog/mobile-optimization-avoid-4g-latency-with-performance-best-practices/)
-
-### Migration Experiences
-- [Alejandro Celaya: Migrating from Next.js to Astro](https://alejandrocelaya.blog/2023/10/19/my-thoughts-after-migrating-content-centric-websites-from-next-js-to-astro/)
-- [Converting Next.js to Astro - Eric Clemmons](https://ericclemmons.com/blog/converting-nextjs-to-astro)
-- [Rebuilding from Next.js to Astro](https://lik.ai/blog/nextjs-to-astro-migration/)
-- [Migrating from NextJS to Astro Guide](https://makersden.io/blog/migrating-from-nextjs-to-astro)
-
-### Specific Issues
-- [GitHub Issue #11454: Slow Rendering Performance](https://github.com/withastro/astro/issues/11454)
-- [Share State Between Islands](https://docs.astro.build/en/recipes/sharing-state-islands/)
-- [Astro Cloudinary Documentation](https://astro.cloudinary.dev/)
-- [How to Optimize Images in Astro](https://uploadcare.com/blog/how-to-optimize-images-in-astro/)
-- [Lazy Load Google Maps Iframe](https://key2blogging.com/lazyload-google-map-iframe/)
-- [Securing Nodemailer](https://medium.com/@Scofield_Idehen/securing-nodemailer-with-proper-authentication-a5fb1fa372d0)
-- [Form Spam Prevention Best Practices](https://friendlycaptcha.com/insights/form-spam-prevention/)
+- [Astro Docs: Share State Between Islands](https://docs.astro.build/en/recipes/sharing-state-islands/) — CustomEvent and Nano Stores approaches
+- [Astro Docs: Share State Between Components](https://docs.astro.build/en/recipes/sharing-state/)
+- [Google Maps Embed API: Embedding Maps](https://developers.google.com/maps/documentation/embed/embedding-map) — confirmed directions mode support and API key requirement
+- [Google Maps Embed API: Usage and Billing](https://developers.google.com/maps/documentation/embed/usage-and-billing) — confirmed free, unlimited usage
+- [Playwright Docs: Emulation](https://playwright.dev/docs/emulation) — viewport and device configuration
+- [Playwright Docs: Visual Comparisons](https://playwright.dev/docs/test-snapshots) — screenshot testing and thresholds
+- [New CSS Viewport Units (svh, lvh, dvh)](https://ishadeed.com/article/new-viewport-units/) — mobile viewport height fix
 
 ### Community Resources
-- [Astro Islands Architecture Explained - Strapi](https://strapi.io/blog/astro-islands-architecture-explained-complete-guide)
-- [Understanding Astro Islands - LogRocket](https://blog.logrocket.com/understanding-astro-islands-architecture/)
-- [Astro Island Architecture Demystified - SoftwareMill](https://softwaremill.com/astro-island-architecture-demystified/)
-- [Astro Client Directives Explained - Medium](https://medium.com/@mirko.tomhave/astro-client-directives-explained-b0daac284c0)
+- [BetterStack: 9 Playwright Best Practices](https://betterstack.com/community/guides/testing/playwright-best-practices/) — flaky test prevention
+- [Playwright Flaky Tests — GitHub Issue #20097](https://github.com/microsoft/playwright/issues/20097) — font rendering OS differences
+- [Why Playwright Visual Testing Doesn't Scale](https://argos-ci.com/blog/playwright-visual-testing-limits) — screenshot test limitations
+- [Sharing State with Islands Architecture](https://frontendatscale.com/blog/islands-architecture-state/) — cross-island state patterns
+- [Google Maps API Pricing 2025 Guide](https://nicolalazzari.ai/articles/understanding-google-maps-apis-a-comprehensive-guide-to-uses-and-costs)
+- [CSS Tricks: The 100vh Mobile Problem](https://css-tricks.com/the-trick-to-viewport-units-on-mobile/) — sticky nav and overflow interaction
 
 ---
-*Pitfalls research for: Astro Content Website (Next.js Migration to Astro for Quilting Retreat)*
-*Researched: 2026-02-16*
-*Target Audience: Slow rural 3G/4G connections (Missouri)*
-*Stack: Astro, React islands, Tailwind CSS, Cloudinary, Vercel, Nodemailer*
+
+## Retained Pitfalls from v2.0–v2.1 (Still Applicable)
+
+The following pitfalls from the original research remain relevant and should not be re-introduced:
+
+| Pitfall | Status | Note |
+|---------|--------|------|
+| Over-hydration (`client:load` everywhere) | Avoid | Calculator uses `client:load` (correct); no new islands in v2.2 |
+| Images in `public/` bypass optimization | Avoid | No new images expected in v2.2; use `src/assets/` if any added |
+| Tailwind dynamic classes purged in production | Avoid | Any new conditional classes in calculator or nav must use complete strings |
+| Google Maps iframe blocking main thread | Mitigated | Existing lazy-load pattern must be preserved through v2.2 changes |
+| Form validation UX | Mitigated | Existing validation in Contact.astro works; pre-fill must integrate with it |
+| Missing 3G throttle testing | Always apply | Test map lazy-load and calculator on Slow 3G before sign-off |
+
+---
+*Pitfalls research for: Astro static site, v2.2 Client Preview Polish features*
+*Researched: 2026-03-02*
+*Target: Rural Missouri audience (slow 3G/4G connections)*
+*Stack: Astro 5, Preact island, Tailwind v4, Vercel, Google Maps Embed API, Playwright*

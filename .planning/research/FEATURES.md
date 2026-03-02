@@ -1,278 +1,340 @@
-# Feature Landscape
+# Feature Research
 
-**Domain:** Retreat Center / Small Business Hospitality Website
-**Researched:** 2026-02-16
-**Confidence:** MEDIUM
+**Domain:** Retreat Center / Small Business Hospitality Website (v2.2 Polish Milestone)
+**Researched:** 2026-03-02
+**Confidence:** HIGH (existing codebase inspected directly; patterns verified via official docs and NN/g research)
 
-## Table Stakes
+---
 
-Features users expect. Missing = product feels incomplete.
+> **NOTE — Milestone scope:** This file was updated for the v2.2 Client Preview Polish milestone. It extends the original v2.0 landscape (2026-02-16) with feature-specific research on (1) calculator-to-contact pre-fill flows, (2) visual driving routes on a map, (3) mobile header text branding, and (4) Playwright viewport testing. Existing table stakes and differentiators from v2.0 are preserved below the v2.2 section.
+
+---
+
+## v2.2 Feature Research
+
+### 1. Calculator-to-Contact Pre-Fill Flow
+
+**Goal:** After the user adjusts the pricing calculator and sees their estimate, a "Get a Quote" button scrolls them to the contact form and pre-populates the message field with the calculated estimate details.
+
+**How it works (standard pattern):**
+
+The widely-used pattern for this interaction is:
+
+1. The CTA button (e.g., "Get a Quote") lives in the calculator's breakdown panel, adjacent to the total estimate.
+2. On click, the page smooth-scrolls to `#contact`.
+3. A pre-built message string is injected into the `<textarea id="message">` field.
+4. The user sees the form ready to send with their estimate already described — they only need to add name, email, and any additional notes.
+
+**Message content to pre-fill:**
+
+The message should include enough detail for the owner to confirm pricing without going back and forth:
+
+```
+I'm interested in booking a retreat for [N] guests over [N] nights[, with meals included].
+
+Estimated cost: $[total]
+  - Accommodation: $[amount]
+  - Meals: $[amount] (if applicable)
+
+Please reach out to confirm availability and finalize details.
+```
+
+**UX principles from NN/g research:**
+
+- Show results immediately on the calculator — never gate them behind a form. Users are in exploration mode and will abandon if forced to register first. (Source: NN/g Recommendations for Calculator and Quiz Tools)
+- The contact form pre-fill is an *optional next step* after results are already visible, not a prerequisite.
+- Pre-filling shows the user their data was "remembered," reducing re-entry friction and increasing form completion rates.
+
+**Implementation path (Preact → vanilla DOM):**
+
+The existing `PricingCalculator.tsx` (Preact island) computes `total`, `accommodationCost`, `foodCost`, `groupSize`, `nights`, and `includeMeals`. The "Get a Quote" button should:
+
+1. Compute the pre-fill string using those values.
+2. Use `window.location.hash = '#contact'` or `document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })` for scroll.
+3. Set `(document.getElementById('message') as HTMLTextAreaElement).value = messageString` to inject the message.
+
+The contact form (`Contact.astro`) exposes `id="message"` as a plain `<textarea>`. No URL parameter passing needed — everything happens in-page via direct DOM access across the static/island boundary. This works because both elements exist in the same browser document.
+
+**Constraint:** The calculator is a Preact island (`client:load`). The contact form is plain Astro HTML with a `<script>` block. Cross-island communication via custom events or direct DOM mutation from the Preact component both work on the same page — no special bus needed.
+
+**Per-person breakdown (companion feature):**
+
+Per the PROJECT.md requirements, the calculator also needs a per-person breakdown line shown under the total. For standard rate groups: `total / groupSize = per-person cost`. For flat-rate groups (10-12): `total / groupSize` gives the per-person share of the flat rate. This is a display-only addition to the breakdown panel, not a separate component.
+
+---
+
+### 2. Google Maps Visual Driving Route
+
+**Goal:** Upgrade the existing map embed to show a visual route line from a recognizable origin point (e.g., Kansas City or Hwy 7 junction) to the retreat address, rather than just a pin.
+
+**Two approaches investigated:**
+
+#### Option A: Maps Embed API directions mode (RECOMMENDED)
+
+The Google Maps Embed API `directions` mode displays a visual route line between an origin and destination on an interactive iframe map. It shows distance and travel time.
+
+URL format:
+```
+https://www.google.com/maps/embed/v1/directions
+  ?key=YOUR_API_KEY
+  &origin=Kansas+City,+MO
+  &destination=306+NW+300+Rd,+Clinton,+MO+64735
+  &mode=driving
+```
+
+**Cost:** FREE. The Maps Embed API has unlimited usage at no charge. Billing must be enabled on the Google Cloud project to get an API key, but there are zero usage fees for the Embed API specifically.
+
+**API key requirement:** YES — an API key is required for the `v1/directions` URL format. However, the key can be restricted to the production domain (`timberandthreadsretreat.com`) to prevent misuse. This is the standard Google recommendation for client-side embed keys.
+
+**Existing embed:** The current Map.astro uses a keyless legacy embed URL (`https://www.google.com/maps/embed?pb=!1m18!...`). This legacy format is still supported but only shows a pin, not a route.
+
+**Tradeoff:** Switching to directions mode requires a new Google Cloud project + restricted API key. This is a one-time 15-minute setup. The key goes in an environment variable; Vercel environment variables are free-tier compatible.
+
+#### Option B: Google Maps share/embed iframe from directions URL (LOW confidence)
+
+From Google Maps web UI, you can get directions from point A to point B and then use Share > Embed. This produces an iframe without an explicit `key` parameter. However, this URL format is undocumented, may break, and does not accept programmatic parameters. Not recommended for production.
+
+#### Option C: Static route image (not viable without API key)
+
+The Maps Static API (raster image, not interactive) also requires an API key and billing. No advantage over Option A for this use case. Excluded.
+
+**Recommendation: Option A.** One-time API key setup. Free forever. Interactive route the user can zoom/pan. Consistent with existing lazy-load IntersectionObserver pattern already in Map.astro.
+
+**Origin selection:** From Kansas City, MO (~90 min) is the most recognizable origin for the audience. Alternatively, "Hwy 7 & NW 221 Rd, Clinton, MO" would show only the local final miles matching the written directions. Kansas City is better for first-time visitors planning travel.
+
+---
+
+### 3. Mobile Header Text Branding
+
+**Goal:** Show "Timber & Threads" text in the mobile header (currently hidden on small screens via `hidden sm:block`).
+
+**Current state (Nav.astro):**
+
+```html
+<span class="font-serif text-2xl text-stone-800 ... hidden sm:block">Timber &amp; Threads</span>
+<div class="w-0 h-1 bg-brand ... hidden sm:block"></div>
+```
+
+The logo image (`h-8 w-8`) is always visible. The text title and the brand underline are hidden below `sm` breakpoint (640px).
+
+**Standard pattern:**
+
+Responsive branding typically collapses to icon-only on very small screens (<360px) but preserves a text wordmark at typical mobile widths (375–430px). The 2026 pattern is a "responsive logo system" — full mark on desktop, simplified (icon + short name) on mobile.
+
+At 375px (iPhone SE) with a hamburger button on the right, the header has roughly 280px of available width between logo and hamburger. The font-serif text at `text-xl` (not `text-2xl`) fits comfortably.
+
+**Fix options:**
+
+1. **Remove `hidden sm:block`, reduce font size on mobile:** Change to `text-xl sm:text-2xl` with no hidden class. The text shows on all screens. Works if the header has enough room.
+2. **Show text below `sm`, hide underline animation:** Keep the title visible but drop the animated underline on mobile (it takes extra height). Show underline only `sm:block`.
+3. **Responsive font scaling only:** Keep `hidden sm:block` but change `sm:` to something smaller, e.g., remove the hidden class entirely and rely on font size to keep it from overflowing.
+
+**Recommended approach:** Remove `hidden sm:block` from the text span, change `text-2xl` to `text-xl sm:text-2xl`, keep the underline `hidden sm:block` (animation is a nice-to-have on desktop only). This keeps the header clean at all sizes without sacrificing brand clarity. Test at 375px and 320px viewports.
+
+**Constraint:** The mobile hamburger is `w-11 h-11` at the right edge. The logo image is `h-8 w-8`. At 375px, the remaining space for the wordmark is approximately 260–280px — plenty for "Timber & Threads" at 20px serif.
+
+---
+
+### 4. Playwright Viewport Testing for Static Sites
+
+**Goal:** Verify that all sections render correctly across desktop (1280px) and mobile (375px) viewport widths. Catch layout regressions introduced in v2.2.
+
+**Playwright configuration approach:**
+
+```typescript
+// playwright.config.ts
+import { defineConfig, devices } from '@playwright/test';
+
+export default defineConfig({
+  testDir: './tests',
+  use: {
+    baseURL: 'http://localhost:4321', // Astro dev server port
+  },
+  projects: [
+    {
+      name: 'desktop',
+      use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 720 } },
+    },
+    {
+      name: 'mobile',
+      use: { ...devices['iPhone 13'], viewport: { width: 390, height: 844 } },
+    },
+    {
+      name: 'mobile-small',
+      use: { viewport: { width: 375, height: 667 } }, // iPhone SE size
+    },
+  ],
+});
+```
+
+**What to test for this milestone:**
+
+| Check | Why |
+|-------|-----|
+| Mobile header shows "Timber & Threads" text | Core v2.2 requirement |
+| Calculator "Get a Quote" button is visible and tappable (44px+) | Touch target requirement |
+| Clicking "Get a Quote" scrolls to `#contact` and pre-fills message | Core v2.2 flow |
+| Map iframe renders (or lazy-load placeholder visible) | Route embed check |
+| No horizontal overflow at 375px | Common mobile regression |
+| Pricing section shows rate cards, not duplicates | v2.2 cleanup requirement |
+
+**Test type:** Functional E2E tests, not visual regression snapshots. Visual snapshots require locked CI OS/fonts and Docker to prevent pixel-level flakiness — overkill for a client preview milestone. Simple selector + visibility assertions are stable and sufficient.
+
+**Astro-specific notes:**
+
+- Astro dev server runs on port 4321 by default. Use `webServer` config in Playwright to auto-start it.
+- Preact islands (`client:load`) hydrate after page load. Use `page.waitForSelector` or `page.waitForFunction` before asserting on calculator state.
+- The contact form is plain HTML — no hydration delay, assertions work immediately.
+
+**Recommended test file structure:**
+
+```
+tests/
+  desktop.spec.ts  — desktop viewport checks
+  mobile.spec.ts   — mobile viewport checks
+  calculator-flow.spec.ts — calculator → contact form flow
+```
+
+---
+
+## Feature Landscape (Original v2.0 — Preserved)
+
+### Table Stakes (Users Expect These)
+
+Features users assume exist. Missing these = product feels incomplete.
 
 | Feature | Why Expected | Complexity | Notes |
 |---------|--------------|------------|-------|
-| **Mobile-responsive design** | 70%+ of travelers book from mobile devices; 52% of global web traffic is mobile | Medium | Must work perfectly on phones/tablets. Critical for older demographic who increasingly use mobile |
-| **Professional photography** | Visual proof of quality; users judge in <1 second | Low | High-res images of rooms, facilities, lake views, quilting spaces. Professional = non-negotiable |
-| **Clear contact information** | Users leave if they can't find contact info easily | Low | Phone, email, address visible on every page (especially header/footer) |
-| **Location & directions** | Essential for trip planning; proximity to airports/amenities reassures guests | Low | Embedded Google Maps, written directions, distance to airports/hospitals |
-| **Availability calendar** | Transparency builds trust; reduces inquiry volume | Medium | Real-time updates showing booked/available dates |
-| **Pricing information** | Users expect transparency; hiding prices creates friction | Low | Clear pricing (per night, group rates), deposit requirements, what's included |
-| **Room/facility details** | Users need to visualize the space and understand amenities | Low | Bedroom count, bathrooms, kitchen, capacity, sleeping arrangements |
-| **Photo gallery** | Users expect visual proof before committing | Low-Medium | Grid or masonry layout with lazy-loading, organized by category (rooms, facilities, lake, events) |
-| **About/story section** | Establishes trust and personal connection | Low | Who runs it, why it exists, what makes it special |
-| **Social proof (reviews/testimonials)** | 95% read reviews before booking; 72% say positive reviews increase trust | Low | Google Reviews integration or testimonial quotes with photos |
-| **Fast load times** | Users leave if site is slow; impacts SEO | Medium | Optimized images, lazy-loading, Core Web Vitals compliance |
+| Mobile-responsive design | 70%+ travelers browse on mobile | MEDIUM | Foundational; all v2.2 features must work at 375px |
+| Professional photography | Visual proof of quality; first impression | LOW | Already shipped in v2.1 |
+| Clear contact information | Users leave if contact info is hidden | LOW | Already present; enhanced by calculator-to-form flow |
+| Location & directions | Essential for trip planning | LOW | Existing text directions; v2.2 adds visual route |
+| Availability calendar | Transparency builds trust | MEDIUM | Already shipped (Google Calendar embed) |
+| Pricing information | Hiding prices creates friction | LOW | Static rate cards already shipped |
+| Room/facility details | Users need to visualize the space | LOW | Already shipped with v2.1 corrections |
+| Photo gallery | Visual proof before committing | LOW-MEDIUM | Already shipped with PhotoSwipe |
+| About/story section | Establishes trust | LOW | Already shipped |
+| Contact form | Core inquiry workflow | LOW | Already shipped with Resend delivery |
+| Fast load times | Rural 3G/4G audience | MEDIUM | Lighthouse 90+ already achieved |
 
-## Differentiators
+### Differentiators (Competitive Advantage)
 
-Features that set product apart. Not expected, but valued.
+Features that set product apart. Not required, but valued.
 
 | Feature | Value Proposition | Complexity | Notes |
 |---------|-------------------|------------|-------|
-| **Virtual tour (360° or video)** | Helps guests visualize experience; transports viewers to location | Medium | Video walkthrough of island, lakefront, quilting studio with design walls |
-| **Nearby quilt shop directory** | Quilters value proximity to fabric/supply shops | Low | List of shops within 30min-2hrs with links/addresses |
-| **Detailed amenity showcase** | Highlights specialized quilting features that competitors lack | Low | 75-foot design walls, cutting stations with mats/rulers, irons, comfortable chairs |
-| **Event calendar/workshop schedule** | Shows active community; attracts repeat visitors | Low-Medium | Public calendar of hosted workshops, open retreat dates |
-| **Meal options transparency** | Reduces friction for groups with dietary needs | Low | Clear description of meal packages, dietary accommodations |
-| **Guest photo gallery** | Shows real events, builds community feeling | Low | Photos from past retreats (with permission), happy guests crafting |
-| **Itinerary examples** | Helps first-time retreat planners visualize their experience | Low | Sample day-by-day schedule (arrival, sewing time, meals, social) |
-| **Group booking guide** | Reduces inquiry volume; empowers organizers | Low | How to plan, what to bring, tips for first-time organizers |
-| **Weather/seasonal info** | Helps with packing and planning | Low | Best seasons to visit, typical weather, what to pack |
-| **Accessibility information** | Critical for older demographic, shows consideration | Low | Stairs, mobility accommodations, bathroom accessibility |
+| Interactive pricing calculator | Lets groups self-serve estimate before calling | MEDIUM | Already shipped; v2.2 adds per-person breakdown + quote CTA |
+| Calculator-to-contact pre-fill | Reduces friction from "I'm interested" to "send inquiry" | LOW | **v2.2 target feature** |
+| Visual driving route on map | More intuitive than text directions for first-time visitors | LOW | **v2.2 target feature** (requires Maps Embed API key) |
+| Per-person cost breakdown | Helps group organizers split costs | LOW | **v2.2 target feature** (addition to calculator) |
 
-## Anti-Features
+### Anti-Features (Commonly Requested, Often Problematic)
 
-Features to explicitly NOT build.
+Features that seem good but create problems.
 
-| Anti-Feature | Why Avoid | What to Do Instead |
-|--------------|-----------|-------------------|
-| **Full online booking/payment system** | High complexity, ongoing maintenance, unnecessary for consultation-based model | Keep contact form with inquiry-to-quote workflow. Lower barrier to entry, allows custom quotes |
-| **User accounts/login system** | Unnecessary complexity for a content site with no member portal | Use email-based inquiry system. Simpler, more appropriate for small business |
-| **Live chat widget** | Resource-intensive to staff; older demographic prefers phone/email | Prominent phone number and contact form. Matches existing workflow |
-| **Blog with frequent updates** | Time-consuming to maintain; creates staleness if not updated | Static "Tips for Planning" or "What to Bring" pages. Timeless content, no maintenance burden |
-| **Online store for merchandise** | Scope creep; not core business | Focus on retreat booking. Could add external link to Etsy/Shopify if needed later |
-| **Social media feeds** | Can look stale if not actively maintained; Facebook already exists | Static social links in footer. Avoids embedding stale feeds |
-| **Automated availability sync** | Over-engineering for manual Google Calendar management | Embed public Google Calendar. Free, works with existing process |
-| **Multi-language support** | Unnecessary for rural Missouri demographic | English only. Can reassess if international interest develops |
-| **Newsletter subscription** | Requires consistent content creation and email marketing | Use Facebook for updates (already established). Lower maintenance |
-| **Booking deposit processing** | PCI compliance, payment gateway fees, security concerns | Handle deposits via phone/email after inquiry. Maintains personal touch |
+| Feature | Why Requested | Why Problematic | Alternative |
+|---------|---------------|-----------------|-------------|
+| Gate calculator results behind email | Capture leads, grow list | NN/g research: users abandon and feel tricked; destroys trust | Show results freely, offer "Get a Quote" as an optional next step |
+| Live driving directions (Directions API, not Embed) | Personalized routing from user's address | Requires JS SDK, billing risk if API key exposed, complex implementation | Embed API directions mode with fixed origin (Kansas City) is sufficient |
+| Visual regression snapshot tests | Pixel-perfect CI verification | Requires Docker, locked OS fonts; high maintenance for a client preview | Functional selector-based assertions are stable and sufficient for this milestone |
+| URL parameter pre-fill for contact form | Allows sharing pre-filled URLs | Adds complexity, exposes data in URL history, requires encoding | Direct DOM mutation from the Preact island is simpler and stays in-page |
+| Online booking / payment system | Reduce phone inquiries | High complexity, PCI concerns, conflicts with personal-quote workflow | Contact form → owner responds with quote. Keeps personal touch |
 
 ## Feature Dependencies
 
 ```
-Mobile-responsive design
-    └──enables──> All other features (foundational)
+Calculator (existing Preact island)
+    └──enables──> Per-person breakdown (display addition)
+    └──enables──> Get a Quote button (CTA in breakdown panel)
+                      └──requires──> Contact form message field (id="message" exists)
+                      └──triggers──> Scroll to #contact + DOM pre-fill
 
-Professional photography
-    └──requires──> Photo gallery
-    └──enables──> Virtual tour
+Maps Embed API directions mode
+    └──requires──> Google Cloud API key (one-time setup, free tier)
+    └──replaces──> Existing pin-only embed URL
 
-Availability calendar
-    └──enhanced by──> Event calendar/workshop schedule
+Mobile header text
+    └──requires──> CSS change only (remove hidden sm:block)
+    └──conflicts-with──> Header overflow at very narrow screens (test at 375px)
 
-Social proof (reviews)
-    └──enhanced by──> Guest photo gallery
-
-Clear contact info
-    └──required for──> Inquiry-to-quote workflow
-    └──reduces need for──> Live chat
-
-Location & directions
-    └──enhanced by──> Nearby quilt shop directory
-    └──enhanced by──> Weather/seasonal info
-
-Room/facility details
-    └──enhanced by──> Detailed amenity showcase
-    └──enhanced by──> Accessibility information
-    └──enhanced by──> Professional photography
+Playwright tests
+    └──requires──> All v2.2 features complete (tests verify them)
+    └──requires──> Astro dev server running (webServer config)
+    └──enhanced-by──> Preact hydration waits (waitForSelector)
 ```
 
 ### Dependency Notes
 
-- **Mobile-responsive design is foundational:** All features must work on mobile. Build mobile-first.
-- **Professional photography enables multiple features:** Gallery, virtual tour, room details all depend on quality images.
-- **Availability calendar + Event calendar:** Can be same Google Calendar with different views (availability vs scheduled workshops).
-- **Contact form is cornerstone of workflow:** Anti-features like online booking system would conflict with this established process.
-- **Accessibility info enhances room details:** Natural fit to include accessibility in facility descriptions.
+- **Calculator → Quote button:** The "Get a Quote" button must live inside the Preact island to access reactive state (`total`, `groupSize`, `nights`, `includeMeals`). It cannot be a static Astro button outside the island without a custom event system.
+- **Maps API key:** The directions mode URL requires an API key even though usage is free. Key should be in an environment variable restricted to the production domain. This must be set up before Map.astro can switch to the new embed URL format.
+- **Playwright tests last:** Testing validates all other v2.2 features are working. It should be the final step in the milestone, not a blocker for earlier features.
+- **Mobile header has no dependencies:** Pure CSS change, can be done independently at any point.
 
-## MVP Recommendation
+## MVP Definition
 
-### Launch With (v1)
+### v2.2 Launch With
 
-Prioritize these features for initial launch:
+Minimum to ship client preview:
 
-1. **Mobile-responsive design** — Foundational; 70%+ of traffic will be mobile
-2. **Professional photography** — Critical first impression; enables gallery and room details
-3. **Photo gallery** — Table stakes for visual proof; organized by category
-4. **Clear contact information** — Visible phone/email on every page
-5. **Availability calendar** — Embedded Google Calendar (free, matches current workflow)
-6. **Pricing information** — Transparent rates, deposit requirements, what's included
-7. **Room/facility details** — Bedroom count, capacity, amenities, quilting features
-8. **Location & directions** — Embedded Google Maps, written directions
-9. **About/story section** — Builds trust and personal connection
-10. **Contact form** — Inquiry-to-quote workflow (matches current process)
-11. **Social proof** — Initial testimonials (3-5 quotes) with plan to add Google Reviews widget
-12. **Fast load times** — Optimized images, lazy-loading galleries
+- [x] **Duplicate pricing cards removed** — Accommodations section cleaned up (already planned)
+- [ ] **Per-person breakdown in calculator** — Addition to existing breakdown panel
+- [ ] **"Get a Quote" button** — CTA in calculator breakdown; scrolls + pre-fills contact form message
+- [ ] **Mobile header text** — "Timber & Threads" visible on mobile via CSS fix
+- [ ] **Visual driving route on map** — Maps Embed API directions mode (requires API key setup)
+- [ ] **Playwright viewport tests** — Desktop 1280px + mobile 375px verification
 
-**Rationale:** These features cover all table stakes and enable the core inquiry-to-quote workflow. Avoid over-engineering (no booking system, no user accounts). Focus on what converts: beautiful photos, clear pricing, easy contact.
+### Add After v2.2 (Future)
 
-### Add After Validation (v1.x)
+- [ ] **Testimonials section** — Social proof; triggered when client gathers 3+ written testimonials
+- [ ] **Virtual tour video** — When promo video is edited and ready to swap into placeholder
+- [ ] **Gallery image swap** — When client selects from new photography batch
 
-Features to add once core site is working and generating inquiries:
+### Out of Scope (Never)
 
-- **Detailed amenity showcase** — Expand facility details with quilting-specific features (design walls, cutting stations)
-- **Nearby quilt shop directory** — Value-add for quilters planning their trip
-- **Guest photo gallery** — Once permission system established, showcase real retreats
-- **Itinerary examples** — Help first-time organizers visualize their retreat
-- **Group booking guide** — Reduce repetitive inquiry questions with comprehensive guide
-- **Accessibility information** — Important for older demographic; add to facility details
-- **Weather/seasonal info** — Helpful for packing/planning
-
-**Trigger:** Add these when receiving 5+ inquiries/month and feedback indicates need.
-
-### Future Consideration (v2+)
-
-Features to defer until product-market fit is established:
-
-- **Virtual tour (360° or video)** — HIGH value but MEDIUM complexity. Wait until budget allows professional videography.
-- **Event calendar/workshop schedule** — If transitioning from private retreats to public workshops.
-- **Multi-language support** — Only if international interest develops.
-
-**Trigger:** Virtual tour when revenue supports $2-5K investment. Event calendar if business model shifts to public workshops.
+- Online booking / payment processing
+- Admin gallery management interface
+- User accounts
+- Live chat
 
 ## Feature Prioritization Matrix
 
 | Feature | User Value | Implementation Cost | Priority |
 |---------|------------|---------------------|----------|
-| Mobile-responsive design | HIGH | MEDIUM | P1 |
-| Professional photography | HIGH | LOW-MEDIUM (outsource) | P1 |
-| Photo gallery | HIGH | LOW | P1 |
-| Clear contact info | HIGH | LOW | P1 |
-| Availability calendar (Google) | HIGH | LOW | P1 |
-| Pricing information | HIGH | LOW | P1 |
-| Room/facility details | HIGH | LOW | P1 |
-| Location & directions | HIGH | LOW | P1 |
-| About/story section | HIGH | LOW | P1 |
-| Contact form | HIGH | LOW | P1 |
-| Social proof (testimonials) | HIGH | LOW | P1 |
-| Fast load times | HIGH | MEDIUM | P1 |
-| Detailed amenity showcase | MEDIUM | LOW | P2 |
-| Nearby quilt shop directory | MEDIUM | LOW | P2 |
-| Guest photo gallery | MEDIUM | LOW | P2 |
-| Itinerary examples | MEDIUM | LOW | P2 |
-| Group booking guide | MEDIUM | LOW | P2 |
-| Accessibility information | MEDIUM | LOW | P2 |
-| Weather/seasonal info | MEDIUM | LOW | P2 |
-| Virtual tour (video) | HIGH | MEDIUM-HIGH | P3 |
-| Event calendar/workshops | MEDIUM | MEDIUM | P3 |
-| Online booking system | LOW (conflicts with workflow) | HIGH | NEVER |
-| User accounts | LOW | HIGH | NEVER |
-| Live chat | LOW | HIGH | NEVER |
+| Per-person cost breakdown | MEDIUM | LOW (display only) | P1 |
+| Get a Quote button + pre-fill | HIGH | LOW (DOM mutation, same page) | P1 |
+| Mobile header text visible | MEDIUM | LOW (CSS change only) | P1 |
+| Visual driving route (Maps Embed API) | MEDIUM | MEDIUM (API key setup + URL change) | P1 |
+| Playwright viewport tests | HIGH (quality gate) | LOW-MEDIUM (config + 6 checks) | P1 |
+| Testimonials section | HIGH | LOW | P2 |
+| Video placeholder swap | HIGH | LOW (client must supply video) | P2 |
 
 **Priority key:**
-- **P1: Must have for launch** — Core functionality, table stakes
-- **P2: Should have, add when possible** — Enhances experience, differentiates
-- **P3: Nice to have, future consideration** — High value but can wait for budget/need
-- **NEVER: Anti-features** — Deliberately excluded to avoid complexity
-
-## Accessibility Design Notes (Older Demographic)
-
-Given the target audience (quilters, older demographic, not tech-savvy), these design principles apply across all features:
-
-### Typography & Readability
-- **Minimum 16px font size** (preferably 18px for body text)
-- **Clear, readable fonts** (avoid decorative fonts for body text)
-- **High contrast text** (dark text on light backgrounds)
-- **Shorter paragraphs** with clear headings
-- **Bullet points and lists** for scannable content
-
-### Navigation & Interaction
-- **Simple, intuitive menus** with clear labels
-- **Large, clickable buttons** (minimum 44x44px touch targets)
-- **Clear visual hierarchy** (most important info stands out)
-- **Minimal clicks to key info** (contact, pricing, availability)
-- **Breadcrumbs for navigation context**
-
-### Visual Design
-- **Whitespace for breathing room** (avoid visual clutter)
-- **One primary action per section** (reduce cognitive load)
-- **Consistent layout patterns** (predictable structure)
-- **Clear calls-to-action** ("Call to Inquire", "View Availability")
-
-### Multimedia
-- **Alt text for all images** (screen reader support)
-- **Captions for videos** (if added in v2+)
-- **Lazy-loading for galleries** (performance without sacrificing quality)
-
-### Mobile Considerations
-- **Touch-friendly interface** (no hover-only interactions)
-- **Readable text without zooming**
-- **Scrollable galleries** (swipe gestures)
-- **Click-to-call phone numbers** (instant action on mobile)
-
-**Standard:** Aim for WCAG AA conformance minimum, with AAA for text contrast where possible.
-
-## Competitor Feature Analysis
-
-Based on research of quilting retreat centers and small hospitality businesses:
-
-| Feature | Typical Competitors | Our Approach | Advantage |
-|---------|-------------------|--------------|-----------|
-| **Photography** | Mixed quality, often amateur | Professional photos of lake, island, facilities | Stronger first impression |
-| **Availability** | Phone-only, unclear calendars | Embedded Google Calendar (real-time) | Transparency builds trust |
-| **Amenities** | Generic lists | Quilting-specific details (design walls, cutting stations) | Shows understanding of quilter needs |
-| **Pricing** | Often hidden, call-for-quote | Transparent pricing on site | Reduces friction, filters serious inquiries |
-| **Location info** | Address only | Map + directions + nearby quilt shops | Helps trip planning |
-| **Guest photos** | Rare | Past retreat photos with permission | Social proof + community feeling |
-| **Accessibility** | Rarely mentioned | Clear accessibility information | Shows consideration for older guests |
-| **Booking** | Mix of complex systems or phone-only | Simple contact form → personal quote | Matches current workflow, maintains personal touch |
-| **Mobile experience** | Often poor | Mobile-first design | Meets users where they are (70%+ mobile) |
-
-**Our differentiator:** Professional presentation with personal touch. Not over-engineered (no booking system), not under-invested (quality photos, clear info).
+- P1: Required for v2.2 milestone / client preview
+- P2: Next milestone candidate
+- P3: Future consideration
 
 ## Sources
 
-### Retreat Center Features
-- [12 Key Features to Make Your Retreat Websites a Success](https://basundari.com/retreat-websites/) — MEDIUM confidence (WebSearch verified)
-- [What Makes A Great Retreat? Essential Retreat Center Amenities](https://www.wcrc.info/blog/retreat-center-amenities-to-consider/) — MEDIUM confidence
+### Calculator-to-Form Pre-Fill
+- [12 Design Recommendations for Calculator and Quiz Tools — NN/g](https://www.nngroup.com/articles/recommendations-calculator/) — HIGH confidence (official UX research)
+- [How to Use URL Parameters to Pre-Fill Form Fields — Formaloo](https://www.formaloo.com/blog/how-to-use-url-parameters-to-pre-fill-form-fields) — MEDIUM confidence
+- [Calculators and Quizzes: User Expectations — NN/g](https://www.nngroup.com/articles/calculator-expectations/) — HIGH confidence (official UX research)
 
-### Hospitality Website Best Practices
-- [Digital Marketing Hospitality 2026 Guide for Hotels](https://www.digileapservices.com/digital-marketing-hospitality-2026/) — MEDIUM confidence
-- [35 Stunning Hotel Website Design Examples in 2025](https://hoteltechreport.com/news/hotel-website-designs) — MEDIUM confidence
+### Google Maps Embed API
+- [Embed a map — Maps Embed API — Google for Developers](https://developers.google.com/maps/documentation/embed/embedding-map) — HIGH confidence (official docs)
+- [Maps Embed API Usage and Billing — Google for Developers](https://developers.google.com/maps/documentation/embed/usage-and-billing) — HIGH confidence (official docs)
+- [Maps Embed API Directions Mode](https://developers.google.com/maps/documentation/embed/embedding-map#directions_mode) — HIGH confidence (official docs)
 
-### Vacation Rental Features
-- [8 Features Your Vacation Rental Website Needs to Succeed](https://blog.usewebready.com/features-vacation-rental-website-needs/) — MEDIUM confidence
-- [10 Vital Elements of an Effective Vacation Rental Website](https://leadgenapp.io/10-vital-elements-of-an-effective-vacation-rental-website/) — MEDIUM confidence
+### Mobile Header / Responsive Branding
+- [Responsive Logo: Why Your Business Needs a Responsive Logo in 2026 — Kirnanitechnologies](https://blog.kirnanitechnologies.com/responsive-logo-2026/) — MEDIUM confidence
+- Direct codebase inspection of Nav.astro — HIGH confidence
 
-### Quilting Retreat Centers (Competitor Analysis)
-- [Quilting Events at Stitchin Heaven](https://stitchinheaven.com/pages/the-retreat-center-and-the-cottages) — HIGH confidence (actual competitor)
-- [1847 Quilt Retreat Center](https://1847quiltretreatcenter.com/) — HIGH confidence (actual competitor)
-- [Camellia Palms Retreat Center](https://www.camelliapalmsretreat.com/) — HIGH confidence (actual competitor)
-
-### Older Demographic Accessibility
-- [Web Accessibility for Older Adults: Inclusive Design](https://www.levelaccess.com/blog/ensuring-web-accessibility-for-older-adults/) — MEDIUM confidence
-- [W3C: Older Users and Web Accessibility](https://www.w3.org/WAI/older-users/) — HIGH confidence (official standards)
-- [Creating a User-Friendly Website Experience for Seniors](https://www.winwithmcclatchy.com/blog/user-friendly-websites-for-seniors) — MEDIUM confidence
-
-### Small Business Website Best Practices
-- [Study: 20 Most Common Small Business Website Mistakes](https://gillandrews.com/common-website-mistakes-small-business/) — MEDIUM confidence
-- [8 Common Website Design Mistakes to Avoid in 2026](https://www.zachsean.com/post/8-common-website-design-mistakes-to-avoid-in-2026-for-better-conversions-and-user-experience) — MEDIUM confidence
-
-### Google Calendar Integration
-- [Google Calendar Help: Add a calendar to your website](https://support.google.com/calendar/answer/41207?hl=en) — HIGH confidence (official docs)
-- [How to Embed Google Calendar](https://www.fillout.com/blog/embed-a-google-calendar) — MEDIUM confidence
-
-### Contact Form vs Booking System
-- [What is a Booking Form? Smoother reservation process](https://hocoos.com/answers/what-is-a-booking-form/) — MEDIUM confidence
-- [How to Create a Booking Form](https://www.oncehub.com/blog/how-to-create-a-booking-form-and-smarter-alternatives-that-save-you-time) — MEDIUM confidence
-
-### Reviews & Testimonials
-- [Why Customer Reviews Are Important for Small Businesses](https://www.allbusiness.com/why-customer-reviews-are-important) — MEDIUM confidence
-- [The Importance of Testimonials for Small Business](https://smith.ai/blog/the-importance-of-testimonials-and-case-studies-for-small-business) — MEDIUM confidence
-
-### Photo Gallery Best Practices
-- [Photo Gallery Best Practices: Let Your Work Shine](https://www.hostgator.com/blog/photo-gallery-best-practices/) — MEDIUM confidence
+### Playwright Viewport Testing
+- [Playwright Emulation — playwright.dev](https://playwright.dev/docs/emulation) — HIGH confidence (official docs)
+- [Configuration use options — playwright.dev](https://playwright.dev/docs/test-use-options) — HIGH confidence (official docs)
+- [15 Best Practices for Playwright Testing in 2026 — BrowserStack](https://www.browserstack.com/guide/playwright-best-practices) — MEDIUM confidence
 
 ---
-*Feature research for: Timber & Threads Quilting Retreat*
-*Researched: 2026-02-16*
-*Overall confidence: MEDIUM (WebSearch + competitor analysis + official docs)*
+*Feature research for: Timber & Threads Quilting Retreat — v2.2 Client Preview Polish*
+*Researched: 2026-03-02*
+*Overall confidence: HIGH (official docs + direct codebase inspection + NN/g research)*
