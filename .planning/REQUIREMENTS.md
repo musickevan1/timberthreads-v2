@@ -10,7 +10,7 @@ Requirements for Client Preview Polish milestone. Each maps to roadmap phases.
 ### Pricing & Calculator
 
 - [x] **PRIC-07**: Duplicate pricing tier cards removed from Accommodations section (kept in Pricing section only)
-- [ ] **PRIC-08**: Calculator displays per-person price breakdown under the total estimate
+- [x] **PRIC-08**: Calculator displays per-person price breakdown under the total estimate
 - [ ] **PRIC-09**: "Get a Quote" button below calculator estimate scrolls to contact form
 - [ ] **PRIC-10**: Contact form message field pre-filled with estimate details (group size, nights, meals, total) when arriving from calculator — only if message field is empty
 
@@ -179,7 +179,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | PRIC-07 | Phase 9 | Complete |
-| PRIC-08 | Phase 10 | Pending |
+| PRIC-08 | Phase 10 | Complete |
 | PRIC-09 | Phase 11 | Pending |
 | PRIC-10 | Phase 11 | Pending |
 | MOBL-01 | Phase 9 | Complete |
