@@ -1,42 +1,57 @@
-const sections = document.querySelectorAll('section[id]');
+// Only track sections that have a matching nav link
 const navLinks = document.querySelectorAll('nav a[href^="#"]');
+const sectionIds = Array.from(navLinks).reduce((ids, link) => {
+  const id = link.getAttribute('href')?.slice(1);
+  if (id && !ids.includes(id)) ids.push(id);
+  return ids;
+}, []);
 
-// Track which sections are currently intersecting
-const activeSections = new Map();
+const HEADER_OFFSET = 80; // fixed header height in px
 
-const observer = new IntersectionObserver(
-  (entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        activeSections.set(entry.target.id, entry.target);
-      } else {
-        activeSections.delete(entry.target.id);
-      }
-    });
+function getActiveSection() {
+  const scrollY = window.scrollY;
 
-    // Find the topmost intersecting section (closest to top of viewport)
-    let activeId = null;
-    let minTop = Infinity;
-    activeSections.forEach((section, id) => {
-      const rect = section.getBoundingClientRect();
-      if (rect.top < minTop) {
-        minTop = rect.top;
-        activeId = id;
-      }
-    });
-
-    // Update all nav links
-    navLinks.forEach((link) => {
-      const isActive = activeId !== null && link.getAttribute('href') === `#${activeId}`;
-      link.setAttribute('aria-current', isActive ? 'true' : 'false');
-    });
-  },
-  {
-    // Start detection below the fixed header (80px).
-    // Bottom margin leaves top 40% of visible area as the "active zone".
-    rootMargin: '-80px 0px -60% 0px',
-    threshold: 0,
+  // At the bottom of the page, activate the last section
+  if (window.innerHeight + Math.ceil(scrollY) >= document.body.scrollHeight) {
+    return sectionIds[sectionIds.length - 1];
   }
+
+  // Walk sections in DOM order; the last one whose top has scrolled
+  // past the header is the active one.
+  let activeId = sectionIds[0];
+  for (const id of sectionIds) {
+    const el = document.getElementById(id);
+    if (!el) continue;
+    if (el.offsetTop - HEADER_OFFSET - 1 <= scrollY) {
+      activeId = id;
+    }
+  }
+  return activeId;
+}
+
+function updateNav() {
+  const activeId = getActiveSection();
+  navLinks.forEach((link) => {
+    const isActive = link.getAttribute('href') === `#${activeId}`;
+    link.setAttribute('aria-current', isActive ? 'true' : 'false');
+  });
+}
+
+// Throttle to one update per animation frame
+let ticking = false;
+window.addEventListener(
+  'scroll',
+  () => {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        updateNav();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  },
+  { passive: true }
 );
 
-sections.forEach((section) => observer.observe(section));
+// Set initial state
+updateNav();

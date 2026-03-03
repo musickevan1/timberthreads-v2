@@ -312,8 +312,8 @@
       // If visitor has edited the pre-fill, skip overwrite — respect their draft
     }
 
-    // Smooth scroll to contact section (always, even if form is in success state)
-    contactSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Smooth scroll to message textarea so pre-filled content is visible
+    messageInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
     // Focus name field after scroll completes (~600ms for smooth scroll)
     if (form && !form.classList.contains('hidden')) {
