@@ -62,3 +62,12 @@ Gemini_Generated_*.png
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# v1 legacy files
+*.png
+photo-dashboard.html
+GEMINI_PROMPT.md
+Timber-Threads-PRD.md
+docs/
+v2-gallery/
+src/assets/images/v2-*.jpg
