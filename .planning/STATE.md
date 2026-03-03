@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v2.2
 milestone_name: Client Preview Polish
 status: unknown
-last_updated: "2026-03-03T02:18:54.097Z"
+last_updated: "2026-03-03T02:46:00Z"
 progress:
-  total_phases: 10
-  completed_phases: 9
-  total_plans: 18
-  completed_plans: 18
+  total_phases: 13
+  completed_phases: 10
+  total_plans: 19
+  completed_plans: 19
 ---
 
 # Project State
@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-02)
 
 **Core value:** The website must load fast and look polished on slow rural connections, making the retreat feel warm and inviting enough that quilters, crafters, and families want to book a stay.
-**Current focus:** Phase 10 — Calculator Per-Person Breakdown
+**Current focus:** Phase 11 — Calculator-to-Contact Quote Flow
 
 ## Current Position
 
-Phase: 10 of 13 (Calculator Per-Person Breakdown)
-Plan: 1 of 1 in current phase (complete)
-Status: Complete — phase 10 done, ready for phase 11
-Last activity: 2026-03-02 — 10-01 complete (per-person line verified in browser)
+Phase: 11 of 13 (Calculator-to-Contact Quote Flow)
+Plan: 1 of 1 in current phase (awaiting human verification checkpoint)
+Status: In Progress — 11-01 auto tasks complete, checkpoint:human-verify pending
+Last activity: 2026-03-03 — 11-01 auto tasks complete (Get a Quote button + Contact pre-fill)
 
-Progress: [###░░░░░░░] 30% (v2.2)
+Progress: [####░░░░░░] 40% (v2.2)
 
 ## Performance Metrics
 
@@ -44,6 +44,7 @@ Progress: [###░░░░░░░] 30% (v2.2)
 | 7. Photography | 1 | 4 min |
 | 8. Polish/A11Y/SEO | 3 | 4 min |
 | 10. Per-Person Breakdown | 1 | 5 min |
+| 11. Calculator-to-Contact | 1 | 2 min |
 
 ## Accumulated Context
 
@@ -61,6 +62,9 @@ Recent decisions affecting current work:
 - [09-01]: Brand text hidden sm:block removed — text is now always visible on mobile; animated underline decoration keeps hidden sm:block (desktop-only hover effect)
 - [09-01]: Rate Card block fully removed from Accommodations — single source of truth is PricingSection.astro; pricing teaser shows only $60/night base rate
 - [Phase 10-01]: perPerson is a derived constant (Math.round(total / groupSize)), not useState — recalculates on every render automatically
+- [Phase 11-01]: Draft protection uses lastPrefilledMessage string comparison — simple, reliable, covers repeat-click scenario
+- [Phase 11-01]: scrollIntoView instead of window.location.hash — back button works naturally, scroll-spy not disrupted
+- [Phase 11-01]: Focus lands on name field (not textarea) after 600ms — message is pre-filled; visitor's next action is their name
 
 ### Pending Todos
 
@@ -69,11 +73,11 @@ None.
 ### Blockers/Concerns
 
 - [Phase 12 prerequisite]: Google Maps Embed API key must be created in Google Cloud Console before Map.astro can be updated. One-time ~15 min setup. Unknown if a Cloud project exists for this client.
-- [Phase 11 risk]: `scroll-margin-top` on `#contact` section may already be set from v2.1 — check computed styles before adding to avoid duplication.
+- [Phase 11 risk RESOLVED]: scroll-margin-top was globally set on section[id] — changed 4rem to 5rem to match nav height. No duplication issue.
 - [v2.0 carry-forward]: path-to-regexp HIGH vulnerability in @astrojs/vercel@9.0.4 transitive dep — deferred (build-time only, not shipped to client)
 
 ## Session Continuity
 
-Last session: 2026-03-02
-Stopped at: Completed 10-01-PLAN.md (all tasks complete, checkpoint approved)
-Resume: Phase 11 — contact section anchor fix
+Last session: 2026-03-03
+Stopped at: 11-01-PLAN.md checkpoint:human-verify (Task 3) — auto tasks done, awaiting browser verification
+Resume: After verifying Get a Quote flow in browser, confirm "approved" to close checkpoint
