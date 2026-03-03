@@ -183,10 +183,10 @@ Plans:
   1. The map section displays an interactive Google Map showing a driving route from a nearby highway landmark to 306 NW 300 Rd, Clinton, MO 64735
   2. A visitor can zoom and pan the embedded route map without leaving the page
   3. The Maps API key is stored as `PUBLIC_GOOGLE_MAPS_KEY` in the environment (not committed to git) and restricted to the production domain in Google Cloud Console
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 12-01-PLAN.md -- Set up Google Maps Embed API key (Google Cloud Console, domain restriction), update Map.astro `data-src` to `v1/directions` URL using `import.meta.env.PUBLIC_GOOGLE_MAPS_KEY`, add key to .env and Vercel dashboard
+- [ ] 12-01-PLAN.md -- Set up Google Maps Embed API key (Google Cloud Console, domain restriction), update Map.astro iframe to Embed API directions mode with driving route from Highway 7 to property, add "Open in Google Maps" link, wire PUBLIC_GOOGLE_MAPS_KEY env var
 
 #### Phase 13: Playwright Viewport Verification
 **Goal**: Automated tests confirm that every v2.2 feature works correctly at desktop and mobile viewport sizes, running against the production build so results reflect what real visitors experience
