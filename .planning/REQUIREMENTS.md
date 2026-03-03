@@ -17,9 +17,9 @@ Requirements for Client Preview Polish milestone. Each maps to roadmap phases.
 ### Mobile Experience
 
 - [ ] **MOBL-01**: Mobile header displays "Timber & Threads" text title alongside logo
-- [ ] **MOBL-02**: All site sections render correctly at 375px mobile viewport
-- [ ] **MOBL-03**: All site sections render correctly at 320px minimum viewport
-- [ ] **MOBL-04**: Mobile layout changes do not break desktop layout at 1280px
+- [x] **MOBL-02**: All site sections render correctly at 375px mobile viewport
+- [x] **MOBL-03**: All site sections render correctly at 320px minimum viewport
+- [x] **MOBL-04**: Mobile layout changes do not break desktop layout at 1280px
 
 ### Map & Directions
 
@@ -28,9 +28,9 @@ Requirements for Client Preview Polish milestone. Each maps to roadmap phases.
 
 ### Testing & Verification
 
-- [ ] **TEST-01**: Playwright tests verify key elements visible and functional at desktop viewport (1280px)
-- [ ] **TEST-02**: Playwright tests verify key elements visible and functional at mobile viewport (375px)
-- [ ] **TEST-03**: Playwright tests run against production build (astro preview)
+- [x] **TEST-01**: Playwright tests verify key elements visible and functional at desktop viewport (1280px)
+- [x] **TEST-02**: Playwright tests verify key elements visible and functional at mobile viewport (375px)
+- [x] **TEST-03**: Playwright tests run against production build (astro preview)
 
 ## v2.1 Validated Requirements
 
@@ -183,14 +183,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PRIC-09 | Phase 11 | Complete |
 | PRIC-10 | Phase 11 | Complete |
 | MOBL-01 | Phase 9 → Phase 14 (verify) | Pending |
-| MOBL-02 | Phase 13 | Pending |
-| MOBL-03 | Phase 13 | Pending |
-| MOBL-04 | Phase 13 | Pending |
+| MOBL-02 | Phase 13 | Complete |
+| MOBL-03 | Phase 13 | Complete |
+| MOBL-04 | Phase 13 | Complete |
 | MAPS-01 | Phase 12 | Pending |
 | MAPS-02 | Phase 12 | Pending |
-| TEST-01 | Phase 13 | Pending |
-| TEST-02 | Phase 13 | Pending |
-| TEST-03 | Phase 13 | Pending |
+| TEST-01 | Phase 13 | Complete |
+| TEST-02 | Phase 13 | Complete |
+| TEST-03 | Phase 13 | Complete |
 
 **Coverage:**
 - v2.2 requirements: 13 total
