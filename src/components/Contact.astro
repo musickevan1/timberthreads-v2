@@ -260,6 +260,79 @@
 
   // --- Form submit handler ---
 
+  // --- Quote pre-fill from calculator ---
+
+  function buildPrefilledMessage(detail: {
+    groupSize: number;
+    nights: number;
+    includeMeals: boolean;
+    total: number;
+    perPerson: number;
+    isFlatRate: boolean;
+  }): string {
+    const { groupSize, nights, includeMeals, total, perPerson, isFlatRate } = detail;
+    const lines: string[] = [];
+    lines.push(`Group Size: ${groupSize} guest${groupSize !== 1 ? 's' : ''}`);
+    lines.push(`Nights: ${nights}`);
+    if (includeMeals) {
+      lines.push('Meals: Included');
+    }
+    if (isFlatRate) {
+      lines.push('Pricing: Flat rate for 10-12 guests');
+    }
+    lines.push(`Estimated Total: $${total.toLocaleString()} ($${perPerson.toLocaleString()}/person)`);
+    lines.push('');
+    lines.push('Please add your preferred dates or any questions below:');
+    lines.push('');
+    return lines.join('\n');
+  }
+
+  let lastPrefilledMessage = '';
+
+  window.addEventListener('calculator:quote-requested', (e: Event) => {
+    const evt = e as CustomEvent<{
+      groupSize: number;
+      nights: number;
+      includeMeals: boolean;
+      total: number;
+      perPerson: number;
+      isFlatRate: boolean;
+    }>;
+
+    const contactSection = document.getElementById('contact');
+    const newMessage = buildPrefilledMessage(evt.detail);
+
+    // Pre-fill logic with draft protection (PRIC-10)
+    if (form && !form.classList.contains('hidden')) {
+      const currentValue = messageInput.value.trim();
+      if (currentValue === '' || currentValue === lastPrefilledMessage.trim()) {
+        // Empty or unchanged previous pre-fill — safe to update
+        messageInput.value = newMessage;
+        lastPrefilledMessage = newMessage;
+
+        // Highlight flash on textarea
+        messageInput.classList.remove('quote-highlight');
+        // Force reflow to allow re-triggering animation on repeat clicks
+        void messageInput.offsetWidth;
+        messageInput.classList.add('quote-highlight');
+        messageInput.addEventListener('animationend', () => {
+          messageInput.classList.remove('quote-highlight');
+        }, { once: true });
+      }
+      // If visitor has edited the pre-fill, skip overwrite — respect their draft
+    }
+
+    // Smooth scroll to contact section (always, even if form is in success state)
+    contactSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // Focus name field after scroll completes (~600ms for smooth scroll)
+    if (form && !form.classList.contains('hidden')) {
+      setTimeout(() => {
+        nameInput?.focus();
+      }, 600);
+    }
+  });
+
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
