@@ -51,7 +51,7 @@ completed: 2026-03-03
 - **Duration:** 10 min
 - **Started:** 2026-03-03T01:45:49Z
 - **Completed:** 2026-03-03T01:56:44Z
-- **Tasks:** 1 of 2 (Task 2 is checkpoint:human-verify)
+- **Tasks:** 2 of 2
 - **Files modified:** 1
 
 ## Accomplishments
@@ -60,14 +60,14 @@ completed: 2026-03-03
 - Label shows "Per person (N guests)" with live groupSize value; amount uses `formatCurrency(perPerson)`
 - Visually subordinate styling: `text-sm text-stone-500` label, `text-sm font-medium text-stone-600` amount
 - Build verified: `npm run build` completes with zero errors
+- User-verified in browser: per-person line displays correctly and updates in real time as inputs change
 
 ## Task Commits
 
 Each task was committed atomically:
 
 1. **Task 1: Add per-person cost calculation and display line to PricingCalculator.tsx** - `d16197e` (feat)
-
-_Task 2 (checkpoint:human-verify) awaits visual verification in browser._
+2. **Task 2: Verify per-person breakdown in browser** - APPROVED (checkpoint — no commit)
 
 ## Files Created/Modified
 - `src/components/PricingCalculator.tsx` - Added perPerson derived constant and per-person display line in breakdown panel
@@ -89,9 +89,10 @@ None.
 None - no external service configuration required.
 
 ## Next Phase Readiness
-- Task 1 complete and committed; per-person calculation is live in the built output
-- Task 2 requires visual verification in browser before plan is fully complete
-- After checkpoint approval, plan 01 is done and phase 10 is complete
+- Per-person line verified and live in the built output; pricing calculator UX is complete
+- Phase 10 is fully complete
+- Phase 11 (contact section anchor) can proceed independently
+- Phase 12 (Google Maps) still requires Google Cloud Console API key setup before execution
 
 ## Self-Check: PASSED
 
