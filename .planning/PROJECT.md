@@ -2,20 +2,7 @@
 
 ## What This Is
 
-The Timber & Threads Retreat website built with Astro — a static-first framework that ships zero JavaScript for content sections and only hydrates interactive islands. The retreat center is a quilting and crafting getaway on a small island surrounded by a lake in rural Clinton, Missouri. The site showcases the property, provides pricing information with an interactive calculator, and lets prospective guests inquire via a contact form.
-
-## Current Milestone: v2.2 Client Preview Polish
-
-**Goal:** Polish the site for client preview — clean up duplicate pricing, enhance the calculator-to-contact flow, optimize mobile viewport, add visual driving directions, and verify across viewports with Playwright.
-
-**Target features:**
-- Remove duplicate pricing cards from Accommodations section
-- Per-person price breakdown under calculator total estimate
-- "Get a Quote" button connecting calculator estimates to contact form
-- Text title visible in mobile header
-- Mobile viewport optimization and general polish
-- Map with visual driving route highlighted
-- Playwright-based desktop/mobile viewport verification
+The Timber & Threads Retreat website built with Astro — a static-first framework that ships zero JavaScript for content sections and only hydrates interactive islands. The retreat center is a quilting and crafting getaway on a small island surrounded by a lake in rural Clinton, Missouri. The site showcases the property with categorized photo galleries, provides pricing information with an interactive calculator that connects to a contact form, displays visual driving directions, and lets prospective guests inquire via email. Verified across desktop and mobile viewports with Playwright.
 
 ## Core Value
 
@@ -33,6 +20,9 @@ The website must load fast and look polished on slow rural connections, making t
 - ✓ Cloudinary CDN gallery with category organization and PhotoSwipe lightbox — v2.0 Phase 3
 - ✓ Video placeholder section with poster image — v2.0 Phase 3
 - ✓ Contact form with Resend email delivery, validation, honeypot spam prevention — v2.0 Phase 4
+
+<!-- Shipped in v2.1 phases 6-8 -->
+
 - ✓ Updated pricing with new rate structure ($60/$75 per person, $600 flat for 10-12) — v2.1 Phase 6
 - ✓ Interactive pricing calculator (Preact island) with real-time estimates — v2.1 Phase 6
 - ✓ Property details corrected (3 bedrooms, laundry facilities) — v2.1 Phase 6
@@ -41,17 +31,20 @@ The website must load fast and look polished on slow rural connections, making t
 - ✓ WCAG AA accessibility (contrast, touch targets, keyboard nav, font sizes) — v2.1 Phase 8
 - ✓ SEO markup (robots.txt, sitemap, OG tags, JSON-LD, semantic HTML) — v2.1 Phase 8
 
+<!-- Shipped in v2.2 phases 9-14 -->
+
+- ✓ Duplicate pricing cards removed from Accommodations, single source of truth in PricingSection — v2.2 Phase 9
+- ✓ Mobile header displays brand text at all viewports (no hidden sm:block) — v2.2 Phase 9
+- ✓ Calculator per-person cost breakdown below total estimate — v2.2 Phase 10
+- ✓ "Get a Quote" button connecting calculator to contact form via CustomEvent — v2.2 Phase 11
+- ✓ Contact form pre-filled with estimate details, draft protection for existing messages — v2.2 Phase 11
+- ✓ Google Maps visual driving route (no-API-key pb= embed, no Google Cloud billing) — v2.2 Phase 12
+- ✓ Playwright test suite (21 tests, 3 viewports) verifying all features against production build — v2.2 Phase 13
+- ✓ 320px minimum viewport verified with overflow fix (email break-all) — v2.2 Phase 13
+
 ### Active
 
-<!-- v2.2 scope -->
-
-- [ ] Duplicate pricing cards removed from Accommodations section
-- [ ] Calculator shows per-person price breakdown under total estimate
-- [ ] "Get a Quote" button scrolls to contact form with pre-filled estimate details
-- [ ] Mobile header shows "Timber & Threads" text title
-- [ ] Mobile viewport optimized across all sections
-- [ ] Map displays visual driving route to property
-- [ ] Desktop and mobile viewports verified via Playwright
+(None — planning next milestone)
 
 ### Out of Scope
 
@@ -68,28 +61,15 @@ The website must load fast and look polished on slow rural connections, making t
 
 ## Context
 
-**Current site state:** Astro 5 rebuild with phases 1-4 complete. All content migrated, gallery working with Cloudinary CDN + PhotoSwipe lightbox, contact form delivering via Resend. Not yet deployed to production domain. Video placeholder in place.
+**Current site state:** Astro 5 static site with 14 phases complete across 3 milestones (v2.0-v2.2). All content migrated from Next.js, gallery with Cloudinary CDN + PhotoSwipe lightbox, interactive pricing calculator (Preact island) with per-person breakdown and "Get a Quote" flow to contact form, Google Maps visual driving route, contact form delivering via Resend. Deployed to timberandthreadsretreat.com. Playwright tests covering desktop and mobile viewports.
+
+**Codebase:** 2,458 LOC across Astro/TypeScript/TSX/CSS. 67 lines of Playwright tests.
 
 **Existing services:**
 - Cloudinary — image CDN + uploads (timber+cloudinary@evanmusick.dev)
-- Upstash Redis — gallery metadata persistence (not needed for public site)
 - Vercel — hosting (timber+vercel@evanmusick.dev)
 - Cloudflare — DNS + email routing (timber@evanmusick.dev)
 - Resend — contact form email delivery
-
-**Pricing update (from PRD):**
-- Groups ≤10: $60/night/person (standard) or $75/night/person (with meals)
-- Groups 10-12: $600/night flat + optional $12.50/person/day food add-on
-- Minimum: 4 persons, 2 nights
-
-**Property corrections:**
-- Bedrooms: 4 → 3 (update everywhere: copy, meta, structured data, alt text)
-- Add laundry facilities to amenities list
-- Confirm full kitchen with dishwasher visibility
-
-**New photos (need editing before integration):**
-- IMG_4197, IMG_4204 (needs cropping), IMG_4208, IMG_4237
-- Additional needed: dock, outdoor picnic table, fire pit
 
 **Client:** timberandthreads24@gmail.com, (417) 343-1473
 **Location:** 306 NW 300 Rd, Clinton, MO 64735
@@ -100,9 +80,9 @@ The website must load fast and look polished on slow rural connections, making t
 - **Audience:** Rural Missouri — many visitors on slow 3G/4G connections, must be fast
 - **Budget:** Budget-conscious client — use free tiers where possible
 - **Hosting:** Vercel free tier — bundle sizes matter
-- **Domain:** timberandthreadsretreat.com (Cloudflare DNS, already configured)
-- **Photos:** 4 images need editing/color grading, IMG_4204 needs cropping, additional outdoor photos needed
-- **Calculator:** Must be static-first (client-side JS island), no server dependency
+- **Domain:** timberandthreadsretreat.com (Cloudflare DNS, configured)
+- **Calculator:** Static-first (client-side JS island), no server dependency
+- **Testing:** Assertion-based Playwright tests, no screenshot comparisons (OS font rendering flakiness)
 
 ## Key Decisions
 
@@ -115,6 +95,11 @@ The website must load fast and look polished on slow rural connections, making t
 | Resend over Nodemailer | Vercel serverless compatibility, simpler API | ✓ Good |
 | PhotoSwipe for lightbox | Code-split, only loads on interaction, well-maintained | ✓ Good |
 | Video placeholder | Promo video not ready — section structure built, swap later | ✓ Good |
+| Preact over React for calculator | Lighter bundle (~3KB vs ~40KB), same JSX API | ✓ Good |
+| CustomEvent over nanostores | One-directional, one-time calculator→contact handoff — simpler than shared state | ✓ Good |
+| No-API-key pb= map embed | Avoided Google Cloud billing setup, same visual driving route result | ✓ Good |
+| Playwright against production build | Dev server has non-deterministic hydration timing — production build is deterministic | ✓ Good |
+| scrollIntoView over hash navigation | Back button works naturally, scroll-spy not disrupted | ✓ Good |
 
 ---
-*Last updated: 2026-03-02 after v2.2 milestone start*
+*Last updated: 2026-03-03 after v2.2 milestone completion*
