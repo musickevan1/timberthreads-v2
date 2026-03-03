@@ -3,10 +3,10 @@ gsd_state_version: 1.0
 milestone: v2.2
 milestone_name: Client Preview Polish
 status: unknown
-last_updated: "2026-03-03T07:30:18Z"
+last_updated: "2026-03-03T07:33:45.820Z"
 progress:
   total_phases: 14
-  completed_phases: 14
+  completed_phases: 13
   total_plans: 22
   completed_plans: 22
 ---
