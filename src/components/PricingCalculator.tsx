@@ -107,9 +107,9 @@ export default function PricingCalculator() {
           id="group-size"
           label="Group Size"
           value={groupSize}
-          min={4}
+          min={3}
           max={12}
-          constraintMessage="Minimum 4 persons"
+          constraintMessage="Minimum 3 persons"
           onChange={setGroupSize}
         />
 
