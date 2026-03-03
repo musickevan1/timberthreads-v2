@@ -15,7 +15,7 @@ const observer = new IntersectionObserver(
   {
     // Thin detection band near top of viewport.
     // Section is "active" when its top edge crosses the top ~10%.
-    rootMargin: '-5% 0% -90% 0%',
+    rootMargin: '-2% 0% -90% 0%',
   }
 );
 

@@ -1,7 +1,7 @@
 ---
 import GalleryCategory from './GalleryCategory.astro';
 import PromoVideo from './PromoVideo.astro';
-import { propertyImages, bedroomImages, workspaceImages, quiltImages } from '../data/gallery';
+import { propertyImages, bedroomImages, workspaceImages, amenityImages, quiltImages } from '../data/gallery';
 ---
 
 <section id="gallery" class="py-16 md:py-24 bg-white">
@@ -15,14 +15,15 @@ import { propertyImages, bedroomImages, workspaceImages, quiltImages } from '../
 
     <!-- Promo video (YouTube embed) -->
     <div class="mb-16">
-      <PromoVideo videoId="MTgmkjcghWE" />
+      <PromoVideo videoId="Z3E6PauZsFc" />
     </div>
 
     <!-- Category grids -->
-    <div class="space-y-12">
+    <div class="space-y-8">
       <GalleryCategory title="The Property" images={propertyImages} />
       <GalleryCategory title="Bedrooms" images={bedroomImages} />
       <GalleryCategory title="Workspaces" images={workspaceImages} />
+      <GalleryCategory title="Amenities" images={amenityImages} />
       <GalleryCategory title="Quilts" images={quiltImages} />
     </div>
 

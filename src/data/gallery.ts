@@ -6,6 +6,7 @@ import type { ImageMetadata } from 'astro';
 
 // Import gallery images
 import heroFrontView from '../assets/images/hero-front-view-cropped.jpg';
+import heroAerial from '../assets/images/hero-image.png';
 import workspace from '../assets/images/workspace.jpeg';
 import quiltDisplay1 from '../assets/images/quilt-display-1-cropped.jpg';
 import quiltDisplay2 from '../assets/images/quilt-display-2-cropped.jpg';
@@ -17,19 +18,21 @@ import v2QuiltingWorkspace from '../assets/images/v2-quilting-workspace.jpg';
 import v2BedroomQuiltedBedding from '../assets/images/v2-bedroom-quilted-bedding.jpg';
 import v2BedroomQuiltsHangings from '../assets/images/v2-bedroom-quilts-hangings.jpg';
 import v2CommonAreaSectional from '../assets/images/v2-common-area-sectional.jpg';
-import v2DiningWorkArea from '../assets/images/v2-dining-work-area.jpg';
 import v2WorkspaceBrightWindows from '../assets/images/v2-workspace-bright-windows.jpg';
 import v2BedroomTwinBeds from '../assets/images/v2-bedroom-twin-beds.jpg';
 import v2OutdoorGrounds from '../assets/images/v2-outdoor-grounds.jpg';
-import v2Bathroom from '../assets/images/v2-bathroom.jpg';
 import v2BathroomShower from '../assets/images/v2-bathroom-shower.jpg';
-import v2BedroomGroupQuilts from '../assets/images/v2-bedroom-group-quilts.jpg';
+
+import v2PrinterStationAlt from '../assets/images/v2-printer-station-alt.jpg';
+import v2CuttingStudio from '../assets/images/v2-cutting-studio.jpg';
+import v2FoldingTables from '../assets/images/v2-folding-tables.jpg';
+import v2LaundryAppliances from '../assets/images/v2-laundry-appliances.jpg';
 
 // ============================================================
 // TypeScript types
 // ============================================================
 
-export type GalleryCategoryName = 'property' | 'bedrooms' | 'workspaces' | 'quilts';
+export type GalleryCategoryName = 'property' | 'bedrooms' | 'workspaces' | 'amenities' | 'quilts';
 
 export interface GalleryImage {
   id: string;
@@ -59,46 +62,21 @@ export const galleryImages: GalleryImage[] = [
   },
   {
     id: 'property-2',
-    image: v2OutdoorGrounds,
-    alt: 'Spacious retreat grounds with mature oak trees, gravel driveway, and open blue sky on a sunny day',
-    caption: 'Acres of peaceful Ozarks grounds with towering oaks and wide-open sky',
+    image: heroAerial,
+    alt: 'Aerial drone view of the retreat showing the green-roofed building, outbuildings, and winding gravel drive surrounded by Ozark forest',
+    caption: 'A bird\'s-eye view of the retreat on its private Ozarks island',
     category: 'property',
     order: 2,
     cropPosition: '50% 40%',
   },
   {
     id: 'property-3',
-    image: v2CommonAreaSectional,
-    alt: 'Cozy common area with large sectional sofa, handmade quilts on walls, and a vintage tool chest accent piece',
-    caption: 'Relax in the spacious common area — quilts and comfort everywhere you look',
+    image: v2OutdoorGrounds,
+    alt: 'Spacious retreat grounds with mature oak trees, gravel driveway, and open blue sky on a sunny day',
+    caption: 'Acres of peaceful Ozarks grounds with towering oaks and wide-open sky',
     category: 'property',
     order: 3,
-    cropPosition: '50% 60%',
-  },
-  {
-    id: 'property-4',
-    image: v2DiningWorkArea,
-    alt: 'Bright dining and work area with tables arranged for group activities, quilts on display, and natural light streaming through windows',
-    caption: 'Gather around the tables for meals, crafting, or conversation',
-    category: 'property',
-    order: 4,
-    cropPosition: '50% 55%',
-  },
-  {
-    id: 'property-5',
-    image: v2Bathroom,
-    alt: 'Clean modern bathroom with white vanity, walk-in shower, and fresh towels',
-    caption: 'Private bathrooms with walk-in showers and all the essentials',
-    category: 'property',
-    order: 5,
-  },
-  {
-    id: 'property-6',
-    image: v2BathroomShower,
-    alt: 'Walk-in shower with mounted dispensers, fresh towels, and hooks for personal items',
-    caption: 'Spacious walk-in showers stocked with toiletries',
-    category: 'property',
-    order: 6,
+    cropPosition: '50% 40%',
   },
 
   // --- Bedrooms: Settle in ---
@@ -129,25 +107,16 @@ export const galleryImages: GalleryImage[] = [
     order: 3,
     cropPosition: '50% 60%',
   },
-  {
-    id: 'bedrooms-4',
-    image: v2BedroomGroupQuilts,
-    alt: 'Large group bedroom with four beds, each topped with a unique handmade quilt, and quilt art lining the walls',
-    caption: 'The group bedroom — four beds dressed in one-of-a-kind quilts with art on every wall',
-    category: 'bedrooms',
-    order: 4,
-    cropPosition: '50% 50%',
-  },
 
   // --- Workspaces: Create ---
   {
     id: 'workspaces-1',
-    image: v2QuiltingWorkspace,
-    alt: 'Quilting workspace with a large cutting mat table, organized supplies, and quilts displayed on the walls',
-    caption: 'Dedicated cutting and quilting workspace with everything you need to create',
+    image: quiltWorkspace,
+    alt: 'Quilting workspace with sewing machines, fabric bolts, and tools arranged on tables',
+    caption: 'Fully equipped quilting stations ready for your creative sessions',
     category: 'workspaces',
     order: 1,
-    cropPosition: '50% 45%',
+    cropPosition: '50% 55%',
   },
   {
     id: 'workspaces-2',
@@ -159,21 +128,76 @@ export const galleryImages: GalleryImage[] = [
   },
   {
     id: 'workspaces-3',
+    image: v2QuiltingWorkspace,
+    alt: 'Quilting workspace with a large cutting mat table, organized supplies, and quilts displayed on the walls',
+    caption: 'Dedicated cutting and quilting workspace with everything you need to create',
+    category: 'workspaces',
+    order: 3,
+    cropPosition: '50% 45%',
+  },
+  {
+    id: 'workspaces-4',
+    image: v2CommonAreaSectional,
+    alt: 'Spacious common area with sectional sofa, handmade quilts on walls, and a vintage tool chest accent piece',
+    caption: 'Spacious common area for relaxing between creative sessions',
+    category: 'workspaces',
+    order: 4,
+    cropPosition: '50% 60%',
+  },
+  {
+    id: 'workspaces-5',
     image: v2WorkspaceBrightWindows,
     alt: 'Spacious workspace with long tables, a TV for tutorials, and bright windows flooding the room with natural light',
     caption: 'Bright, airy workspace with plenty of room to spread out your projects',
     category: 'workspaces',
+    order: 5,
+    cropPosition: '50% 50%',
+  },
+  {
+    id: 'workspaces-6',
+    image: v2CuttingStudio,
+    alt: 'Dedicated cutting studio with oversized cutting mats, quilting supplies, and quilt art on the walls',
+    caption: 'Dedicated cutting studio with oversized mats and room to spread out',
+    category: 'workspaces',
+    order: 6,
+    cropPosition: '50% 50%',
+  },
+
+  // --- Amenities: Kitchen, bathrooms, shared facilities ---
+  {
+    id: 'amenities-1',
+    image: v2BathroomShower,
+    alt: 'Walk-in shower with mounted dispensers, fresh towels, and hooks for personal items',
+    caption: 'Spacious walk-in showers stocked with toiletries',
+    category: 'amenities',
+    order: 1,
+  },
+  {
+    id: 'amenities-2',
+    image: v2PrinterStationAlt,
+    alt: 'HP all-in-one printer on a vintage table with a quilted runner, ready for printing patterns',
+    caption: 'Printing station available for patterns and project needs',
+    category: 'amenities',
+    order: 2,
+    cropPosition: '50% 50%',
+  },
+  {
+    id: 'amenities-3',
+    image: v2FoldingTables,
+    alt: 'Stacked folding tables stored on a wooden cabinet, ready for additional workspace',
+    caption: 'Extra folding tables for additional workspace',
+    category: 'amenities',
     order: 3,
     cropPosition: '50% 50%',
   },
   {
-    id: 'workspaces-4',
-    image: quiltWorkspace,
-    alt: 'Quilting workspace with sewing machines, fabric bolts, and tools arranged on tables',
-    caption: 'Fully equipped quilting stations ready for your creative sessions',
-    category: 'workspaces',
+    id: 'amenities-4',
+    image: v2LaundryAppliances,
+    alt: 'Laundry room with full-size washer, dryer, and stainless steel refrigerator with storage shelving',
+    caption: 'On-site laundry and extra refrigerator space for longer stays',
+    category: 'amenities',
     order: 4,
-    cropPosition: '50% 55%',
+    cropPosition: '50% 50%',
   },
 
   // --- Quilts: Handmade creations ---
@@ -199,14 +223,9 @@ export const galleryImages: GalleryImage[] = [
     alt: 'Cheerful quilted fabric panels with flower vase designs in pink, blue, and green',
     caption: 'Playful flower vase panels — vibrant colors and whimsical applique',
     category: 'quilts',
-    order: 4,
+    order: 3,
   },
 ];
-
-// NOTE: 58 DSLR photos in v2-gallery/jpg/ are underexposed/dark
-// and need professional color grading before use.
-// Best candidates once edited: IMG_4220 (bathroom), IMG_4230 (kitchen),
-// IMG_4246 (bedroom with blue/white quilt wall art)
 
 // ============================================================
 // Filtered, sorted category exports
@@ -222,6 +241,10 @@ export const bedroomImages: GalleryImage[] = galleryImages
 
 export const workspaceImages: GalleryImage[] = galleryImages
   .filter((img) => img.category === 'workspaces')
+  .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+export const amenityImages: GalleryImage[] = galleryImages
+  .filter((img) => img.category === 'amenities')
   .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
 export const quiltImages: GalleryImage[] = galleryImages

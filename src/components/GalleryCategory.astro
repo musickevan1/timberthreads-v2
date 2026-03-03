@@ -11,7 +11,7 @@ const { title, images } = Astro.props;
 ---
 
 <div>
-  <h3 class="font-serif text-2xl text-stone-900 mb-6">{title}</h3>
+  <h3 class="font-serif text-2xl text-stone-900 mb-6 text-center md:text-left">{title}</h3>
 
   <div
     class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
@@ -37,7 +37,7 @@ const { title, images } = Astro.props;
           class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
         <!-- Hover overlay -->
-        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
+        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center pointer-events-none">
           <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white text-base font-medium">
             View
           </span>
