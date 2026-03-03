@@ -82,6 +82,21 @@ export default function PricingCalculator() {
 
   const perPerson = Math.round(total / groupSize);
 
+  function handleGetQuote() {
+    window.dispatchEvent(
+      new CustomEvent('calculator:quote-requested', {
+        detail: {
+          groupSize,
+          nights,
+          includeMeals,
+          total,
+          perPerson,
+          isFlatRate,
+        },
+      })
+    );
+  }
+
   return (
     <div class="grid md:grid-cols-2 gap-8">
       {/* Inputs panel */}
@@ -179,6 +194,15 @@ export default function PricingCalculator() {
             </div>
           </div>
         </div>
+
+        {/* Get a Quote CTA */}
+        <button
+          type="button"
+          onClick={handleGetQuote}
+          class="w-full mt-6 px-6 py-3 bg-brand text-white rounded-lg font-medium hover:bg-brand-dark transition-colors focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+        >
+          Get a Quote
+        </button>
 
         {/* Disclaimer */}
         <p class="text-base text-stone-400 mt-6 pt-4 border-t border-stone-100">
