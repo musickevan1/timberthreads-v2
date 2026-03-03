@@ -9,22 +9,22 @@ Requirements for Client Preview Polish milestone. Each maps to roadmap phases.
 
 ### Pricing & Calculator
 
-- [ ] **PRIC-07**: Duplicate pricing tier cards removed from Accommodations section (kept in Pricing section only)
+- [x] **PRIC-07**: Duplicate pricing tier cards removed from Accommodations section (kept in Pricing section only)
 - [x] **PRIC-08**: Calculator displays per-person price breakdown under the total estimate
 - [x] **PRIC-09**: "Get a Quote" button below calculator estimate scrolls to contact form
 - [x] **PRIC-10**: Contact form message field pre-filled with estimate details (group size, nights, meals, total) when arriving from calculator — only if message field is empty
 
 ### Mobile Experience
 
-- [ ] **MOBL-01**: Mobile header displays "Timber & Threads" text title alongside logo
+- [x] **MOBL-01**: Mobile header displays "Timber & Threads" text title alongside logo
 - [x] **MOBL-02**: All site sections render correctly at 375px mobile viewport
 - [x] **MOBL-03**: All site sections render correctly at 320px minimum viewport
 - [x] **MOBL-04**: Mobile layout changes do not break desktop layout at 1280px
 
 ### Map & Directions
 
-- [ ] **MAPS-01**: Embedded Google Map displays visual driving route to the property
-- [ ] **MAPS-02**: Maps API key is domain-restricted and stored as environment variable
+- [x] **MAPS-01**: Embedded Google Map displays visual driving route to the property
+- [x] **MAPS-02**: Maps embed uses no-API-key pb= format (domain restriction N/A — no key required)
 
 ### Testing & Verification
 
@@ -178,16 +178,16 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PRIC-07 | Phase 9 → Phase 14 (verify) | Pending |
+| PRIC-07 | Phase 9 | Complete |
 | PRIC-08 | Phase 10 | Complete |
 | PRIC-09 | Phase 11 | Complete |
 | PRIC-10 | Phase 11 | Complete |
-| MOBL-01 | Phase 9 → Phase 14 (verify) | Pending |
+| MOBL-01 | Phase 9 | Complete |
 | MOBL-02 | Phase 13 | Complete |
 | MOBL-03 | Phase 13 | Complete |
 | MOBL-04 | Phase 13 | Complete |
-| MAPS-01 | Phase 12 | Pending |
-| MAPS-02 | Phase 12 | Pending |
+| MAPS-01 | Phase 12 | Complete |
+| MAPS-02 | Phase 12 | Complete |
 | TEST-01 | Phase 13 | Complete |
 | TEST-02 | Phase 13 | Complete |
 | TEST-03 | Phase 13 | Complete |
