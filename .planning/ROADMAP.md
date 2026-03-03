@@ -143,10 +143,10 @@ Plans:
   2. On a 320px mobile viewport, the header text remains legible and the layout does not overflow horizontally
   3. The Accommodations section contains no duplicate pricing tier cards -- pricing cards appear only in the Pricing/Calculator section
   4. The desktop layout at 1280px is unchanged after the mobile header fix -- sticky nav, logo, and links all render correctly
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 09-01-PLAN.md -- Remove `hidden sm:block` from Nav.astro brand span, adjust font size to `text-xl sm:text-2xl`, remove duplicate pricing cards from Accommodations section
+- [ ] 09-01-PLAN.md -- Show brand text on mobile (Nav.astro), remove duplicate pricing cards from Accommodations section, add pricing teaser link
 
 #### Phase 10: Calculator Per-Person Breakdown
 **Goal**: The pricing calculator shows a per-person cost breakdown below the total estimate, giving group organizers the number they need to communicate individual costs to their group
