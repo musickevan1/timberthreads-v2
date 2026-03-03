@@ -4,7 +4,7 @@
 
 - ✅ **v2.0 Website Rebuild** - Phases 1-4 (shipped 2026-02-17)
 - ✅ **v2.1 Website Enhancement** - Phases 6-8 (shipped 2026-03-02)
-- 🚧 **v2.2 Client Preview Polish** - Phases 9-13 (in progress)
+- 🚧 **v2.2 Client Preview Polish** - Phases 9-14 (in progress)
 
 ## Phases
 
@@ -203,12 +203,26 @@ Plans:
 Plans:
 - [ ] 13-01-PLAN.md -- Install `@playwright/test`, create `playwright.config.ts` with desktop/mobile/Pixel 5/iPhone 12 profiles and `webServer` build+preview command, write `tests/viewport.spec.ts` with assertion-based tests covering all v2.2 features
 
+#### Phase 14: Tech Debt Cleanup and Phase 9 Verification
+**Goal**: Close audit gaps by verifying Phase 9 requirements (PRIC-07, MOBL-01), removing the orphaned Connect.astro file, and confirming REQUIREMENTS.md accuracy
+**Depends on**: Phase 9 (verification of its completed work)
+**Requirements**: PRIC-07, MOBL-01
+**Gap Closure:** Closes gaps from v2.2 milestone audit
+**Success Criteria** (what must be TRUE):
+  1. Phase 9 has a VERIFICATION.md confirming PRIC-07 (no duplicate pricing cards in Accommodations) and MOBL-01 (mobile header shows brand text) are satisfied
+  2. The orphaned `src/components/Connect.astro` file is deleted -- only `Contact.astro` exists for the contact section
+  3. REQUIREMENTS.md traceability table shows PRIC-07 and MOBL-01 as Complete with correct phase assignments
+**Plans**: TBD
+
+Plans:
+- [ ] 14-01-PLAN.md -- Verify Phase 9 requirements (PRIC-07, MOBL-01) with VERIFICATION.md, delete orphaned Connect.astro, update REQUIREMENTS.md
+
 ## Progress
 
 **Execution Order:**
 v2.0: 1 → 2 → 3 → 4 (complete)
 v2.1: 6 → 7 → 8 (complete)
-v2.2: 9 → 10 → 11 → 12 → 13
+v2.2: 9 → 10 → 11 → 12 → 13 → 14
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -224,3 +238,4 @@ v2.2: 9 → 10 → 11 → 12 → 13
 | 11. Calculator-to-Contact Quote Flow | v2.2 | Complete    | 2026-03-03 | 2026-03-02 |
 | 12. Google Maps Driving Route | v2.2 | 0/1 | Not started | - |
 | 13. Playwright Viewport Verification | v2.2 | 0/1 | Not started | - |
+| 14. Tech Debt Cleanup and Phase 9 Verification | v2.2 | 0/1 | Not started | - |

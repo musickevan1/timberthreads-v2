@@ -9,14 +9,14 @@ Requirements for Client Preview Polish milestone. Each maps to roadmap phases.
 
 ### Pricing & Calculator
 
-- [x] **PRIC-07**: Duplicate pricing tier cards removed from Accommodations section (kept in Pricing section only)
+- [ ] **PRIC-07**: Duplicate pricing tier cards removed from Accommodations section (kept in Pricing section only)
 - [x] **PRIC-08**: Calculator displays per-person price breakdown under the total estimate
 - [x] **PRIC-09**: "Get a Quote" button below calculator estimate scrolls to contact form
 - [x] **PRIC-10**: Contact form message field pre-filled with estimate details (group size, nights, meals, total) when arriving from calculator — only if message field is empty
 
 ### Mobile Experience
 
-- [x] **MOBL-01**: Mobile header displays "Timber & Threads" text title alongside logo
+- [ ] **MOBL-01**: Mobile header displays "Timber & Threads" text title alongside logo
 - [ ] **MOBL-02**: All site sections render correctly at 375px mobile viewport
 - [ ] **MOBL-03**: All site sections render correctly at 320px minimum viewport
 - [ ] **MOBL-04**: Mobile layout changes do not break desktop layout at 1280px
@@ -178,11 +178,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PRIC-07 | Phase 9 | Complete |
+| PRIC-07 | Phase 9 → Phase 14 (verify) | Pending |
 | PRIC-08 | Phase 10 | Complete |
 | PRIC-09 | Phase 11 | Complete |
 | PRIC-10 | Phase 11 | Complete |
-| MOBL-01 | Phase 9 | Complete |
+| MOBL-01 | Phase 9 → Phase 14 (verify) | Pending |
 | MOBL-02 | Phase 13 | Pending |
 | MOBL-03 | Phase 13 | Pending |
 | MOBL-04 | Phase 13 | Pending |
