@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v2.2
 milestone_name: Client Preview Polish
 status: unknown
-last_updated: "2026-03-03T04:57:43.802Z"
+last_updated: "2026-03-03T07:30:18Z"
 progress:
   total_phases: 14
-  completed_phases: 12
-  total_plans: 21
-  completed_plans: 21
+  completed_phases: 14
+  total_plans: 22
+  completed_plans: 22
 ---
 
 # Project State
@@ -18,14 +18,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-02)
 
 **Core value:** The website must load fast and look polished on slow rural connections, making the retreat feel warm and inviting enough that quilters, crafters, and families want to book a stay.
-**Current focus:** Phase 13 — Playwright Viewport Verification (COMPLETE)
+**Current focus:** Phase 14 — Tech Debt Cleanup and Verification (COMPLETE)
 
 ## Current Position
 
-Phase: 13 of 13 (Playwright Viewport Verification)
+Phase: 14 of 14 (Tech Debt Cleanup and Verification)
 Plan: 1 of 1 in current phase (complete)
-Status: ALL PHASES COMPLETE — v2.2 milestone finished
-Last activity: 2026-03-03 — Playwright test suite implemented; all 21 tests passing across 3 viewport projects
+Status: ALL PHASES COMPLETE — v2.2 milestone finished + tech debt cleared
+Last activity: 2026-03-03 — Phase 9 VERIFICATION.md created; Connect.astro deleted; all v2.2 requirements marked Complete
 
 Progress: [##########] 100% (v2.2)
 
@@ -47,6 +47,7 @@ Progress: [##########] 100% (v2.2)
 | 11. Calculator-to-Contact | 1 | 2 min |
 | 12. Google Maps Route | 1 | 4 min |
 | 13. Playwright Viewport | 1 | 3 min |
+| 14. Tech Debt Cleanup | 1 | 2 min |
 
 ## Accumulated Context
 
@@ -69,6 +70,8 @@ Recent decisions affecting current work:
 - [Phase 11-01]: Draft protection uses lastPrefilledMessage string comparison — simple, reliable, covers repeat-click scenario
 - [Phase 11-01]: scrollIntoView instead of window.location.hash — back button works naturally, scroll-spy not disrupted
 - [Phase 11-01]: Focus lands on name field (not textarea) after 600ms — message is pre-filled; visitor's next action is their name
+- [Phase 14-01]: MAPS-02 satisfied by no-API-key approach — domain restriction N/A since pb= embed format requires no key
+- [Phase 14-01]: Connect.astro deleted — Contact.astro (Phase 4) is the sole contact section component
 
 ### Pending Todos
 
@@ -83,5 +86,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-03
-Stopped at: Completed 13-playwright-viewport-verification/13-01-PLAN.md — ALL PHASES COMPLETE
-Resume: v2.2 milestone complete — ready for client preview
+Stopped at: Completed 14-tech-debt-cleanup-and-verification/14-01-PLAN.md — ALL PHASES COMPLETE
+Resume: v2.2 milestone complete — tech debt cleared, all requirements documented, ready for client preview
