@@ -80,6 +80,8 @@ export default function PricingCalculator() {
     total = accommodationCost + foodCost;
   }
 
+  const perPerson = Math.round(total / groupSize);
+
   return (
     <div class="grid md:grid-cols-2 gap-8">
       {/* Inputs panel */}
@@ -170,6 +172,10 @@ export default function PricingCalculator() {
             <div class="flex justify-between items-center">
               <span class="font-serif text-lg text-stone-800">Estimated Total</span>
               <span class="text-2xl font-bold text-brand">{formatCurrency(total)}</span>
+            </div>
+            <div class="flex justify-between items-center mt-1">
+              <span class="text-sm text-stone-500">Per person ({groupSize} guests)</span>
+              <span class="text-sm font-medium text-stone-600">{formatCurrency(perPerson)}</span>
             </div>
           </div>
         </div>
