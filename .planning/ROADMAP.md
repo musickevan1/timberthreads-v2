@@ -219,8 +219,8 @@ v2.2: 9 → 10 → 11 → 12 → 13
 | 6. Pricing, Calculator, and Property Corrections | v2.1 | 2/2 | Complete | 2026-03-02 |
 | 7. Photography Integration | v2.1 | 1/1 | Complete | 2026-03-01 |
 | 8. Polish, Accessibility, SEO, and Deploy | v2.1 | 3/3 | Complete | 2026-03-02 |
-| 9. Mobile Header and Pricing Cleanup | 1/1 | Complete   | 2026-03-03 | - |
-| 10. Calculator Per-Person Breakdown | 1/1 | Complete    | 2026-03-03 | - |
-| 11. Calculator-to-Contact Quote Flow | 1/1 | Complete   | 2026-03-03 | - |
+| 9. Mobile Header and Pricing Cleanup | v2.2 | 1/1 | Complete | 2026-03-02 |
+| 10. Calculator Per-Person Breakdown | v2.2 | 1/1 | Complete | 2026-03-02 |
+| 11. Calculator-to-Contact Quote Flow | v2.2 | 1/1 | Complete | 2026-03-02 |
 | 12. Google Maps Driving Route | v2.2 | 0/1 | Not started | - |
 | 13. Playwright Viewport Verification | v2.2 | 0/1 | Not started | - |

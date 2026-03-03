@@ -3,10 +3,10 @@ gsd_state_version: 1.0
 milestone: v2.2
 milestone_name: Client Preview Polish
 status: unknown
-last_updated: "2026-03-03T02:46:00Z"
+last_updated: "2026-03-02T20:52:00Z"
 progress:
   total_phases: 13
-  completed_phases: 10
+  completed_phases: 11
   total_plans: 19
   completed_plans: 19
 ---
@@ -18,14 +18,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-02)
 
 **Core value:** The website must load fast and look polished on slow rural connections, making the retreat feel warm and inviting enough that quilters, crafters, and families want to book a stay.
-**Current focus:** Phase 11 — Calculator-to-Contact Quote Flow
+**Current focus:** Phase 12 — Google Maps Driving Route
 
 ## Current Position
 
-Phase: 11 of 13 (Calculator-to-Contact Quote Flow)
-Plan: 1 of 1 in current phase (awaiting human verification checkpoint)
-Status: In Progress — 11-01 auto tasks complete, checkpoint:human-verify pending
-Last activity: 2026-03-03 — 11-01 auto tasks complete (Get a Quote button + Contact pre-fill)
+Phase: 12 of 13 (Google Maps Driving Route)
+Plan: 0 of 1 in current phase (not started)
+Status: Ready — Phase 11 complete (human-verify approved), awaiting Phase 12 start
+Last activity: 2026-03-02 — Phase 11 complete: Get a Quote flow verified and approved
 
 Progress: [####░░░░░░] 40% (v2.2)
 
@@ -78,6 +78,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-03
-Stopped at: 11-01-PLAN.md checkpoint:human-verify (Task 3) — auto tasks done, awaiting browser verification
-Resume: After verifying Get a Quote flow in browser, confirm "approved" to close checkpoint
+Last session: 2026-03-02
+Stopped at: Phase 11 complete — Get a Quote flow verified and approved by human
+Resume: Start Phase 12 (Google Maps Driving Route) — requires Google Maps Embed API key setup first (see blocker in Blockers/Concerns)
