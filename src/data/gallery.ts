@@ -24,7 +24,6 @@ import v2OutdoorGrounds from '../assets/images/v2-outdoor-grounds.jpg';
 import v2BathroomShower from '../assets/images/v2-bathroom-shower.jpg';
 
 import v2PrinterStationAlt from '../assets/images/v2-printer-station-alt.jpg';
-import v2CuttingStudio from '../assets/images/v2-cutting-studio.jpg';
 import v2FoldingTables from '../assets/images/v2-folding-tables.jpg';
 import v2LaundryAppliances from '../assets/images/v2-laundry-appliances.jpg';
 
@@ -151,15 +150,6 @@ export const galleryImages: GalleryImage[] = [
     caption: 'Bright, airy workspace with plenty of room to spread out your projects',
     category: 'workspaces',
     order: 5,
-    cropPosition: '50% 50%',
-  },
-  {
-    id: 'workspaces-6',
-    image: v2CuttingStudio,
-    alt: 'Dedicated cutting studio with oversized cutting mats, quilting supplies, and quilt art on the walls',
-    caption: 'Dedicated cutting studio with oversized mats and room to spread out',
-    category: 'workspaces',
-    order: 6,
     cropPosition: '50% 50%',
   },
 
