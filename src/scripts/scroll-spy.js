@@ -1,21 +1,41 @@
 const sections = document.querySelectorAll('section[id]');
 const navLinks = document.querySelectorAll('nav a[href^="#"]');
 
+// Track which sections are currently intersecting
+const activeSections = new Map();
+
 const observer = new IntersectionObserver(
   (entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        navLinks.forEach((link) => {
-          const isActive = link.getAttribute('href') === `#${entry.target.id}`;
-          link.setAttribute('aria-current', isActive ? 'true' : 'false');
-        });
+        activeSections.set(entry.target.id, entry.target);
+      } else {
+        activeSections.delete(entry.target.id);
       }
+    });
+
+    // Find the topmost intersecting section (closest to top of viewport)
+    let activeId = null;
+    let minTop = Infinity;
+    activeSections.forEach((section, id) => {
+      const rect = section.getBoundingClientRect();
+      if (rect.top < minTop) {
+        minTop = rect.top;
+        activeId = id;
+      }
+    });
+
+    // Update all nav links
+    navLinks.forEach((link) => {
+      const isActive = activeId !== null && link.getAttribute('href') === `#${activeId}`;
+      link.setAttribute('aria-current', isActive ? 'true' : 'false');
     });
   },
   {
-    // Thin detection band near top of viewport.
-    // Section is "active" when its top edge crosses the top ~10%.
-    rootMargin: '-2% 0% -90% 0%',
+    // Start detection below the fixed header (80px).
+    // Bottom margin leaves top 40% of visible area as the "active zone".
+    rootMargin: '-80px 0px -60% 0px',
+    threshold: 0,
   }
 );
 

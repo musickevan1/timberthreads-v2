@@ -101,7 +101,7 @@ const navItems = [
     {navItems.map((item) => (
       <a
         href={item.href}
-        class="mobile-nav-link text-2xl font-serif text-stone-900 hover:text-brand py-3 px-8 transition-colors min-h-[56px] flex items-center"
+        class="mobile-nav-link text-2xl font-serif text-stone-900 hover:text-brand py-3 px-8 transition-colors min-h-[56px] flex items-center [&[aria-current='true']]:text-brand [&[aria-current='true']]:font-semibold"
         aria-current="false"
       >
         {item.label}
