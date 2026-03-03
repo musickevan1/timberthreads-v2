@@ -65,6 +65,8 @@ Gemini_Generated_*.png
 
 # v1 legacy files
 *.png
+!public/favicon-*.png
+!public/apple-touch-icon.png
 photo-dashboard.html
 GEMINI_PROMPT.md
 Timber-Threads-PRD.md
