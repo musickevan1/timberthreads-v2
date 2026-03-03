@@ -24,7 +24,7 @@ See: .planning/PROJECT.md (updated 2026-03-03)
 
 Phase: All complete
 Status: v2.2 MILESTONE COMPLETE — shipped and archived
-Last activity: 2026-03-03 — Milestone audit passed (13/13 requirements), archived to milestones/
+Last activity: 2026-03-03 - Completed quick task 2: Fix navbar scroll anchors, section indicator alignment, mobile menu indicator
 
 Progress: [##########] 100% (v2.2)
 
@@ -42,6 +42,13 @@ None.
 ### Blockers/Concerns
 
 - [v2.0 carry-forward]: path-to-regexp HIGH vulnerability in @astrojs/vercel@9.0.4 transitive dep — deferred (build-time only, not shipped to client)
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 1 | Improve and align gallery — review all v2 gallery images | 2026-03-02 | 7b02213 | [1-improve-and-align-gallery](./quick/1-improve-and-align-gallery-review-all-v2-/) |
+| 2 | Fix navbar scroll anchors, section indicator alignment, mobile menu indicator | 2026-03-03 | efb500b | [2-fix-navbar-scroll-anchors](./quick/2-fix-navbar-scroll-anchors-section-indica/) |
 
 ## Session Continuity
 
