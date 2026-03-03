@@ -182,11 +182,11 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. The map section displays an interactive Google Map showing a driving route from a nearby highway landmark to 306 NW 300 Rd, Clinton, MO 64735
   2. A visitor can zoom and pan the embedded route map without leaving the page
-  3. The Maps API key is stored as `PUBLIC_GOOGLE_MAPS_KEY` in the environment (not committed to git) and restricted to the production domain in Google Cloud Console
+  3. An "Open in Google Maps" link lets visitors launch turn-by-turn navigation from their current location
 **Plans**: 1 plan
 
 Plans:
-- [ ] 12-01-PLAN.md -- Set up Google Maps Embed API key (Google Cloud Console, domain restriction), update Map.astro iframe to Embed API directions mode with driving route from Highway 7 to property, add "Open in Google Maps" link, wire PUBLIC_GOOGLE_MAPS_KEY env var
+- [x] 12-01-PLAN.md -- Replace static map pin with no-API-key directions embed showing driving route from Highway 7 to property via NW 221 Rd, add "Open in Google Maps" link
 
 #### Phase 13: Playwright Viewport Verification
 **Goal**: Automated tests confirm that every v2.2 feature works correctly at desktop and mobile viewport sizes, running against the production build so results reflect what real visitors experience
@@ -236,6 +236,6 @@ v2.2: 9 → 10 → 11 → 12 → 13 → 14
 | 9. Mobile Header and Pricing Cleanup | v2.2 | 1/1 | Complete | 2026-03-02 |
 | 10. Calculator Per-Person Breakdown | v2.2 | 1/1 | Complete | 2026-03-02 |
 | 11. Calculator-to-Contact Quote Flow | v2.2 | Complete    | 2026-03-03 | 2026-03-02 |
-| 12. Google Maps Driving Route | v2.2 | 0/1 | Not started | - |
+| 12. Google Maps Driving Route | v2.2 | 1/1 | In progress | - |
 | 13. Playwright Viewport Verification | v2.2 | 0/1 | Not started | - |
 | 14. Tech Debt Cleanup and Phase 9 Verification | v2.2 | 0/1 | Not started | - |

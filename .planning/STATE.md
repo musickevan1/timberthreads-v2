@@ -23,9 +23,9 @@ See: .planning/PROJECT.md (updated 2026-03-02)
 ## Current Position
 
 Phase: 12 of 13 (Google Maps Driving Route)
-Plan: 0 of 1 in current phase (not started)
-Status: Ready — Phase 11 complete (human-verify approved), awaiting Phase 12 start
-Last activity: 2026-03-02 — Phase 11 complete: Get a Quote flow verified and approved
+Plan: 1 of 1 in current phase (complete)
+Status: Plan 12-01 executed — awaiting verification
+Last activity: 2026-03-03 — Driving route embed implemented with no-API-key approach
 
 Progress: [####░░░░░░] 40% (v2.2)
 
@@ -56,7 +56,7 @@ Recent decisions affecting current work:
 - [v2.1]: Pricing calculator is a Preact island (client:load) — no server dependency
 - [v2.1]: Preact chosen over React for calculator island — lighter bundle
 - [v2.2]: Cross-island communication uses CustomEvent on window (not nanostores) — one-directional, one-time handoff is sufficient
-- [v2.2]: Maps upgrade uses Embed API directions mode (iframe, free) — avoids JS SDK bundle cost (~400KB)
+- [v2.2]: Maps upgrade uses no-API-key pb= embed format for directions (iframe, free, no Google Cloud billing needed) — avoids JS SDK bundle cost (~400KB)
 - [v2.2]: Playwright tests must run against production build (`npm run build && npm run preview`) — dev server has non-deterministic hydration timing
 - [v2.2]: No screenshot-based tests — assertion-only to avoid OS font rendering flakiness in CI
 - [09-01]: Brand text hidden sm:block removed — text is now always visible on mobile; animated underline decoration keeps hidden sm:block (desktop-only hover effect)
@@ -72,12 +72,12 @@ None.
 
 ### Blockers/Concerns
 
-- [Phase 12 prerequisite]: Google Maps Embed API key must be created in Google Cloud Console before Map.astro can be updated. One-time ~15 min setup. Unknown if a Cloud project exists for this client.
+- [Phase 12 RESOLVED]: Google Maps API key requirement eliminated — used no-API-key pb= embed format instead of Embed API directions mode. Same visual result, zero setup required.
 - [Phase 11 risk RESOLVED]: scroll-margin-top was globally set on section[id] — changed 4rem to 5rem to match nav height. No duplication issue.
 - [v2.0 carry-forward]: path-to-regexp HIGH vulnerability in @astrojs/vercel@9.0.4 transitive dep — deferred (build-time only, not shipped to client)
 
 ## Session Continuity
 
-Last session: 2026-03-02
-Stopped at: Phase 11 complete — Get a Quote flow verified and approved by human
-Resume: Start Phase 12 (Google Maps Driving Route) — requires Google Maps Embed API key setup first (see blocker in Blockers/Concerns)
+Last session: 2026-03-03
+Stopped at: Phase 12 plan 12-01 executed — awaiting verification
+Resume: Run phase 12 verification, then proceed to Phase 13 (Playwright Viewport Verification)
