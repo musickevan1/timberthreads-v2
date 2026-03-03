@@ -46,5 +46,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-03
-Stopped at: v2.2 milestone archived and tagged
+Stopped at: Quick task 2 complete — navbar scroll anchors and section indicators fixed
 Resume: Start next milestone with /gsd:new-milestone
