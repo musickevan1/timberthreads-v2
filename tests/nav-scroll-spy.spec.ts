@@ -18,7 +18,7 @@ test('desktop: nav click scrolls #about section below fixed header', async ({ pa
       if (!section) return false;
       const top = section.getBoundingClientRect().top;
       // Section top should be positive (below viewport top) and stable (finished scrolling)
-      // scroll-padding-top + scroll-margin-top together place section top ~160px
+      // scroll-margin-top: 5rem places section top ~80px below viewport top
       return top >= 70;
     },
     { timeout: 3000 }
