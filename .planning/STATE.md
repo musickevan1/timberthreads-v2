@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v2.2
 milestone_name: Client Preview Polish
-status: ready_to_plan
+status: in_progress
 last_updated: "2026-03-02"
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 5
-  completed_plans: 0
+  completed_plans: 1
 ---
 
 # Project State
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-03-02)
 ## Current Position
 
 Phase: 9 of 13 (Mobile Header and Pricing Cleanup)
-Plan: 0 of 1 in current phase
-Status: Ready to plan
-Last activity: 2026-03-02 — v2.2 roadmap created, phases 9-13 defined
+Plan: 1 of 1 in current phase (awaiting checkpoint:human-verify)
+Status: In progress — checkpoint:human-verify pending
+Last activity: 2026-03-02 — 09-01 Task 1 complete, awaiting visual verification
 
-Progress: [░░░░░░░░░░] 0% (v2.2)
+Progress: [##░░░░░░░░] 20% (v2.2)
 
 ## Performance Metrics
 
@@ -57,6 +57,8 @@ Recent decisions affecting current work:
 - [v2.2]: Maps upgrade uses Embed API directions mode (iframe, free) — avoids JS SDK bundle cost (~400KB)
 - [v2.2]: Playwright tests must run against production build (`npm run build && npm run preview`) — dev server has non-deterministic hydration timing
 - [v2.2]: No screenshot-based tests — assertion-only to avoid OS font rendering flakiness in CI
+- [09-01]: Brand text hidden sm:block removed — text is now always visible on mobile; animated underline decoration keeps hidden sm:block (desktop-only hover effect)
+- [09-01]: Rate Card block fully removed from Accommodations — single source of truth is PricingSection.astro; pricing teaser shows only $60/night base rate
 
 ### Pending Todos
 
@@ -71,5 +73,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-02
-Stopped at: Roadmap created for v2.2 (phases 9-13)
-Resume: Run `/gsd:plan-phase 9` to start planning Phase 9
+Stopped at: Completed 09-01 Task 1 (auto task); paused at Task 2 (checkpoint:human-verify)
+Resume: Run `npm run dev`, open http://localhost:4321, verify mobile header and accommodations at 320px/375px/1280px, then confirm checkpoint
