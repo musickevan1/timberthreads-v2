@@ -56,3 +56,9 @@ current-site-*.png
 promo/
 *.drx
 Gemini_Generated_*.png
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
