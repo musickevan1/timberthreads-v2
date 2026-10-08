@@ -89,6 +89,39 @@ test('repeated submit events start only one request while busy', async ({ page }
   expect(requests).toBe(1);
 });
 
+test('an edited uncertain draft cannot silently create another inquiry, including after reload', async ({ page }) => {
+  const attempts: { key: string; body: unknown; createdAt: string }[] = [];
+  await page.route('**/api/contact', route => {
+    attempts.push({key:route.request().headers()['idempotency-key'],body:route.request().postDataJSON(),createdAt:route.request().headers()['x-contact-created-at']});
+    return route.abort('failed');
+  });
+  await fill(page); await page.locator('#submit-btn').click();
+  await expect(page.locator('#error-message')).toBeVisible();
+  await page.reload(); await expect(page.locator('#submit-btn')).toBeEnabled();
+  await page.locator('#message').fill('Edited after unknown acceptance');
+  await page.locator('#submit-btn').click();
+  await expect(page.getByRole('button', {name:'Retry original draft'})).toBeVisible();
+  await expect(page.locator('#message')).toHaveValue('Edited after unknown acceptance');
+  expect(attempts).toHaveLength(1);
+  await page.getByRole('button', {name:'Retry original draft'}).click();
+  await expect.poll(() => attempts.length).toBe(2);
+  expect(attempts[1]).toEqual(attempts[0]);
+});
+
+test('a definite first-attempt rejection allows a corrected draft with a new reference', async ({ page }) => {
+  const keys: string[] = [];
+  await page.route('**/api/contact', route => {
+    keys.push(route.request().headers()['idempotency-key']);
+    return route.fulfill({status:400,json:{accepted:false,message:'Correct this draft.'}});
+  });
+  await fill(page); await page.locator('#submit-btn').click();
+  await expect(page.locator('#error-message')).toContainText('Correct this draft.');
+  await page.locator('#message').fill('Corrected inquiry');
+  await page.locator('#submit-btn').click();
+  await expect.poll(() => keys.length).toBe(2);
+  expect(keys[1]).not.toBe(keys[0]);
+});
+
 test('hung request times out with draft and idempotency token retained', async ({ page }) => {
   await page.clock.install();
   await page.route('**/api/contact', async () => { /* Browser aborts after its own bounded timeout. */ });

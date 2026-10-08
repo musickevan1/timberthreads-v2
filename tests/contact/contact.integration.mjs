@@ -85,7 +85,7 @@ test('missing, disabled, invalid storage or sandbox sender configuration fails b
  }assert.equal(mail.length,0);
 });
 test('malformed bodies and spam are rejected without acceptance or notification',async()=>{
- reset();for(const body of [null,[],{}, {...good,website:'autofilled'}, {...good,name:'X\r\nInjected'}, {...good,email:'guest"@example.test'}, {...good,message:'x'.repeat(5001)}, {...good,name:'x'.repeat(101)}]){
+ reset();for(const body of [null,[],{}, {...good,website:'autofilled'}, {...good,name:'X\r\nInjected'}, {...good,email:'guest"@example.test'}, {...good,email:'guest@example.test\r\n'}, {...good,email:'\tguest@example.test'}, {...good,message:'x'.repeat(5001)}, {...good,name:'x'.repeat(101)}]){
   const r=await submit(body);assert.equal(r.status,400);assert.equal(r.data.accepted,false);
  }
  const r=await handler(new Request('https://retreat.example/api/contact',{method:'POST',headers:{origin:'https://retreat.example','content-type':'application/json','idempotency-key':randomUUID(),'x-contact-created-at':String(time)},body:'{'}));assert.equal(r.status,400);

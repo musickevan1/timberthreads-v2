@@ -118,7 +118,7 @@ export function createContactHandler(env: ContactEnvironment,
     if (!body || typeof body !== 'object' || Array.isArray(body)) return json(400, { accepted: false, message: 'Invalid request. ' + fallback });
     const fields = body as Record<string, unknown>;
     if (typeof fields.website !== 'string' || fields.website !== '') return json(400, { accepted: false, message: 'Please leave the Website field blank and try again. ' + fallback });
-    if (!validText(fields.name, 100) || /[\r\n\x00-\x1f\x7f]/.test(fields.name) || !validText(fields.email, 254) || !emailPattern.test(fields.email.trim()) || !validText(fields.message, 5000) || /[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/.test(fields.message)) {
+    if (!validText(fields.name, 100) || /[\r\n\x00-\x1f\x7f]/.test(fields.name) || !validText(fields.email, 254) || /[\x00-\x1f\x7f]/.test(fields.email) || !emailPattern.test(fields.email.trim()) || !validText(fields.message, 5000) || /[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/.test(fields.message)) {
       return json(400, { accepted: false, message: 'Enter your name (up to 100 characters), a valid email, and a message (up to 5,000 characters).' });
     }
     let config: ContactConfig;

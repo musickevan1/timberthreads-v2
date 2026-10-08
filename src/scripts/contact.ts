@@ -15,7 +15,7 @@ const emailError = document.getElementById('email-error') as HTMLSpanElement;
 const messageError = document.getElementById('message-error') as HTMLSpanElement;
 const emailRegex = /^[^\s@<>"(),;:\\]+@[^\s@<>"(),;:\\]+\.[^\s@<>"(),;:\\]+$/;
 let submitting = false;
-let pending: { id: string; payload: string; createdAt: number } | null = null;
+let pending: { id: string; payload: string; createdAt: number; uncertain: boolean } | null = null;
 const draftKey = 'timberthreads:contact-draft:v1';
 
 function validate(input: HTMLInputElement | HTMLTextAreaElement, error: HTMLElement, valid: boolean): boolean {
@@ -36,7 +36,7 @@ try {
   if (saved && typeof saved.id === 'string' && INQUIRY_ID.test(saved.id) && typeof saved.payload === 'string' && typeof saved.createdAt === 'number') {
     const values = JSON.parse(saved.payload);
     if (typeof values.name === 'string' && typeof values.email === 'string' && typeof values.message === 'string') {
-      pending = saved;
+      pending = { ...saved, uncertain: saved.uncertain !== false };
       nameInput.value = values.name;
       emailInput.value = values.email;
       messageInput.value = values.message;
@@ -127,7 +127,29 @@ form?.addEventListener('submit', async event => {
     return;
   }
   const payload = JSON.stringify({name: nameInput.value.trim(), email: emailInput.value.trim(), message: messageInput.value.trim()});
-  if (!pending || pending.payload !== payload) pending = { id: crypto.randomUUID(), payload, createdAt: Date.now() };
+  if (pending?.uncertain && pending.payload !== payload) {
+    const original = pending;
+    const retry = document.createElement('button');
+    retry.type = 'button';
+    retry.className = 'block mt-2 underline font-semibold';
+    retry.textContent = 'Retry original draft';
+    retry.addEventListener('click', () => {
+      const values = JSON.parse(original.payload);
+      nameInput.value = values.name;
+      emailInput.value = values.email;
+      messageInput.value = values.message;
+      form.requestSubmit();
+    });
+    errorMsg.replaceChildren(document.createTextNode(`Your earlier inquiry may already be saved. Retry the original draft, or call (417) 343-1473 or email timberandthreads24@gmail.com with reference ${original.id} before sending an edited inquiry.`), retry);
+    errorMsg.classList.remove('hidden');
+    errorMsg.focus();
+    return;
+  }
+  if (!pending || pending.payload !== payload) pending = { id: crypto.randomUUID(), payload, createdAt: Date.now(), uncertain: false };
+  const attempt = pending;
+  const hadUncertainAttempt = pending.uncertain;
+  // Mark uncertainty before fetch: a reload or interruption can hide a committed write.
+  pending.uncertain = true;
   try { sessionStorage.setItem(draftKey, JSON.stringify(pending)); } catch { /* Best-effort browser recovery. */ }
   const body = { ...JSON.parse(payload), website: (form.elements.namedItem('website') as HTMLInputElement).value };
   submitting = true;
@@ -152,12 +174,17 @@ form?.addEventListener('submit', async event => {
       pending = null;
       try { sessionStorage.removeItem(draftKey); } catch { /* No persistent browser draft needed. */ }
     } else {
-      errorMsg.textContent = typeof data?.message === 'string' ? data.message : 'We could not confirm your inquiry was saved. Your draft is still here; please retry or contact us directly.';
+      if (!hadUncertainAttempt && [400, 403, 415, 429].includes(response.status) && data?.accepted === false) {
+        pending.uncertain = false;
+        try { sessionStorage.setItem(draftKey, JSON.stringify(pending)); } catch { /* In-page rejection state still permits edits. */ }
+      }
+      const message = typeof data?.message === 'string' ? data.message : 'We could not confirm your inquiry was saved. Your draft is still here; please retry or contact us directly.';
+      errorMsg.textContent = `${message} Reference for this attempt: ${pending.id}.`;
       errorMsg.classList.remove('hidden');
       errorMsg.focus();
     }
   } catch {
-    errorMsg.textContent = 'We could not confirm your inquiry was saved because the connection was interrupted. Your draft is still here; retrying it is safe, or call (417) 343-1473 or email timberandthreads24@gmail.com.';
+    errorMsg.textContent = `We could not confirm your inquiry was saved because the connection was interrupted. Your draft is still here; retrying it is safe, or call (417) 343-1473 or email timberandthreads24@gmail.com with reference ${attempt.id}.`;
     errorMsg.classList.remove('hidden');
     errorMsg.focus();
   } finally {
