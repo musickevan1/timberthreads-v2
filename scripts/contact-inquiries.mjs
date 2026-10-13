@@ -17,7 +17,11 @@ try {
     // Deliberate private console output; avoid shared terminal logs or committing exports.
     console.log(JSON.stringify(row,null,2));
   } else if (action==='--retry' && INQUIRY_ID.test(id||'') && confirm==='--send') {
-    console.log(JSON.stringify({reference:id,notification:await notifyInquiry(store,id,contactConfig(process.env))}));
+    await notifyInquiry(store,id,contactConfig(process.env));
+    // Report the stored state: failed/review/leased records are not resent and must not read as pending.
+    const row=await store.get(id);
+    if(!row) throw new Error('Inquiry not found or retention expired');
+    console.log(JSON.stringify({reference:id,notification:row.notification,attempts:row.attempts,errorCode:row.errorCode}));
   } else throw new Error('Use --list, --show UUID, or --retry UUID --send (the last command can send live email)');
 } catch {
   // Never print upstream exceptions or credentials. No implicit send on failure.

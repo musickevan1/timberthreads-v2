@@ -35,7 +35,8 @@ const fetcher=async(url,init)=>{
 };
 const handler=createContactHandler(env,{fetcher,now:()=>time,pause:async()=>{}});
 const store=new InquiryStore(env.UPSTASH_REDIS_REST_URL,env.UPSTASH_REDIS_REST_TOKEN,fetcher);
-function request(body=good,id=randomUUID(),headers={}) {return new Request('https://retreat.example/api/contact',{method:'POST',headers:{'content-type':'application/json',origin:'https://retreat.example','idempotency-key':id,'x-contact-created-at':String(time),...headers},body:JSON.stringify(body)});}
+// Mirrors Astro on Vercel without security.allowedDomains: request.url is localhost, Host is the real site.
+function request(body=good,id=randomUUID(),headers={}) {return new Request('https://localhost/api/contact',{method:'POST',headers:{'content-type':'application/json',host:'retreat.example',origin:'https://retreat.example','idempotency-key':id,'x-contact-created-at':String(time),...headers},body:JSON.stringify(body)});}
 function reset(){storageFailure=false;finishFailure=false;claimFailure=false;provider='success';mail=[];time=1700000000000;}
 async function submit(body=good,id=randomUUID()){const response=await handler(request(body,id),randomUUID());return {status:response.status,data:await response.json(),id};}
 
@@ -88,11 +89,11 @@ test('malformed bodies and spam are rejected without acceptance or notification'
  reset();for(const body of [null,[],{}, {...good,website:'autofilled'}, {...good,name:'X\r\nInjected'}, {...good,email:'guest"@example.test'}, {...good,email:'guest@example.test\r\n'}, {...good,email:'\tguest@example.test'}, {...good,message:'x'.repeat(5001)}, {...good,name:'x'.repeat(101)}]){
   const r=await submit(body);assert.equal(r.status,400);assert.equal(r.data.accepted,false);
  }
- const r=await handler(new Request('https://retreat.example/api/contact',{method:'POST',headers:{origin:'https://retreat.example','content-type':'application/json','idempotency-key':randomUUID(),'x-contact-created-at':String(time)},body:'{'}));assert.equal(r.status,400);
+ const r=await handler(new Request('https://localhost/api/contact',{method:'POST',headers:{host:'retreat.example',origin:'https://retreat.example','content-type':'application/json','idempotency-key':randomUUID(),'x-contact-created-at':String(time)},body:'{'}));assert.equal(r.status,400);
  assert.equal(mail.length,0);
 });
 test('same-origin, content type, body bounds and identifier are enforced',async()=>{
- reset();for(const [headers,status] of [[{origin:'https://attacker.invalid'},403],[{'content-type':'text/plain'},415],[{'idempotency-key':'bad'},400]])assert.equal((await handler(request(good,randomUUID(),headers))).status,status);
+ reset();for(const [headers,status] of [[{origin:'https://attacker.invalid'},403],[{origin:'null'},403],[{'content-type':'text/plain'},415],[{'idempotency-key':'bad'},400]])assert.equal((await handler(request(good,randomUUID(),headers))).status,status);
  const body={...good,message:'x'.repeat(20000)};assert.equal((await submit(body)).status,400);assert.equal(mail.length,0);
 });
 test('persistent per-client quota blocks new submissions but permits safe repeats',async()=>{

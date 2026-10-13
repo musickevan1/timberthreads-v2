@@ -107,7 +107,9 @@ export function createContactHandler(env: ContactEnvironment,
   return async (request: Request, clientAddress = ''): Promise<Response> => {
     if (request.method !== 'POST') return json(405, { accepted: false, message: 'Use the contact form to submit an inquiry.' });
     const origin = request.headers.get('origin');
-    if (!origin || origin !== new URL(request.url).origin) return json(403, { accepted: false, message: 'Please submit the form from this website.' });
+    // Astro on Vercel builds request.url as localhost unless security.allowedDomains is set; Host is the real site.
+    const host = request.headers.get('host');
+    if (!origin || !host || !URL.canParse(origin) || new URL(origin).host !== host) return json(403, { accepted: false, message: 'Please submit the form from this website.' });
     if (request.headers.get('content-type')?.split(';')[0].trim().toLowerCase() !== 'application/json') return json(415, { accepted: false, message: 'Invalid request format. ' + fallback });
     const id = request.headers.get('idempotency-key') || '';
     if (!INQUIRY_ID.test(id)) return json(400, { accepted: false, message: 'Please reload the page and try again.' });
