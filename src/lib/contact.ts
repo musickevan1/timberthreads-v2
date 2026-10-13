@@ -11,8 +11,9 @@ export type ContactEnvironment = Record<string, string | boolean | undefined>;
 export interface ContactConfig { storageUrl: string; storageToken: string; apiKey: string; from: string; to: string }
 
 export function contactStorageConfig(env: ContactEnvironment): Pick<ContactConfig, 'storageUrl' | 'storageToken'> {
-  const storageUrl = String(env.UPSTASH_REDIS_REST_URL || '').trim();
-  const storageToken = String(env.UPSTASH_REDIS_REST_TOKEN || '').trim();
+  // KV_REST_API_* are the names Vercel's Upstash integration creates.
+  const storageUrl = String(env.UPSTASH_REDIS_REST_URL || env.KV_REST_API_URL || '').trim();
+  const storageToken = String(env.UPSTASH_REDIS_REST_TOKEN || env.KV_REST_API_TOKEN || '').trim();
   const url = new URL(storageUrl);
   if (url.protocol !== 'https:' || !url.hostname.endsWith('.upstash.io') || url.username || url.password || url.search || url.hash || (url.port && url.port !== '443') || (url.pathname !== '/' && url.pathname !== '') || !storageToken) throw new Error('Invalid contact storage configuration');
   return { storageUrl: url.origin, storageToken };

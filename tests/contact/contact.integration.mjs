@@ -107,6 +107,10 @@ test('read-only recovery remains available without enabled intake or valid mail 
  reset();const result=await submit();const config=contactStorageConfig({...env,CONTACT_INTAKE_ENABLED:'false',RESEND_API_KEY:'',CONTACT_FROM_EMAIL:'',OWNER_EMAIL:''});
  const recovery=new InquiryStore(config.storageUrl,config.storageToken,fetcher);assert.equal((await recovery.get(result.id)).message,good.message);assert.equal(mail.length,1);
 });
+test('storage config accepts the Vercel Upstash integration names',async()=>{
+ assert.deepEqual(contactStorageConfig({KV_REST_API_URL:'https://kv.upstash.io',KV_REST_API_TOKEN:'kv-token'}),{storageUrl:'https://kv.upstash.io',storageToken:'kv-token'});
+ assert.equal(contactStorageConfig({...env,KV_REST_API_URL:'https://kv.upstash.io',KV_REST_API_TOKEN:'kv-token'}).storageToken,env.UPSTASH_REDIS_REST_TOKEN);
+});
 
  test('actual Astro POST route uses runtime config and the same durable intake path',async()=>{
  reset();
