@@ -96,9 +96,9 @@
       <!-- Right: Contact Form -->
       <div class="flex flex-col">
         <!-- Error banner (shown on server/network errors) -->
-        <div id="error-message" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4" role="alert"></div>
+        <div id="error-message" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4" role="alert" tabindex="-1"></div>
 
-        <form id="contact-form" novalidate class="relative flex flex-col flex-1">
+        <form id="contact-form" method="post" action="/api/contact" novalidate class="relative flex flex-col flex-1">
 
           <!-- Honeypot field: off-screen, hidden from humans, visible to bots -->
           <div class="absolute left-[-9999px] top-0 overflow-hidden h-0 w-0" aria-hidden="true">
@@ -119,6 +119,7 @@
               type="text"
               id="name"
               name="name"
+              maxlength="100" required aria-describedby="name-error"
               class="w-full px-4 py-3 rounded-lg border border-stone-300 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-colors text-stone-800"
               placeholder="Jane Smith"
               autocomplete="name"
@@ -133,6 +134,7 @@
               type="email"
               id="email"
               name="email"
+              maxlength="254" required aria-describedby="email-error"
               class="w-full px-4 py-3 rounded-lg border border-stone-300 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-colors text-stone-800"
               placeholder="jane@example.com"
               autocomplete="email"
@@ -146,6 +148,7 @@
             <textarea
               id="message"
               name="message"
+              maxlength="5000" required aria-describedby="message-error"
               rows="4"
               class="w-full flex-1 min-h-[120px] px-4 py-3 rounded-lg border border-stone-300 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-colors text-stone-800 resize-none"
               placeholder="Tell us about your group, preferred dates, or any questions..."
@@ -155,7 +158,7 @@
 
           <!-- Submit button -->
           <button
-            id="submit-btn"
+            id="submit-btn" disabled
             type="submit"
             class="w-full px-8 py-4 bg-brand text-white rounded-lg font-medium hover:bg-brand-dark transition-colors flex items-center justify-center gap-2"
           >
@@ -168,10 +171,11 @@
             </span>
           </button>
 
+          <noscript><p>Please call (417) 343-1473 or email timberandthreads24@gmail.com to send an inquiry.</p></noscript>
         </form>
 
         <!-- Success state: replaces form area inline on success -->
-        <div id="success-message" class="hidden text-center py-8">
+        <div id="success-message" role="status" aria-live="polite" tabindex="-1" class="hidden text-center py-8">
           <!-- Green checkmark icon -->
           <div class="flex justify-center mb-4">
             <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
@@ -181,7 +185,7 @@
             </div>
           </div>
           <h3 class="font-serif text-2xl text-stone-800 mb-2">Thank you for reaching out!</h3>
-          <p class="text-stone-600">We'll get back to you soon.</p>
+          <p id="success-text" class="text-stone-600"></p>
         </div>
       </div>
 
@@ -191,195 +195,5 @@
 </section>
 
 <script>
-  // DOM element references
-  const form = document.getElementById('contact-form') as HTMLFormElement;
-  const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
-  const btnText = document.getElementById('btn-text') as HTMLSpanElement;
-  const btnSpinner = document.getElementById('btn-spinner') as HTMLSpanElement;
-  const successMsg = document.getElementById('success-message') as HTMLDivElement;
-  const errorMsg = document.getElementById('error-message') as HTMLDivElement;
-
-  // Field elements
-  const nameInput = document.getElementById('name') as HTMLInputElement;
-  const emailInput = document.getElementById('email') as HTMLInputElement;
-  const messageInput = document.getElementById('message') as HTMLTextAreaElement;
-
-  // Error span elements
-  const nameError = document.getElementById('name-error') as HTMLSpanElement;
-  const emailError = document.getElementById('email-error') as HTMLSpanElement;
-  const messageError = document.getElementById('message-error') as HTMLSpanElement;
-
-  // Email validation regex
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  // --- Validation helpers ---
-
-  function validateName(): boolean {
-    if (!nameInput.value.trim()) {
-      nameError.classList.remove('hidden');
-      return false;
-    }
-    nameError.classList.add('hidden');
-    return true;
-  }
-
-  function validateEmail(): boolean {
-    const val = emailInput.value.trim();
-    if (!val || !emailRegex.test(val)) {
-      emailError.classList.remove('hidden');
-      return false;
-    }
-    emailError.classList.add('hidden');
-    return true;
-  }
-
-  function validateMessage(): boolean {
-    if (!messageInput.value.trim()) {
-      messageError.classList.remove('hidden');
-      return false;
-    }
-    messageError.classList.add('hidden');
-    return true;
-  }
-
-  // --- On-blur validation (fires when user leaves a field) ---
-
-  nameInput?.addEventListener('blur', validateName);
-  emailInput?.addEventListener('blur', validateEmail);
-  messageInput?.addEventListener('blur', validateMessage);
-
-  // --- Form submit handler ---
-
-  // --- Quote pre-fill from calculator ---
-
-  function buildPrefilledMessage(detail: {
-    groupSize: number;
-    nights: number;
-    includeMeals: boolean;
-    total: number;
-    perPerson: number;
-    isFlatRate: boolean;
-  }): string {
-    const { groupSize, nights, includeMeals, total, perPerson, isFlatRate } = detail;
-    const lines: string[] = [];
-    lines.push(`Group Size: ${groupSize} guest${groupSize !== 1 ? 's' : ''}`);
-    lines.push(`Nights: ${nights}`);
-    if (includeMeals) {
-      lines.push('Meals: Included');
-    }
-    if (isFlatRate) {
-      lines.push('Pricing: Flat rate for 10-12 guests');
-    }
-    lines.push(`Estimated Total: $${total.toLocaleString()} ($${perPerson.toLocaleString()}/person)`);
-    lines.push('');
-    lines.push('Please add your preferred dates or any questions below:');
-    lines.push('');
-    return lines.join('\n');
-  }
-
-  let lastPrefilledMessage = '';
-
-  window.addEventListener('calculator:quote-requested', (e: Event) => {
-    const evt = e as CustomEvent<{
-      groupSize: number;
-      nights: number;
-      includeMeals: boolean;
-      total: number;
-      perPerson: number;
-      isFlatRate: boolean;
-    }>;
-
-    const contactSection = document.getElementById('contact');
-    const newMessage = buildPrefilledMessage(evt.detail);
-
-    // Pre-fill logic with draft protection (PRIC-10)
-    if (form && !form.classList.contains('hidden')) {
-      const currentValue = messageInput.value.trim();
-      if (currentValue === '' || currentValue === lastPrefilledMessage.trim()) {
-        // Empty or unchanged previous pre-fill — safe to update
-        messageInput.value = newMessage;
-        lastPrefilledMessage = newMessage;
-
-        // Highlight flash on textarea
-        messageInput.classList.remove('quote-highlight');
-        // Force reflow to allow re-triggering animation on repeat clicks
-        void messageInput.offsetWidth;
-        messageInput.classList.add('quote-highlight');
-        messageInput.addEventListener('animationend', () => {
-          messageInput.classList.remove('quote-highlight');
-        }, { once: true });
-      }
-      // If visitor has edited the pre-fill, skip overwrite — respect their draft
-    }
-
-    // Smooth scroll to message textarea so pre-filled content is visible
-    messageInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-    // Focus name field after scroll completes (~600ms for smooth scroll)
-    if (form && !form.classList.contains('hidden')) {
-      setTimeout(() => {
-        nameInput?.focus();
-      }, 600);
-    }
-  });
-
-  form?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    // Re-validate all fields on submit
-    const nameValid = validateName();
-    const emailValid = validateEmail();
-    const messageValid = validateMessage();
-
-    if (!nameValid || !emailValid || !messageValid) {
-      // Focus the first invalid field
-      if (!nameValid) nameInput.focus();
-      else if (!emailValid) emailInput.focus();
-      else messageInput.focus();
-      return;
-    }
-
-    // Collect form data including honeypot
-    const formData = new FormData(form);
-    const body = {
-      name: formData.get('name') as string,
-      email: formData.get('email') as string,
-      message: formData.get('message') as string,
-      website: formData.get('website') as string, // honeypot field
-    };
-
-    // Disable button, show spinner, hide any previous error
-    errorMsg.classList.add('hidden');
-    submitBtn.disabled = true;
-    btnText.textContent = 'Sending...';
-    btnSpinner.classList.remove('hidden');
-
-    try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      });
-
-      if (res.ok) {
-        // Inline success: hide form, show confirmation
-        form.classList.add('hidden');
-        successMsg.classList.remove('hidden');
-      } else {
-        // Show server error above form — do NOT reset inputs so user can retry
-        const data = await res.json().catch(() => ({}));
-        errorMsg.textContent = data.message || 'Something went wrong. Please try again.';
-        errorMsg.classList.remove('hidden');
-      }
-    } catch {
-      // Network error
-      errorMsg.textContent = 'Network error. Please check your connection and try again.';
-      errorMsg.classList.remove('hidden');
-    } finally {
-      // Always re-enable button and restore text (unless success)
-      submitBtn.disabled = false;
-      btnText.textContent = 'Send Message';
-      btnSpinner.classList.add('hidden');
-    }
-  });
+  import '../scripts/contact';
 </script>
