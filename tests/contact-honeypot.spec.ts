@@ -2,12 +2,14 @@ import { test, expect } from '@playwright/test';
 import { createServer, type ViteDevServer } from 'vite';
 import type { POST as PostHandler } from '../src/pages/api/contact';
 
-// Server-side: a filled honeypot must still notify the owner (flagged), never
-// return a fake success. The endpoint is loaded through Vite (Astro's bundler)
-// so import.meta.env exists. Resend calls the global fetch, so we stub it here
-// and no real email is sent.
-test.describe('contact API honeypot', () => {
-  let sent: Array<Record<string, unknown>>;
+const guest = { name: 'Jane Guest', email: 'jane@example.com', message: 'Booking for 6 in May' };
+const SANDBOX_FROM = 'Timber & Threads Contact <onboarding@resend.dev>';
+
+// Loads the contact endpoint through Vite (Astro's bundler) so import.meta.env
+// exists, with `env` set as import.meta.env values. Resend calls the global
+// fetch, so we stub it and record payloads: no real email is sent.
+function useContactApi(env: Record<string, string> = {}) {
+  const sent: Array<Record<string, unknown>> = [];
   const realFetch = globalThis.fetch;
   let vite: ViteDevServer;
   let POST: typeof PostHandler;
@@ -18,6 +20,9 @@ test.describe('contact API honeypot', () => {
       logLevel: 'silent',
       appType: 'custom',
       server: { middlewareMode: true, hmr: false },
+      define: Object.fromEntries(
+        Object.entries(env).map(([key, value]) => [`import.meta.env.${key}`, JSON.stringify(value)])
+      ),
     });
     ({ POST } = await vite.ssrLoadModule('/src/pages/api/contact.ts'));
   });
@@ -27,7 +32,7 @@ test.describe('contact API honeypot', () => {
   });
 
   test.beforeEach(() => {
-    sent = [];
+    sent.length = 0;
     process.env.RESEND_API_KEY ??= 're_test_dummy';
     globalThis.fetch = (async (url: string | URL | Request, init?: RequestInit) => {
       if (!String(url).startsWith('https://api.resend.com/')) {
@@ -54,7 +59,12 @@ test.describe('contact API honeypot', () => {
     return POST({ request } as Parameters<typeof PostHandler>[0]);
   }
 
-  const guest = { name: 'Jane Guest', email: 'jane@example.com', message: 'Booking for 6 in May' };
+  return { sent, submit };
+}
+
+// A filled honeypot must still notify the owner (flagged), never return a fake success.
+test.describe('contact API honeypot', () => {
+  const { sent, submit } = useContactApi();
 
   for (const key of ['tt_hp_7f', 'website']) {
     test(`honeypot "${key}" filled: email is still sent, flagged`, async () => {
@@ -76,6 +86,37 @@ test.describe('contact API honeypot', () => {
     expect(sent).toHaveLength(1);
     expect(sent[0].subject).toBe('New inquiry from Jane Guest');
     expect(String(sent[0].text)).not.toContain('anti-spam');
+  });
+
+  test('CONTACT_FROM unset: sandbox sender, reply goes to the guest', async () => {
+    await submit(guest);
+
+    expect(sent[0].from).toBe(SANDBOX_FROM);
+    expect(sent[0].reply_to).toBe('jane@example.com');
+  });
+});
+
+test.describe('contact API sender with CONTACT_FROM set', () => {
+  const from = 'Timber & Threads Website <contact@timberandthreadsretreat.com>';
+  const { sent, submit } = useContactApi({ CONTACT_FROM: from });
+
+  test('uses CONTACT_FROM, reply goes to the guest', async () => {
+    const res = await submit(guest);
+
+    expect(res.status).toBe(200);
+    expect(sent).toHaveLength(1);
+    expect(sent[0].from).toBe(from);
+    expect(sent[0].reply_to).toBe('jane@example.com');
+  });
+});
+
+test.describe('contact API sender with CONTACT_FROM empty', () => {
+  const { sent, submit } = useContactApi({ CONTACT_FROM: '' });
+
+  test('falls back to the sandbox sender', async () => {
+    await submit(guest);
+
+    expect(sent[0].from).toBe(SANDBOX_FROM);
   });
 });
 
