@@ -23,14 +23,11 @@ export const POST: APIRoute = async ({ request }) => {
     );
   }
 
-  // 2. Honeypot check -- bots fill hidden fields, humans never see them
-  // Return fake 200 so bots think it worked (don't send any email)
-  if (body.website) {
-    return new Response(
-      JSON.stringify({ message: 'Message sent successfully!' }),
-      { status: 200, headers: { 'Content-Type': 'application/json' } }
-    );
-  }
+  // 2. Honeypot check -- bots fill hidden fields, humans never see them.
+  // Browser autofill can fill it too, so never drop the message: send it flagged.
+  // `website` is the old field name, still sent by cached pages.
+  const honeypotFilled = Boolean(body.tt_hp_7f || body.website);
+  const spamNote = 'Note: the hidden anti-spam field was filled, so this may be spam (or browser autofill).';
 
   // 3. Server-side validation
   const errors: string[] = [];
@@ -67,6 +64,7 @@ export const POST: APIRoute = async ({ request }) => {
 
   const htmlBody = `
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
+      ${honeypotFilled ? `<p style="color: #b45309;"><strong>${spamNote}</strong></p>` : ''}
       <h2 style="color: #0D9488; border-bottom: 2px solid #0D9488; padding-bottom: 8px;">
         New Inquiry from ${safeName}
       </h2>
@@ -84,13 +82,13 @@ export const POST: APIRoute = async ({ request }) => {
     </div>
   `;
 
-  const textBody = `New inquiry from ${name}\n\nName: ${name}\nEmail: ${email}\n\nMessage:\n${message}\n\n---\nSent via timberandthreadsretreat.com contact form.`;
+  const textBody = `${honeypotFilled ? `${spamNote}\n\n` : ''}New inquiry from ${name}\n\nName: ${name}\nEmail: ${email}\n\nMessage:\n${message}\n\n---\nSent via timberandthreadsretreat.com contact form.`;
 
   const { error } = await resend.emails.send({
     from: 'Timber & Threads Contact <onboarding@resend.dev>',
     to: [import.meta.env.OWNER_EMAIL],
     replyTo: email,
-    subject: `New inquiry from ${name}`,
+    subject: `${honeypotFilled ? '[Possible spam] ' : ''}New inquiry from ${name}`,
     html: htmlBody,
     text: textBody,
   });
