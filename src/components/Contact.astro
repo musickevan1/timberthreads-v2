@@ -100,15 +100,17 @@
 
         <form id="contact-form" novalidate class="relative flex flex-col flex-1">
 
-          <!-- Honeypot field: off-screen, hidden from humans, visible to bots -->
+          <!-- Honeypot field: off-screen, hidden from humans, visible to bots.
+               Neutral name/label and autocomplete="one-time-code" so browsers and
+               password managers don't autofill it (they often ignore "off"). -->
           <div class="absolute left-[-9999px] top-0 overflow-hidden h-0 w-0" aria-hidden="true">
-            <label for="website">Website (leave blank)</label>
+            <label for="tt_hp_7f">Leave this field empty</label>
             <input
               type="text"
-              id="website"
-              name="website"
+              id="tt_hp_7f"
+              name="tt_hp_7f"
               tabindex="-1"
-              autocomplete="off"
+              autocomplete="one-time-code"
             />
           </div>
 
@@ -345,7 +347,7 @@
       name: formData.get('name') as string,
       email: formData.get('email') as string,
       message: formData.get('message') as string,
-      website: formData.get('website') as string, // honeypot field
+      tt_hp_7f: formData.get('tt_hp_7f') as string, // honeypot field
     };
 
     // Disable button, show spinner, hide any previous error
